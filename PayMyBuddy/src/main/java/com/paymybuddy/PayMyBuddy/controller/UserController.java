@@ -13,23 +13,23 @@ public class UserController {
     @Autowired
     UserService userService;
     
-    @GetMapping("/userInfo")
-    public User getUser(@RequestParam("userID")int userID) {
-        System.out.println("user"+userID+":" + userService.getUser(userID));
-        return userService.getUser(userID);
+    @PostMapping("/createUser")
+    public boolean createUser(@RequestBody User newUser) {
+        return userService.createUser(newUser);
+    }
+    @GetMapping("/readUserInfo")
+    public User readUser(@RequestParam("userID")int userID) {
+        return userService.readUser(userID);
     }
     
-    @GetMapping("/userListInfo")
-    public List<User> getUserList() {
-        System.out.println("userList in get userList "+ userService.getUserList());
-        return userService.getUserList();
+    @GetMapping("/readUserListInfo")
+    public List<User> readUserList() {
+        return userService.readUserList();
     }
     
-  
-    @PutMapping("/userModified")
-    public User modifyUser(@RequestParam("userID") int userID, @RequestBody HashMap<String, Object> params){
-        System.out.println(userService.modifyUser(userID,params));
-        return userService.modifyUser(userID,params);
+    @PutMapping("/updateUser")
+    public boolean updateUser(@RequestParam int userID, @RequestBody HashMap<String, Object> params){
+        return userService.updateUser(userID,params);
     }
     
 }

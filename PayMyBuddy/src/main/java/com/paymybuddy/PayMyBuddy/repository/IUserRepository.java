@@ -9,5 +9,5 @@ public interface IUserRepository {
     public boolean createUser(User newUser);
     public List<User> readUserList();
     public User readUser(int userID);
-    public User updateUser(int userID, HashMap<String, Object> params);
+    public boolean updateUser(int userID, HashMap<String, Object> params);
 }

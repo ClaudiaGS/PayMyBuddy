@@ -1,6 +1,5 @@
 package com.paymybuddy.PayMyBuddy.service;
 
-import com.paymybuddy.PayMyBuddy.config.DataBaseConfig;
 import com.paymybuddy.PayMyBuddy.model.User;
 import com.paymybuddy.PayMyBuddy.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
@@ -16,19 +15,23 @@ public class UserService implements IUserService {
     private static final Logger logger = LogManager.getLogger("DataBaseConfig");
     @Autowired
     UserRepository userRepository;
-    @Autowired
-    User user;
     
-    public DataBaseConfig dataBaseConfig = new DataBaseConfig();
-    
-    public User getUser(int userID) {
-        return userRepository.readUser(userID);
+    @Override
+    public boolean createUser(User newUser) {
+        return userRepository.createUser(newUser);
     }
-    public List<User> getUserList() {
+    
+    @Override
+    public List<User> readUserList() {
         return userRepository.readUserList();
     }
     
-    public User modifyUser(int userID, HashMap<String, Object> params) {
+    @Override
+    public User readUser(int userID) {
+        return userRepository.readUser(userID);
+    }
+    
+    public boolean updateUser(int userID, HashMap<String, Object> params) {
         return userRepository.updateUser(userID,params);
     }
 }

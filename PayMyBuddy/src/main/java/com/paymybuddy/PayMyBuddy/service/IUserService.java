@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface IUserService {
-    public User getUser(int userID);
-    public List<User> getUserList();
-    public User modifyUser(int userID, HashMap<String, Object> params);
+    public boolean createUser(User newUser);
+    public List<User> readUserList();
+    public User readUser(int userID);
+    public boolean updateUser(int userID, HashMap<String, Object> params);
 }
