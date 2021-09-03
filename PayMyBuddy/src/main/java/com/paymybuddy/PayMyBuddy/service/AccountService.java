@@ -22,10 +22,10 @@ public class AccountService implements IAccountService{
     private static final Logger logger = LogManager.getLogger("AccountService");
     
     @Override
-    public Account createAccount(User user, String email, String password) {
+    public Account createAccount(int userID, String email, String password) {
         Account account = null;
-        if(userService.create(user)) {
-            account = accountRepository.createAccount(user.getUserId(), email,password);
+        if(userService.createUser(userService.readUser(userID))) {
+            account = accountRepository.createAccount(userID,email,password);
         }
         return account;
     }
@@ -41,7 +41,7 @@ public class AccountService implements IAccountService{
     }
     
     @Override
-    public Account updateAccount(int accountID, HashMap<String, String> params) {
+    public boolean updateAccount(int accountID, HashMap<String, Object> params) {
         return accountRepository.updateAccount(accountID,params);
     }
     

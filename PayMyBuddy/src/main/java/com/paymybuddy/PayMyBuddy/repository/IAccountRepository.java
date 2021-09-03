@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface IAccountRepository {
 
-    public Account createAccount(int userID,String email, String password);
+    public Account createAccount(int userID, String email, String password);
     public Account readAccount(int accountID);
     public List<Account> readAccountList();
-    public Account updateAccount(int accountID, HashMap<String, String> params);
+    public boolean updateAccount(int accountID, HashMap<String, Object> params);
     
 }
 

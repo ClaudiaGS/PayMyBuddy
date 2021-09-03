@@ -31,7 +31,7 @@ public class BankAccountRepository implements IBankAccountRepository {
         bankAccount = null;
         try {
             con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DataBaseConstants.GET_BANK_ACCOUNT);
+            PreparedStatement ps = con.prepareStatement(DataBaseConstants.READ_BANK_ACCOUNT);
             ps.setString(1, String.valueOf(bankAccountID));
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -53,7 +53,7 @@ public class BankAccountRepository implements IBankAccountRepository {
         Connection con = null;
         try {
             con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DataBaseConstants.GET_BANK_ACCOUNT_LIST);
+            PreparedStatement ps = con.prepareStatement(DataBaseConstants.READ_BANK_ACCOUNT_LIST);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 bankAccount = processRow(rs);
@@ -103,7 +103,7 @@ public class BankAccountRepository implements IBankAccountRepository {
         Connection con = null;
         try {
             con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DataBaseConstants.MODIFY_BANK_ACCOUNT);
+            PreparedStatement ps = con.prepareStatement(DataBaseConstants.UPDATE_BANK_ACCOUNT);
             ps.setInt(1, bankAccount.getBankAccountNumber());
             ps.setDouble(2, bankAccount.getBankAccountAmount());
             ps.setString(3, bankAccount.getBankAccountCurrency());

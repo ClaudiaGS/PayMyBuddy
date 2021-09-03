@@ -28,11 +28,11 @@ public class UserRepository implements IUserRepository {
     @Override
     public boolean createUser(User newUser) {
         logger.info("Create user");
-        PreparedStatement ps=null;
+        PreparedStatement ps = null;
         ResultSet resultSet = null;
         boolean result = false;
         try (Connection con = dataBase.getConnection()) {
-            ps= con.prepareStatement(DataBaseConstants.CREATE_USER, Statement.RETURN_GENERATED_KEYS);
+            ps = con.prepareStatement(DataBaseConstants.CREATE_USER, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, newUser.getUserFirstName());
             ps.setString(2, newUser.getUserLastName());
             ps.setDate(3, (Date) newUser.getUserBirthdate());
@@ -43,7 +43,6 @@ public class UserRepository implements IUserRepository {
                 newUser.setUserID(resultSet.getInt(1));
                 result = true;
             }
-            dataBase.closePreparedStatement(ps);
         } catch (Exception e) {
             logger.error(e.getMessage());
         } finally {
@@ -60,7 +59,7 @@ public class UserRepository implements IUserRepository {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
-            ps = con.prepareStatement(DataBaseConstants.GET_USER);
+            ps = con.prepareStatement(DataBaseConstants.READ_USER);
             ps.setString(1, String.valueOf(userID));
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -83,7 +82,7 @@ public class UserRepository implements IUserRepository {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
-            ps = con.prepareStatement(DataBaseConstants.GET_USER_LIST);
+            ps = con.prepareStatement(DataBaseConstants.READ_USER_LIST);
             rs = ps.executeQuery();
             while (rs.next()) {
                 user = processRow(rs);
@@ -133,7 +132,7 @@ public class UserRepository implements IUserRepository {
         boolean executed = false;
         PreparedStatement ps = null;
         try (Connection con = dataBase.getConnection()) {
-            ps = con.prepareStatement(DataBaseConstants.MODIFY_USER);
+            ps = con.prepareStatement(DataBaseConstants.UPDATE_USER);
             ps.setString(1, user.getUserFirstName());
             ps.setString(2, user.getUserLastName());
             ps.setDate(3, (Date) user.getUserBirthdate());
