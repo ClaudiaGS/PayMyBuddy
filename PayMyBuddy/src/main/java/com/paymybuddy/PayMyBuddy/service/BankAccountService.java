@@ -12,6 +12,17 @@ import java.util.List;
 public class BankAccountService implements IBankAccountService{
     @Autowired
     BankAccountRepository bankAccountRepository;
+    @Autowired
+    UserService userService;
+    
+    @Override
+    public BankAccount createBankAccount(BankAccount bankAccount, int userID) {
+        if(userService.createUser(userService.readUser(userID))) {
+            bankAccount = bankAccountRepository.createBankAccount(bankAccount,userID);
+        }
+        return bankAccount;
+    }
+    
     @Override
     public BankAccount readBankAccount(int bankAccountID) {
         return bankAccountRepository.readBankAccount(bankAccountID) ;
@@ -23,7 +34,7 @@ public class BankAccountService implements IBankAccountService{
     }
     
     @Override
-    public BankAccount updateBankAccount(int bankAccountID, HashMap<String, Object> params) {
+    public boolean updateBankAccount(int bankAccountID, HashMap<String, Object> params) {
         return bankAccountRepository.updateBankAccount(bankAccountID,params);
     }
 }

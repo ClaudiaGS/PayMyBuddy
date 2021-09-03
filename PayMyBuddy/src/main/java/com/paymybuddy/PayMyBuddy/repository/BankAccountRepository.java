@@ -8,10 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,50 +17,75 @@ import java.util.Map;
 @Repository
 public class BankAccountRepository implements IBankAccountRepository {
     @Autowired
+    public DataBase dataBase;
+    @Autowired
     BankAccount bankAccount;
     
     private static final Logger logger = LogManager.getLogger("BankAccountRepository");
-    @Autowired
-    public DataBase dataBaseConfig;
     
-    public BankAccount readBankAccount(int bankAccountID) {
-        Connection con = null;
+    @Override
+    public BankAccount createBankAccount(BankAccount bankAccount, int userID) {
+        logger.info("Creating bank account for user with id "+userID);
         bankAccount = null;
-        try {
-            con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DataBaseConstants.READ_BANK_ACCOUNT);
-            ps.setString(1, String.valueOf(bankAccountID));
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                bankAccount = processRow(rs);
-            }
-            rs.close();
-            ps.close();
-        } catch (Exception ex) {
-            logger.error(ex.getMessage());
-        } finally {
-            dataBaseConfig.closeConnection(con);
-            return bankAccount;
-        }
-    }
-    public List<BankAccount> readBankAccountList() {
-        List<BankAccount> bankAccountList = new ArrayList<BankAccount>();
-        String sql = "SELECT * FROM bank_account";
-        bankAccount = null;
-        Connection con = null;
-        try {
-            con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DataBaseConstants.READ_BANK_ACCOUNT_LIST);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                bankAccount = processRow(rs);
-                bankAccountList.add(bankAccount);
-                
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        try (Connection con = dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.CREATE_BANK_ACCOUNT, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, bankAccount.getBankAccountNumber());
+            ps.setDouble(2, bankAccount.getBankAccountAmount());
+            ps.setString(3, bankAccount.getBankAccountCurrency());
+            ps.execute();
+            resultSet = ps.getGeneratedKeys();
+            if (resultSet.next()) {
+                bankAccount.setBankAccountID(resultSet.getInt(1));
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
         } finally {
-            dataBaseConfig.closeConnection(con);
+            dataBase.closeResultSet(resultSet);
+            dataBase.closePreparedStatement(ps);
+        }
+        return bankAccount;
+    }
+   
+    public BankAccount readBankAccount(int bankAccountID) {
+        logger.info("Read bank account info for bank account ID: "+bankAccountID);
+        bankAccount = null;
+        PreparedStatement ps=null;
+        ResultSet rs=null;
+        try(Connection con= dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.READ_BANK_ACCOUNT);
+            ps.setString(1, String.valueOf(bankAccountID));
+            rs= ps.executeQuery();
+            if (rs.next()) {
+                bankAccount = processRow(rs);
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+        } finally {
+            dataBase.closeResultSet(rs);
+            dataBase.closePreparedStatement(ps);
+            return bankAccount;
+        }
+    }
+    public List<BankAccount> readBankAccountList() {
+        logger.info("Reading bank account list from table");
+        List<BankAccount> bankAccountList = new ArrayList<BankAccount>();
+        bankAccount = null;
+        PreparedStatement ps=null;
+        ResultSet rs=null;
+        try (Connection con= dataBase.getConnection()){
+            ps = con.prepareStatement(DataBaseConstants.READ_BANK_ACCOUNT_LIST);
+            rs= ps.executeQuery();
+            while (rs.next()) {
+                bankAccount = processRow(rs);
+                bankAccountList.add(bankAccount);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            dataBase.closeResultSet(rs);
+            dataBase.closePreparedStatement(ps);
         }
         return bankAccountList;
         
@@ -79,7 +101,9 @@ public class BankAccountRepository implements IBankAccountRepository {
         return bankAccount;
     }
     
-    public BankAccount updateBankAccount(int bankAccountID, HashMap<String, Object> params) {
+    public boolean updateBankAccount(int bankAccountID, HashMap<String, Object> params) {
+        logger.info("Updating bank account with ID: "+bankAccountID);
+        boolean executed=false;
         bankAccount = readBankAccount(bankAccountID);
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             switch (entry.getKey()) {
@@ -99,21 +123,22 @@ public class BankAccountRepository implements IBankAccountRepository {
                     break;
             }
         }
-        
-        Connection con = null;
-        try {
-            con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DataBaseConstants.UPDATE_BANK_ACCOUNT);
+        PreparedStatement ps=null;
+        try(Connection con= dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.UPDATE_BANK_ACCOUNT);
             ps.setInt(1, bankAccount.getBankAccountNumber());
             ps.setDouble(2, bankAccount.getBankAccountAmount());
             ps.setString(3, bankAccount.getBankAccountCurrency());
             ps.setInt(4, bankAccount.getUserID());
             ps.execute();
-            ps.close();
+            executed=true;
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-        return bankAccount;
+        finally {
+            dataBase.closePreparedStatement(ps);
+        }
+        return executed;
     }
     
 }

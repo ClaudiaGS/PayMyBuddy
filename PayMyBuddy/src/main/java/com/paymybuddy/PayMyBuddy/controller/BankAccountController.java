@@ -15,16 +15,20 @@ public class BankAccountController {
     @Autowired
     BankAccountService bankAccountService;
     
-    @GetMapping("/getBankAccount")
+    @PostMapping("/createBankAccount")
+    public BankAccount createBankAccount(@RequestBody BankAccount bankAccount, @RequestParam int userID){
+        return bankAccountService.createBankAccount(bankAccount, userID);
+    }
+    @GetMapping("/readBankAccount")
     public BankAccount readBankAccount(@RequestParam int bankAccountID) {
         return bankAccountService.readBankAccount(bankAccountID) ;
     }
-    @GetMapping("/getBankAccountList")
+    @GetMapping("/readBankAccountList")
     public List<BankAccount> readBankAccountList() {
         return bankAccountService.readBankAccountList() ;
     }
-    @PutMapping("/putBankAccount")
-    public BankAccount updateBankAccount(@RequestParam int bankAccountID, @RequestBody HashMap<String, Object> params) {
+    @PutMapping("/updateBankAccount")
+    public boolean updateBankAccount(@RequestParam int bankAccountID, @RequestBody HashMap<String, Object> params) {
         return bankAccountService.updateBankAccount(bankAccountID,params);
     }
 }

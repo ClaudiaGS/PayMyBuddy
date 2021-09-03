@@ -139,7 +139,6 @@ public class UserRepository implements IUserRepository {
             ps.setBlob(4, (Blob) user.getUserProfilePicture());
             ps.setInt(5, user.getUserID());
             ps.execute();
-            dataBase.closePreparedStatement(ps);
             executed = true;
         } catch (Exception e) {
             logger.error(e.getMessage());

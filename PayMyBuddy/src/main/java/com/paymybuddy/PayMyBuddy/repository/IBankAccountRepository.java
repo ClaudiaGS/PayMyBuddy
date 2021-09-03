@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface IBankAccountRepository {
-    public boolean createBankAccount(BankAccount bankAccount);
+    public BankAccount createBankAccount(BankAccount bankAccount, int userID);
     public BankAccount readBankAccount(int bankAccountID);
     public List<BankAccount> readBankAccountList();
-    public BankAccount updateBankAccount(int BankAccountID, HashMap<String, Object> params);
+    public boolean updateBankAccount(int BankAccountID, HashMap<String, Object> params);
 }
