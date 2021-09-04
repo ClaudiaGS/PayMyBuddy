@@ -55,7 +55,7 @@ public class BankAccountRepository implements IBankAccountRepository {
         ResultSet rs=null;
         try(Connection con= dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.READ_BANK_ACCOUNT);
-            ps.setString(1, String.valueOf(bankAccountID));
+            ps.setInt(1,bankAccountID);
             rs= ps.executeQuery();
             if (rs.next()) {
                 bankAccount = processRow(rs);

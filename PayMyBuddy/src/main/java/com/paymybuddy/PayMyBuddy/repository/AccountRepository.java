@@ -58,7 +58,7 @@ public class AccountRepository implements IAccountRepository {
         ResultSet resultSet = null;
         try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.READ_ACCOUNT);
-            ps.setString(1, String.valueOf(accountID));
+            ps.setInt(1, accountID);
             resultSet = ps.executeQuery();
             if (resultSet.next()) {
                 account = processRow(resultSet);
@@ -73,6 +73,7 @@ public class AccountRepository implements IAccountRepository {
     }
     
     protected Account processRow(ResultSet rs) throws SQLException {
+        account=null;
         account.setAccountID(rs.getInt(1));
         account.setAccountEmail(rs.getString(2));
         account.setAccountPassword(rs.getString(3));

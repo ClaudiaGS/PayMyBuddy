@@ -60,7 +60,7 @@ public class UserRepository implements IUserRepository {
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.READ_USER);
-            ps.setString(1, String.valueOf(userID));
+            ps.setInt(1, userID);
             rs = ps.executeQuery();
             if (rs.next()) {
                 user = processRow(rs);

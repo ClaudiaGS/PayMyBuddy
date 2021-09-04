@@ -12,7 +12,7 @@ public class UserComplete {
     private Image userProfilePicture;
     
     private BankAccount usersBankAccount;
-    private List<Connection> connectionList;
+    private List<Contact> contactList;
     private List<Transaction> transactionList;
     private Account account;
     

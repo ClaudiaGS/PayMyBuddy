@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-public class Connection {
-    private int connectionID;
+public class Contact {
+    private int contactID;
     private int userIDAccount;
     private int userIDContact;
 }
