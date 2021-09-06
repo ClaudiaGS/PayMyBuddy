@@ -3,8 +3,7 @@ package com.paymybuddy.PayMyBuddy.model;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
-import java.util.Date;
+import java.sql.Date;
 
 
 @Data
@@ -14,5 +13,5 @@ public class User {
     private String userFirstName;
     private String userLastName;
     private Date userBirthdate;
-    private Image userProfilePicture;
+   // private Image userProfilePicture;
 }

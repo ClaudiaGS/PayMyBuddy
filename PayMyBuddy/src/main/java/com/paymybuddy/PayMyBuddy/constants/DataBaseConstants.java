@@ -2,18 +2,18 @@ package com.paymybuddy.PayMyBuddy.constants;
 
 public class DataBaseConstants {
     
-    public static final String CREATE_USER = "insert INTO user(USER_FIRST_NAME, USER_LAST_NAME,USER_BIRTHDATE,USER_PROFILE_PICTURE) VALUES (?,?,?,?)";
+    public static final String CREATE_USER = "insert INTO user(USER_FIRST_NAME, USER_LAST_NAME,USER_BIRTHDATE) VALUES (?,?,?)";
     //  public static final String CREATE_ACCOUNT= "insert INTO account(ACCOUNT_EMAIL, ACCOUNT_PASSWORD,USER_ID) VALUES (?,SHA(?), (select max(USER_ID)+1 from user))";
     public static final String CREATE_ACCOUNT = "insert INTO account(ACCOUNT_EMAIL, ACCOUNT_PASSWORD,USER_ID) VALUES (?,SHA(?),?)";
     public static final String CREATE_BANK_ACCOUNT = "insert INTO bank_account(BANK_ACCOUNT_NUMBER, BANK_ACCOUNT_AMOUNT, BANK_ACCOUNT_CURRENCY,USER_ID) VALUES (?,?,?,?)";
     public static final String CREATE_CONTACT = "insert INTO contact(USER_ID_ACCOUNT, USER_ID_CONTACT) VALUES (?,?)";
     public static final String CREATE_TRANSACTION = "insert INTO transaction(TRANSACTION_DESCRIPTION, TRANSACTION_DEBITED_AMOUNT,TRANSACTION_FEE_AMOUNT, TRANSACTION_RECEIVED_AMOUNT,USER_ID_SENDER, USER_ID_RECEIVER) VALUES (?,?,?,?,?,?)";
-   
-    public static final String READ_USER = "select from user WHERE USER_ID=?";
-    public static final String READ_BANK_ACCOUNT = "select b.BANK_ACCOUNT_ID,b.BANK_ACCOUNT_NUMBER, b.BANK_ACCOUNT_AMOUNT,b.BANK_ACCOUNT_CURRENCY,b.USER_ID from bank_account b WHERE b.BANK_ACCOUNT_ID=?";
+    
+    public static final String READ_USER = "select * from user WHERE USER_ID=?";
+    public static final String READ_BANK_ACCOUNT = "select * from bank_account WHERE BANK_ACCOUNT_ID=?";
     public static final String READ_ACCOUNT = "select a.ACCOUNT_ID,a.ACCOUNT_EMAIL, a.ACCOUNT_PASSWORD,a.USER_ID from account a WHERE a.ACCOUNT_ID=?";
     public static final String READ_CONTACT = "select c.CONTACT_ID, c.USER_ID_CONTACT, c.USER_ID_ACCOUNT, c.USER_ID_CONTACT from contact c WHERE c.CONTACT_ID=?";
-    public static final String READ_TRANSACTION="select from transaction where TRANSACTION_ID=?";
+    public static final String READ_TRANSACTION="select * from transaction where TRANSACTION_ID=?";
     
     public static final String READ_USERS_CONTACT_LIST = "select from contact WHERE USER_ID_ACCOUNT=?";
     public static final String READ_CONTACT_LIST = "select * from contact";
@@ -24,7 +24,7 @@ public class DataBaseConstants {
     public static final String READ_USERS_TRANSACTION_LIST="select from transaction where USER_ID_SENDER=?";
     
     
-    public static final String UPDATE_USER = "update user set USER_FIRST_NAME=?, USER_LAST_NAME=?, USER_BIRTHDATE=?, USER_PROFILE_PICTURE=? where USER_ID=?";
+    public static final String UPDATE_USER = "update user set USER_FIRST_NAME=?, USER_LAST_NAME=?, USER_BIRTHDATE=? where USER_ID=?";
     public static final String UPDATE_ACCOUNT = "update account set ACCOUNT_EMAIL=?, ACCOUNT_PASSWORD=SHA(?), USER_ID=? where ACCOUNT_ID=?";
     public static final String UPDATE_BANK_ACCOUNT = "update bank_account set BANK_ACCOUNT_NUMBER=?, BANK_ACCOUNT_AMOUNT=?, BANK_ACCOUNT_CURRENCY=? where BANK_ACCOUNT_ID=?";
     public static final String UPDATE_CONTACT = "update contact set USER_ID_ACCOUNT=?,USER_ID_CONTACT=? where CONTACT_ID=?";

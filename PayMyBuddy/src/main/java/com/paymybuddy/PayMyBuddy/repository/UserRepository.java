@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,8 +34,8 @@ public class UserRepository implements IUserRepository {
             ps = con.prepareStatement(DataBaseConstants.CREATE_USER, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, newUser.getUserFirstName());
             ps.setString(2, newUser.getUserLastName());
-            ps.setDate(3, (Date) newUser.getUserBirthdate());
-            ps.setBlob(4, (Blob) newUser.getUserProfilePicture());
+            ps.setDate(3, newUser.getUserBirthdate());
+            //   ps.setBlob(4, (Blob) newUser.getUserProfilePicture());
             ps.execute();
             resultSet = ps.getGeneratedKeys();
             if (resultSet.next()) {
@@ -104,7 +103,7 @@ public class UserRepository implements IUserRepository {
         user.setUserFirstName(rs.getString(2));
         user.setUserLastName(rs.getString(3));
         user.setUserBirthdate(rs.getDate(4));
-        user.setUserProfilePicture(rs.getObject(5, Image.class));
+        // user.setUserProfilePicture(rs.getObject(5, Image.class));
         return user;
     }
     
@@ -120,10 +119,10 @@ public class UserRepository implements IUserRepository {
                     user.setUserLastName(entry.getValue().toString());
                     break;
                 case "birthdate":
-                    user.setUserBirthdate((Date) (entry.getValue()));
+                    user.setUserBirthdate((Date) entry.getValue());
                     break;
-                case "userProfilePicture":
-                    user.setUserProfilePicture((Image) entry.getValue());
+//                case "userProfilePicture":
+//                    user.setUserProfilePicture((Image) entry.getValue());
                 default:
                     logger.warn("Trying to modify unexisting user parameter");
                     break;
@@ -135,9 +134,9 @@ public class UserRepository implements IUserRepository {
             ps = con.prepareStatement(DataBaseConstants.UPDATE_USER);
             ps.setString(1, user.getUserFirstName());
             ps.setString(2, user.getUserLastName());
-            ps.setDate(3, (Date) user.getUserBirthdate());
-            ps.setBlob(4, (Blob) user.getUserProfilePicture());
-            ps.setInt(5, user.getUserID());
+            ps.setDate(3,  user.getUserBirthdate());
+            // ps.setBlob(4, (Blob) user.getUserProfilePicture());
+            ps.setInt(4, user.getUserID());
             ps.execute();
             executed = true;
         } catch (Exception e) {
