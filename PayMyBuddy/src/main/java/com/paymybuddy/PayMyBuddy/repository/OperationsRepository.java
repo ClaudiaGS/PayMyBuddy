@@ -17,21 +17,27 @@ public class OperationsRepository {
     private static final Logger logger = LogManager.getLogger("OperationsRepository");
     @Autowired
     DataBase dataBase;
-//    public String getPasswordEncoded(String password){
-//        String passwordEncoded=null;
-//        PreparedStatement ps=null;
-//        ResultSet rs=null;
-//        try(Connection con= dataBase.getConnection()){
-//            ps= con.prepareStatement(DataBaseConstants.GET_PASSWORD_ENCODED);
-//
-//        }catch (Exception e){
-//            logger.error(e.getMessage());
-//        }finally {
-//            dataBase.closeResultSet(rs);
-//            dataBase.closePreparedStatement(ps);
-//        }
-//
-//        return passwordEncoded;
-//    }
+    
+    public String getPasswordEncoded(String password) {
+        logger.info("Encode password");
+        String passwordEncoded = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try (Connection con = dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.GET_PASSWORD_ENCODED);
+            ps.setString(1, password);
+            rs = ps.executeQuery();
+            if(rs.next()) {
+                passwordEncoded =rs.getString(1);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            dataBase.closeResultSet(rs);
+            dataBase.closePreparedStatement(ps);
+        }
+        logger.info("Password encoded is " + passwordEncoded);
+        return passwordEncoded;
+    }
     
 }

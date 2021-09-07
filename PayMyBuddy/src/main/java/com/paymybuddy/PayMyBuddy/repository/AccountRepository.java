@@ -73,10 +73,11 @@ public class AccountRepository implements IAccountRepository {
     }
     
     protected Account processRow(ResultSet rs) throws SQLException {
-        account=null;
+        account=new Account();
         account.setAccountID(rs.getInt(1));
         account.setAccountEmail(rs.getString(2));
         account.setAccountPassword(rs.getString(3));
+        account.setUserID(rs.getInt(4));
         return account;
     }
     
@@ -138,6 +139,29 @@ public class AccountRepository implements IAccountRepository {
             dataBase.closePreparedStatement(ps);
         }
         return executed;
+    }
+    
+    @Override
+    public Account readAccountEmailBased(String email) {
+        logger.info("Read account with email " + email);
+        account = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        try (Connection con = dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.READ_ACCOUNT_EMAIL_BASED);
+            ps.setString(1, email);
+            resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                account = processRow(resultSet);
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+        } finally {
+            dataBase.closeResultSet(resultSet);
+            dataBase.closePreparedStatement(ps);
+            logger.info("Account is "+account);
+            return account;
+        }
     }
 }
 

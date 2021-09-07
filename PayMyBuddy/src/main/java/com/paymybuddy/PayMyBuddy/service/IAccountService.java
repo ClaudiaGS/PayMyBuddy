@@ -10,6 +10,7 @@ public interface IAccountService {
     public Account readAccount(int accountID);
     public List<Account> readAccountList();
     public boolean updateAccount(int accountID, HashMap<String, Object> params);
+    public Account readAccountEmailBased(String email);
     
    // public Account registerNewAccount(Account newAccount);
 }

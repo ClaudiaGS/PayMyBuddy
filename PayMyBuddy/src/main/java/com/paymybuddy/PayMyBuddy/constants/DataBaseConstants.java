@@ -15,6 +15,9 @@ public class DataBaseConstants {
     public static final String READ_CONTACT = "select c.CONTACT_ID, c.USER_ID_CONTACT, c.USER_ID_ACCOUNT, c.USER_ID_CONTACT from contact c WHERE c.CONTACT_ID=?";
     public static final String READ_TRANSACTION="select * from transaction where TRANSACTION_ID=?";
     
+    public static final String READ_ACCOUNT_EMAIL_BASED="select * from account where ACCOUNT_EMAIL=?";
+    
+    
     public static final String READ_USERS_CONTACT_LIST = "select from contact WHERE USER_ID_ACCOUNT=?";
     public static final String READ_CONTACT_LIST = "select * from contact";
     public static final String READ_USER_LIST = "select * from user";
@@ -31,5 +34,7 @@ public class DataBaseConstants {
     
     public static final String DELETE_CONTACT="delete from contact where CONTACT_ID=?";
     public static final String DELETE_TRANSACTION="delete from transaction where TRANSACTION_ID=?";
+
+public static final String GET_PASSWORD_ENCODED="select SHA(?)";
 }
 

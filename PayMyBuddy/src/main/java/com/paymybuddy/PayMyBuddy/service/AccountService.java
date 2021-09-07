@@ -1,7 +1,6 @@
 package com.paymybuddy.PayMyBuddy.service;
 
 import com.paymybuddy.PayMyBuddy.model.Account;
-import com.paymybuddy.PayMyBuddy.model.User;
 import com.paymybuddy.PayMyBuddy.repository.AccountRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +43,10 @@ public class AccountService implements IAccountService{
     public boolean updateAccount(int accountID, HashMap<String, Object> params) {
         return accountRepository.updateAccount(accountID,params);
     }
-    
+    @Override
+    public Account readAccountEmailBased(String email){
+        return accountRepository.readAccountEmailBased(email);
+    }
 //    @Autowired
 ////    private PasswordEncoder passwordEncoder;
 //   @Autowired

@@ -134,7 +134,7 @@ public class UserRepository implements IUserRepository {
             ps = con.prepareStatement(DataBaseConstants.UPDATE_USER);
             ps.setString(1, user.getUserFirstName());
             ps.setString(2, user.getUserLastName());
-            ps.setDate(3,  user.getUserBirthdate());
+            ps.setDate(3, user.getUserBirthdate());
             // ps.setBlob(4, (Blob) user.getUserProfilePicture());
             ps.setInt(4, user.getUserID());
             ps.execute();
