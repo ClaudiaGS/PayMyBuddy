@@ -20,22 +20,30 @@ public class TransactionRepository implements ITransactionRepository{
     @Autowired
     Transaction transaction;
     @Override
-    public Transaction createTransaction(Transaction newTransaction) {
-        logger.info("Create transaction for user id: " + transaction.getUserIDSender());
+    public Transaction createTransaction(String transactionDescription, double transactionDebitedAmount, int userIDSender, int userIDReceiver) {
+        logger.info("Create transaction for user id: " + userIDSender);
+        double fee=0.5/100;
+        transaction=null;
+        transaction.setTransactionDescription(transactionDescription);
+        transaction.setTransactionDebitedAmount(transactionDebitedAmount);
+        transaction.setTransactionFeeAmount(transactionDebitedAmount*fee);
+        transaction.setTransactionReceivedAmount(transactionDebitedAmount-transaction.getTransactionFeeAmount());
+        transaction.setUserIDSender(userIDSender);
+        transaction.setUserIDReceiver(userIDReceiver);
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         try (java.sql.Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.CREATE_TRANSACTION, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, newTransaction.getTransactionDescription());
-            ps.setDouble(2, newTransaction.getTransactionDebitedAmount());
-            ps.setDouble(3,newTransaction.getTransactionFeeAmount());
-            ps.setDouble(4,newTransaction.getTransactionReceivedAmount());
+            ps.setString(1, transaction.getTransactionDescription());
+            ps.setDouble(2, transaction.getTransactionDebitedAmount());
+            ps.setDouble(3,transaction.getTransactionFeeAmount());
+            ps.setDouble(4,transaction.getTransactionReceivedAmount());
             ps.setInt(5,transaction.getUserIDSender());
             ps.setInt(6,transaction.getUserIDReceiver());
             ps.execute();
             resultSet = ps.getGeneratedKeys();
             if (resultSet.next()) {
-                newTransaction.setTransactionID(resultSet.getInt(1));
+                transaction.setTransactionID(resultSet.getInt(1));
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -43,7 +51,7 @@ public class TransactionRepository implements ITransactionRepository{
             dataBase.closeResultSet(resultSet);
             dataBase.closePreparedStatement(ps);
         }
-        return newTransaction;
+        return transaction;
     }
     
     @Override

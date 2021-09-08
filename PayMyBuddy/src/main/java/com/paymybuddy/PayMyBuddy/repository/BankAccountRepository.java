@@ -25,7 +25,7 @@ public class BankAccountRepository implements IBankAccountRepository {
     
     @Override
     public BankAccount createBankAccount(BankAccount bankAccount, int userID) {
-        logger.info("Creating bank account for user with id "+userID);
+        logger.info("Creating bank account for user with id " + userID);
         bankAccount = null;
         PreparedStatement ps = null;
         ResultSet resultSet = null;
@@ -47,16 +47,17 @@ public class BankAccountRepository implements IBankAccountRepository {
         }
         return bankAccount;
     }
-   
+    
+    @Override
     public BankAccount readBankAccount(int bankAccountID) {
-        logger.info("Read bank account info for bank account ID: "+bankAccountID);
+        logger.info("Read bank account info for bank account ID: " + bankAccountID);
         bankAccount = null;
-        PreparedStatement ps=null;
-        ResultSet rs=null;
-        try(Connection con= dataBase.getConnection()) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.READ_BANK_ACCOUNT);
-            ps.setInt(1,bankAccountID);
-            rs= ps.executeQuery();
+            ps.setInt(1, bankAccountID);
+            rs = ps.executeQuery();
             if (rs.next()) {
                 bankAccount = processRow(rs);
             }
@@ -68,15 +69,16 @@ public class BankAccountRepository implements IBankAccountRepository {
             return bankAccount;
         }
     }
+    @Override
     public List<BankAccount> readBankAccountList() {
         logger.info("Reading bank account list from table");
         List<BankAccount> bankAccountList = new ArrayList<BankAccount>();
         bankAccount = null;
-        PreparedStatement ps=null;
-        ResultSet rs=null;
-        try (Connection con= dataBase.getConnection()){
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.READ_BANK_ACCOUNT_LIST);
-            rs= ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()) {
                 bankAccount = processRow(rs);
                 bankAccountList.add(bankAccount);
@@ -100,10 +102,10 @@ public class BankAccountRepository implements IBankAccountRepository {
         bankAccount.setUserID(rs.getInt(5));
         return bankAccount;
     }
-    
+    @Override
     public boolean updateBankAccount(int bankAccountID, HashMap<String, Object> params) {
-        logger.info("Updating bank account with ID: "+bankAccountID);
-        boolean executed=false;
+        logger.info("Updating bank account with ID: " + bankAccountID);
+        boolean executed = false;
         bankAccount = readBankAccount(bankAccountID);
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             switch (entry.getKey()) {
@@ -123,19 +125,18 @@ public class BankAccountRepository implements IBankAccountRepository {
                     break;
             }
         }
-        PreparedStatement ps=null;
-        try(Connection con= dataBase.getConnection()) {
+        PreparedStatement ps = null;
+        try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.UPDATE_BANK_ACCOUNT);
             ps.setInt(1, bankAccount.getBankAccountNumber());
             ps.setDouble(2, bankAccount.getBankAccountAmount());
             ps.setString(3, bankAccount.getBankAccountCurrency());
             ps.setInt(4, bankAccount.getUserID());
             ps.execute();
-            executed=true;
+            executed = true;
         } catch (Exception e) {
             logger.error(e.getMessage());
-        }
-        finally {
+        } finally {
             dataBase.closePreparedStatement(ps);
         }
         return executed;

@@ -12,8 +12,8 @@ public class TransactionService implements ITransactionService {
     @Autowired
     TransactionRepository transactionRepository;
     @Override
-    public Transaction createTransaction(Transaction newTransaction) {
-        return transactionRepository.createTransaction(newTransaction);
+    public Transaction createTransaction(String transactionDescription, double transactionDebitedAmount, int userIDSender, int userIDReceiver) {
+        return transactionRepository.createTransaction(transactionDescription,transactionDebitedAmount,userIDSender,userIDReceiver);
     
     }
     

@@ -13,8 +13,8 @@ public class TransactionController {
     TransactionService transactionService;
     
     @PostMapping("/createTransaction")
-    public Transaction createTransaction(@RequestBody Transaction newTransaction){
-        return transactionService.createTransaction(newTransaction);
+    public Transaction createTransaction(String transactionDescription, double transactionDebitedAmount, int userIDSender, int userIDReceiver){
+        return transactionService.createTransaction(transactionDescription,transactionDebitedAmount,userIDSender,userIDReceiver);
     }
     @GetMapping("/readTransactionInfo")
     public Transaction readTransaction(@RequestParam int transactionID){

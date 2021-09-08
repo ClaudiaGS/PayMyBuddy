@@ -2,6 +2,7 @@ package com.paymybuddy.PayMyBuddy.repository;
 
 import com.paymybuddy.PayMyBuddy.config.DataBase;
 import com.paymybuddy.PayMyBuddy.constants.DataBaseConstants;
+import com.paymybuddy.PayMyBuddy.model.Transaction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ public class OperationsRepository {
     private static final Logger logger = LogManager.getLogger("OperationsRepository");
     @Autowired
     DataBase dataBase;
+
+    
     
     public String getPasswordEncoded(String password) {
         logger.info("Encode password");
@@ -39,5 +42,12 @@ public class OperationsRepository {
         logger.info("Password encoded is " + passwordEncoded);
         return passwordEncoded;
     }
+    
+    
+    
+    
+    }
+    
+  
     
 }
