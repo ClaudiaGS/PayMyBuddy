@@ -56,7 +56,7 @@ public class ContactRepository implements IContactRepository {
             ps = con.prepareStatement(DataBaseConstants.READ_CONTACT_LIST);
             rs = ps.executeQuery();
             while (rs.next()) {
-                contact= processRow(rs);
+                contact = processRow(rs);
                 contactList.add(contact);
             }
         } catch (Exception e) {
@@ -66,19 +66,19 @@ public class ContactRepository implements IContactRepository {
             dataBase.closePreparedStatement(ps);
         }
         return contactList;
-    
+        
     }
     
     @Override
     public List<Contact> readUsersContactList(int userIDAccount) {
-        logger.info("Reading contact list for user with id "+userIDAccount);
-        List<Contact> userscontactList=new ArrayList<Contact>();
+        logger.info("Reading contact list for user with id " + userIDAccount);
+        List<Contact> userscontactList = new ArrayList<Contact>();
         contact = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.READ_USERS_CONTACT_LIST);
-            ps.setInt(1,userIDAccount);
+            ps.setInt(1, userIDAccount);
             rs = ps.executeQuery();
             while (rs.next()) {
                 contact = processRow(rs);
@@ -94,7 +94,7 @@ public class ContactRepository implements IContactRepository {
     }
     
     protected Contact processRow(ResultSet rs) throws SQLException {
-        contact=null;
+        contact = null;
         contact.setContactID(rs.getInt(1));
         contact.setUserIDAccount(rs.getInt(2));
         contact.setUserIDContact(rs.getInt(3));
@@ -103,20 +103,20 @@ public class ContactRepository implements IContactRepository {
     
     @Override
     public Contact readContact(int contactID) {
-        logger.info("Reading contact with id: "+contactID);
-        contact=null;
-        PreparedStatement ps=null;
-        ResultSet rs=null;
-        try(Connection con= dataBase.getConnection()){
-            ps=con.prepareStatement(DataBaseConstants.READ_CONTACT);
+        logger.info("Reading contact with id: " + contactID);
+        contact = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try (Connection con = dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.READ_CONTACT);
             ps.setInt(1, contactID);
-            rs=ps.executeQuery();
-            if(rs.next()){
-                contact=processRow(rs);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                contact = processRow(rs);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
-        }finally {
+        } finally {
             dataBase.closeResultSet(rs);
             dataBase.closePreparedStatement(ps);
         }
@@ -131,10 +131,10 @@ public class ContactRepository implements IContactRepository {
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             switch (entry.getKey()) {
                 case "userIDAccount":
-                    contact.setUserIDContact((int)entry.getValue());
+                    contact.setUserIDContact((int) entry.getValue());
                     break;
                 case "userIDContact":
-                    contact.setUserIDContact((int)entry.getValue());
+                    contact.setUserIDContact((int) entry.getValue());
                     break;
                 default:
                     logger.warn("Trying to modify unexisting contact parameter");
@@ -159,23 +159,24 @@ public class ContactRepository implements IContactRepository {
     
     @Override
     public boolean deleteContact(int contactID) {
-        logger.info("Deleting contact with ID"+contactID);
-        PreparedStatement ps=null;
-        ResultSet rs=null;
-        boolean executed=false;
-        contact=readContact(contactID);
-        List<Contact>contactList=readContactList();
+        logger.info("Deleting contact with ID" + contactID);
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        boolean executed = false;
+        contact = readContact(contactID);
+        List<Contact> contactList = readContactList();
         contactList.remove(contact);
-        try(Connection con= dataBase.getConnection()){
-            ps=con.prepareStatement(DataBaseConstants.DELETE_CONTACT);
-            ps.setInt(1,contactID);
-            rs=ps.executeQuery();
-            executed=true;
-        }catch (Exception e){
+        try (Connection con = dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.DELETE_CONTACT);
+            ps.setInt(1, contactID);
+            rs = ps.executeQuery();
+            executed = true;
+        } catch (Exception e) {
             logger.error(e.getMessage());
-        }finally {
+        } finally {
             dataBase.closeResultSet(rs);
             dataBase.closePreparedStatement(ps);
-        }return executed;
+        }
+        return executed;
     }
 }

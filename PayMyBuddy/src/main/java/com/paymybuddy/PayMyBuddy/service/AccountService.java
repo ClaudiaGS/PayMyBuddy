@@ -44,8 +44,8 @@ public class AccountService implements IAccountService{
         return accountRepository.updateAccount(accountID,params);
     }
     @Override
-    public Account readAccountEmailBased(String email){
-        return accountRepository.readAccountEmailBased(email);
+    public  int authentificate(String email, String password){
+        return accountRepository.authentificate(email,password);
     }
 //    @Autowired
 ////    private PasswordEncoder passwordEncoder;

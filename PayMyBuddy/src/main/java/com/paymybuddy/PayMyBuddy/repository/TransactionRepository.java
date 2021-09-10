@@ -22,11 +22,11 @@ public class TransactionRepository implements ITransactionRepository{
     @Override
     public Transaction createTransaction(String transactionDescription, double transactionDebitedAmount, int userIDSender, int userIDReceiver) {
         logger.info("Create transaction for user id: " + userIDSender);
-        double fee=0.5/100;
+        double feePercentage=0.5/100;
         transaction=null;
         transaction.setTransactionDescription(transactionDescription);
         transaction.setTransactionDebitedAmount(transactionDebitedAmount);
-        transaction.setTransactionFeeAmount(transactionDebitedAmount*fee);
+        transaction.setTransactionFeeAmount(transactionDebitedAmount*feePercentage);
         transaction.setTransactionReceivedAmount(transactionDebitedAmount-transaction.getTransactionFeeAmount());
         transaction.setUserIDSender(userIDSender);
         transaction.setUserIDReceiver(userIDReceiver);

@@ -2,14 +2,13 @@ package com.paymybuddy.PayMyBuddy.controller;
 
 import com.paymybuddy.PayMyBuddy.model.BankAccount;
 import com.paymybuddy.PayMyBuddy.service.BankAccountService;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 
-@Data
+
 @RestController
 public class BankAccountController {
     @Autowired

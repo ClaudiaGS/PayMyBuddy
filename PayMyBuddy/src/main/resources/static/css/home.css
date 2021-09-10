@@ -1,0 +1,111 @@
+
+body
+{
+	display: flex;
+	flex-direction: column;
+	height:100%;
+	margin-top: 0%;	
+	width: 60%;
+	margin-left: 20%;
+	min-width: 600px;
+	align-content: stretch;
+
+
+}
+header
+{
+	background-color: red;
+	display: flex;
+	justify-content: space-around;
+	height:250px;
+	align-items: center;
+
+}
+
+#headertext 
+{
+	display: flex;
+	flex-direction: column;
+	width: 40%;
+}
+
+#headertext h1
+{
+	margin-left:10px;
+	margin-bottom: 1px;
+	font-family: Courier New;
+	color: RGB(255,255,255);
+	
+}
+#headertext h2
+{
+	background-color: RGB(102,255,255);
+	padding:3px;
+	width: fit-content;	
+	margin-left:10px;
+	margin-top: 0px;
+	font-family: Arial;
+	
+}
+#headertext p
+{
+	font-family: Arial;
+	font-size: 140%;
+	color: white;
+}
+.CVpicture
+{
+	margin-top: 20px;
+}
+section
+{
+	display: flex;
+	justify-content: space-around;
+}
+.icon
+{
+	align-self: center;
+}
+
+.sectiontext
+{
+	display: flex;
+	flex-direction: column;
+	width:35%;
+	align-self: center;
+	overflow-y: auto;
+
+}
+.sectiontext h2
+{
+	font-family: Arial;
+}
+footer
+{
+	
+	display: flex;
+	background:rgb(0,51,102) ;	
+	padding-left: 100px;
+	flex-direction: column;
+
+}
+footer h1
+{
+	font-family: Courier New;
+	color: white;
+}
+footer p
+{
+	font-family: Arial;
+	font-size: 140%;
+}
+footer p .contactez
+{
+	color: white;
+}
+footer a
+{
+	text-decoration: none;
+	color: white;
+}
+

@@ -35,7 +35,8 @@ public class DataBaseConstants {
     public static final String DELETE_CONTACT = "delete from contact where CONTACT_ID=?";
     public static final String DELETE_TRANSACTION = "delete from transaction where TRANSACTION_ID=?";
     
-    public static final String GET_PASSWORD_ENCODED = "select SHA(?)";
+    public static final String AUTHENTIFICATE="select * from account WHERE ACCOUNT_EMAIL=? AND ACCOUNT_PASSWORD=SHA(?)";
+//    public static final String GET_PASSWORD_ENCODED = "select SHA(?)";
     
 }
 
