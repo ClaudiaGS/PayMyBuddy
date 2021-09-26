@@ -3,6 +3,7 @@ package com.paymybuddy.PayMyBuddy.repository;
 import com.paymybuddy.PayMyBuddy.config.DataBase;
 import com.paymybuddy.PayMyBuddy.constants.DataBaseConstants;
 import com.paymybuddy.PayMyBuddy.model.Account;
+import com.paymybuddy.PayMyBuddy.repository.interfaces.IAccountRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +74,7 @@ public class AccountRepository implements IAccountRepository {
     }
     
     protected Account processRow(ResultSet rs) throws SQLException {
-        account=new Account();
+        account = new Account();
         account.setAccountID(rs.getInt(1));
         account.setAccountEmail(rs.getString(2));
         account.setAccountPassword(rs.getString(3));
@@ -140,77 +141,67 @@ public class AccountRepository implements IAccountRepository {
         }
         return executed;
     }
-    
-//    @Override
-//    public Account readAccountEmailBased(String email) {
-//        logger.info("Read account with email " + email);
-//        account = null;
-//        PreparedStatement ps = null;
-//        ResultSet resultSet = null;
-//        try (Connection con = dataBase.getConnection()) {
-//            ps = con.prepareStatement(DataBaseConstants.READ_ACCOUNT_EMAIL_BASED);
-//            ps.setString(1, email);
-//            resultSet = ps.executeQuery();
-//            if (resultSet.next()) {
-//                account = processRow(resultSet);
-//            }
-//        } catch (Exception ex) {
-//            logger.error(ex.getMessage());
-//        } finally {
-//            dataBase.closeResultSet(resultSet);
-//            dataBase.closePreparedStatement(ps);
-//            logger.info("Account is "+account);
-//            return account;
-//        }
-//    }
+
+
+    @Override
+    public Account authenticate(String email, String password) {
+        logger.info("Authentification check for email " + email);
+        List<Account> accountList = readAccountList();
+        int accountID = -1;
+        for (Account ac : accountList) {
+            if (ac.getAccountEmail().equals(email) && ac.getAccountPassword().equals(encodePassword(password))) {
+                accountID = ac.getAccountID();
+            }
+        }
+        if (accountID > 0) {
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+            Account accountToAuthentificate = null;
+            try (Connection con = dataBase.getConnection()) {
+                ps = con.prepareStatement(DataBaseConstants.AUTHENTICATE);
+                ps.setString(1, email);
+                ps.setString(2, password);
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    accountToAuthentificate = new Account();
+                    accountToAuthentificate.setAccountID(rs.getInt(1));
+                    accountToAuthentificate.setAccountEmail(rs.getString(2));
+                    accountToAuthentificate.setAccountPassword(rs.getString(3));
+                    accountToAuthentificate.setUserID(rs.getInt(4));
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            } finally {
+                dataBase.closeResultSet(rs);
+                dataBase.closePreparedStatement(ps);
+            }
+            return accountToAuthentificate;
+        } else {
+            logger.info("Wrong email or password");
+            return null;
+        }
+    }
     
     @Override
-    public  int authentificate(String email, String password){
-        logger.info("Authentification check for email "+email);
-        int accountID=0;
+    public String encodePassword(String password){
+        String encodedPassword=null;
         PreparedStatement ps=null;
         ResultSet rs=null;
-        try(Connection con=dataBase.getConnection()){
-            ps=con.prepareStatement(DataBaseConstants.AUTHENTIFICATE);
-            ps.setString(1,email);
-            ps.setString(2,password);
-            rs= ps.executeQuery();
-            if(rs.next()){
-                accountID=rs.getInt(1);
+        try (Connection con = dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.GET_PASSWORD_ENCODED);
+            ps.setString(1, password);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                encodedPassword=rs.getString(1);
             }
         }catch (Exception e){
             logger.error(e.getMessage());
-        }finally{
+        }finally {
             dataBase.closeResultSet(rs);
             dataBase.closePreparedStatement(ps);
         }
-        if(accountID>0){
-            logger.info("Authentification succeeded");
-        }else {
-            logger.error("Wrong email or password");
-        }
-        return accountID;
+        logger.info("Encoded password is "+encodedPassword);
+        return encodedPassword;
     }
-//    public String getPasswordEncoded(String password) {
-//        logger.info("Encode password");
-//        String passwordEncoded = null;
-//        PreparedStatement ps = null;
-//        ResultSet rs = null;
-//        try (Connection con = dataBase.getConnection()) {
-//            ps = con.prepareStatement(DataBaseConstants.GET_PASSWORD_ENCODED);
-//            ps.setString(1, password);
-//            rs = ps.executeQuery();
-//            if(rs.next()) {
-//                passwordEncoded =rs.getString(1);
-//            }
-//        } catch (Exception e) {
-//            logger.error(e.getMessage());
-//        } finally {
-//            dataBase.closeResultSet(rs);
-//            dataBase.closePreparedStatement(ps);
-//        }
-//        logger.info("Password encoded is " + passwordEncoded);
-//        return passwordEncoded;
-//    }
 }
 

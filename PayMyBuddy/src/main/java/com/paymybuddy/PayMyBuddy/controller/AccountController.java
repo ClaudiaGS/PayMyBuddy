@@ -4,7 +4,6 @@ import com.paymybuddy.PayMyBuddy.model.Account;
 import com.paymybuddy.PayMyBuddy.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +34,8 @@ public class AccountController {
     }
     
     @GetMapping("/authentificate")
-    public int authentificate(@RequestParam String email, @RequestParam String password) {
-        return accountService.authentificate(email, password);
+    public Account authentificate(@RequestParam String email, @RequestParam String password) {
+        return accountService.authenticate(email, password);
     }
     
 //    @GetMapping("/home")
@@ -44,12 +43,7 @@ public class AccountController {
 //        return"home";
 //}
     
-    @RequestMapping("/login")
-    public ModelAndView home () {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("home");
-        return modelAndView;
-    }
+
 //    @GetMapping("/home")
 //    public String LoginPage(Model model) {
 //        Iterable<Account> listAccounts = accountService.readAccountList();

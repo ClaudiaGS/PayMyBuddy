@@ -3,6 +3,7 @@ package com.paymybuddy.PayMyBuddy.repository;
 import com.paymybuddy.PayMyBuddy.config.DataBase;
 import com.paymybuddy.PayMyBuddy.constants.DataBaseConstants;
 import com.paymybuddy.PayMyBuddy.model.Contact;
+import com.paymybuddy.PayMyBuddy.repository.interfaces.IContactRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,23 +25,38 @@ public class ContactRepository implements IContactRepository {
     
     @Override
     public Contact createContact(int userIDAccount, int userIDContact) {
+        contact = new Contact();
         logger.info("Create contact with user id: " + userIDContact);
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
-        try (java.sql.Connection con = dataBase.getConnection()) {
-            ps = con.prepareStatement(DataBaseConstants.CREATE_CONTACT, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, userIDAccount);
-            ps.setInt(2, userIDContact);
-            ps.execute();
-            resultSet = ps.getGeneratedKeys();
-            if (resultSet.next()) {
-                contact.setContactID(resultSet.getInt(1));
+        List<Contact> contactList = readContactList();
+        int contactID = -1;
+        for (Contact c : contactList) {
+            if (c.getUserIDAccount() == userIDAccount && c.getUserIDContact() == userIDContact) {
+                contactID = c.getContactID();
             }
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        } finally {
-            dataBase.closeResultSet(resultSet);
-            dataBase.closePreparedStatement(ps);
+        }
+        if (contactID <= 0) {
+            PreparedStatement ps = null;
+            ResultSet resultSet = null;
+            try (java.sql.Connection con = dataBase.getConnection()) {
+                ps = con.prepareStatement(DataBaseConstants.CREATE_CONTACT, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, userIDAccount);
+                ps.setInt(2, userIDContact);
+                ps.execute();
+                resultSet = ps.getGeneratedKeys();
+                if (resultSet.next()) {
+                    contact.setContactID(resultSet.getInt(1));
+                    contact.setUserIDAccount(userIDAccount);
+                    contact.setUserIDContact(userIDContact);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            } finally {
+                dataBase.closeResultSet(resultSet);
+                dataBase.closePreparedStatement(ps);
+            }
+        } else {
+            logger.info("User " + userIDAccount + " already has user " + userIDContact + " in his contact list");
+            contact=null;
         }
         return contact;
     }
@@ -94,7 +110,7 @@ public class ContactRepository implements IContactRepository {
     }
     
     protected Contact processRow(ResultSet rs) throws SQLException {
-        contact = null;
+        contact = new Contact();
         contact.setContactID(rs.getInt(1));
         contact.setUserIDAccount(rs.getInt(2));
         contact.setUserIDContact(rs.getInt(3));
@@ -142,13 +158,16 @@ public class ContactRepository implements IContactRepository {
             }
         }
         PreparedStatement ps = null;
+        ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.UPDATE_CONTACT);
             ps.setInt(1, contact.getUserIDContact());
             ps.setInt(2, contact.getUserIDAccount());
             ps.setInt(3, contactID);
-            ps.execute();
-            executed = true;
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                executed = true;
+            }
         } catch (Exception e) {
             logger.error(e.getMessage());
         } finally {
@@ -163,14 +182,17 @@ public class ContactRepository implements IContactRepository {
         PreparedStatement ps = null;
         ResultSet rs = null;
         boolean executed = false;
-        contact = readContact(contactID);
         List<Contact> contactList = readContactList();
+        contact = readContact(contactID);
         contactList.remove(contact);
+        
         try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.DELETE_CONTACT);
             ps.setInt(1, contactID);
-            rs = ps.executeQuery();
-            executed = true;
+//            ps.executeUpdate();
+            if (ps.executeUpdate() != 0) {
+                executed = true;
+            }
         } catch (Exception e) {
             logger.error(e.getMessage());
         } finally {

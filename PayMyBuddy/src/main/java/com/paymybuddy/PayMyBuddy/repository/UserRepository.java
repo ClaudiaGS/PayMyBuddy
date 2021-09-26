@@ -3,6 +3,7 @@ package com.paymybuddy.PayMyBuddy.repository;
 import com.paymybuddy.PayMyBuddy.config.DataBase;
 import com.paymybuddy.PayMyBuddy.constants.DataBaseConstants;
 import com.paymybuddy.PayMyBuddy.model.User;
+import com.paymybuddy.PayMyBuddy.repository.interfaces.IUserRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

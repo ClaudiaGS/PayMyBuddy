@@ -3,6 +3,7 @@ package com.paymybuddy.PayMyBuddy.repository;
 import com.paymybuddy.PayMyBuddy.config.DataBase;
 import com.paymybuddy.PayMyBuddy.constants.DataBaseConstants;
 import com.paymybuddy.PayMyBuddy.model.BankAccount;
+import com.paymybuddy.PayMyBuddy.repository.interfaces.IBankAccountRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,9 +93,31 @@ public class BankAccountRepository implements IBankAccountRepository {
         return bankAccountList;
         
     }
+    @Override
+    public BankAccount readUsersBankAccount(int userID){
+        logger.info("Read bank account info for user with ID: " + userID);
+        bankAccount = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try (Connection con = dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.READ_USERS_BANK_ACCOUNT);
+            ps.setInt(1, userID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                bankAccount = processRow(rs);
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+        } finally {
+            dataBase.closeResultSet(rs);
+            dataBase.closePreparedStatement(ps);
+            return bankAccount;
+        }
+    }
+    
     
     protected BankAccount processRow(ResultSet rs) throws SQLException {
-        bankAccount = null;
+        bankAccount=new BankAccount();
         bankAccount.setBankAccountID(rs.getInt(1));
         bankAccount.setBankAccountNumber(rs.getInt(2));
         bankAccount.setBankAccountAmount(rs.getDouble(3));
@@ -103,23 +126,40 @@ public class BankAccountRepository implements IBankAccountRepository {
         return bankAccount;
     }
     @Override
-    public boolean updateBankAccount(int bankAccountID, HashMap<String, Object> params) {
+    public double updateAmount(int userID, double transferedAmount, String operation ){
+        double bankAccountAmount=readUsersBankAccount(userID).getBankAccountAmount();
+        switch (operation){
+            case "add":
+                bankAccountAmount=bankAccountAmount+transferedAmount;
+                break;
+            case "substract":
+                bankAccountAmount=bankAccountAmount-(transferedAmount+0.5/100*transferedAmount);
+                break;
+            case "default":
+                logger.error("Operation unknown.You have to add or substract money");
+        }
+        logger.info("Amount after update is "+bankAccountAmount);
+        return bankAccountAmount;
+    }
+    
+    @Override
+    public boolean updateBankAccount(int bankAccountID, HashMap<String,String> params) {
         logger.info("Updating bank account with ID: " + bankAccountID);
         boolean executed = false;
         bankAccount = readBankAccount(bankAccountID);
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
+        for (Map.Entry<String, String> entry : params.entrySet()) {
             switch (entry.getKey()) {
                 case "bankAccountNumber":
-                    bankAccount.setBankAccountNumber((int) entry.getValue());
+                    bankAccount.setBankAccountNumber( Integer.parseInt(entry.getValue()));
                     break;
                 case "bankAccountAmount":
-                    bankAccount.setBankAccountAmount((double) entry.getValue());
+                    bankAccount.setBankAccountAmount( Double.parseDouble(entry.getValue()));
                     break;
                 case "bankAccountCurrency":
                     bankAccount.setBankAccountCurrency(entry.getValue().toString());
                     break;
                 case "userID":
-                    bankAccount.setUserID((int) entry.getValue());
+                    bankAccount.setUserID( Integer.parseInt(entry.getValue()));
                 default:
                     logger.warn("Trying to modify unexisting bank account parameter");
                     break;
@@ -132,6 +172,7 @@ public class BankAccountRepository implements IBankAccountRepository {
             ps.setDouble(2, bankAccount.getBankAccountAmount());
             ps.setString(3, bankAccount.getBankAccountCurrency());
             ps.setInt(4, bankAccount.getUserID());
+            ps.setInt(5,bankAccountID);
             ps.execute();
             executed = true;
         } catch (Exception e) {

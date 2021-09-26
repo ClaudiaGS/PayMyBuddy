@@ -36,7 +36,7 @@ public class ContactController {
         return contactService.updateContact(contactID,params);
     }
     
-    @DeleteMapping("deleteContact")
+    @DeleteMapping("/deleteContact")
     public boolean deleteContact(@RequestParam int contactID){
         return contactService.deleteContact(contactID);
 }

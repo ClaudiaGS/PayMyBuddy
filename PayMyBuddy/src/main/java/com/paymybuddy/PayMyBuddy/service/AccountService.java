@@ -2,6 +2,7 @@ package com.paymybuddy.PayMyBuddy.service;
 
 import com.paymybuddy.PayMyBuddy.model.Account;
 import com.paymybuddy.PayMyBuddy.repository.AccountRepository;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Service
-public class AccountService implements IAccountService{
+public class AccountService implements IAccountService {
     @Autowired
     AccountRepository accountRepository;
     
@@ -26,26 +27,33 @@ public class AccountService implements IAccountService{
         if(userService.createUser(userService.readUser(userID))) {
             account = accountRepository.createAccount(userID,email,password);
         }
+        logger.info("created account "+account);
         return account;
     }
     
     @Override
     public Account readAccount(int accountID) {
-        return accountRepository.readAccount(accountID);
+        Account account=accountRepository.readAccount(accountID);
+        logger.info("Account with id "+accountID+" is: "+account);
+        return account;
     }
     
     @Override
     public List<Account> readAccountList() {
-        return accountRepository.readAccountList();
+        List<Account>accountList=accountRepository.readAccountList();
+        logger.info("Account list is "+accountList);
+        return accountList;
     }
     
     @Override
     public boolean updateAccount(int accountID, HashMap<String, Object> params) {
         return accountRepository.updateAccount(accountID,params);
     }
+    
     @Override
-    public  int authentificate(String email, String password){
-        return accountRepository.authentificate(email,password);
+    public  Account authenticate(String email, String password){
+        logger.info("Authentifiate user with email "+email);
+        return accountRepository.authenticate(email,password);
     }
 //    @Autowired
 ////    private PasswordEncoder passwordEncoder;

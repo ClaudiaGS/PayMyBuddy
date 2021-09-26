@@ -26,8 +26,13 @@ public class BankAccountController {
     public List<BankAccount> readBankAccountList() {
         return bankAccountService.readBankAccountList() ;
     }
+    @GetMapping("/readUsersBankAccount")
+        public BankAccount readUsersBankAccount(int userID){
+        return bankAccountService.readUsersBankAccount(userID);
+    }
     @PutMapping("/updateBankAccount")
-    public boolean updateBankAccount(@RequestParam int bankAccountID, @RequestBody HashMap<String, Object> params) {
+    public boolean updateBankAccount(@RequestParam int bankAccountID, @RequestBody HashMap<String, String> params) {
         return bankAccountService.updateBankAccount(bankAccountID,params);
     }
+    
 }

@@ -2,19 +2,21 @@
 create database paymybuddyDB;
 use paymybuddyDB;
 
-create table IF NOT EXISTS account (
-ACCOUNT_ID int PRIMARY KEY AUTO_INCREMENT,
-ACCOUNT_EMAIL varchar(30) UNIQUE,
-ACCOUNT_PASSWORD varchar(1000),
-USER_ID int,
-FOREIGN KEY (USER_ID) REFERENCES user(USER_ID)
-)ENGINE=INNODB;
+
 
 create table IF NOT EXISTS user(
 USER_ID int PRIMARY KEY AUTO_INCREMENT,
 USER_FIRST_NAME varchar(30),
 USER_LAST_NAME varchar(30),
 USER_BIRTHDATE date
+)ENGINE=INNODB;
+
+create table IF NOT EXISTS account (
+ACCOUNT_ID int PRIMARY KEY AUTO_INCREMENT,
+ACCOUNT_EMAIL varchar(30) UNIQUE,
+ACCOUNT_PASSWORD varchar(1000),
+USER_ID int,
+FOREIGN KEY (USER_ID) REFERENCES user(USER_ID)
 )ENGINE=INNODB;
 
 create table IF NOT EXISTS bank_account(
@@ -53,9 +55,12 @@ insert into user(USER_FIRST_NAME,USER_LAST_NAME,USER_BIRTHDATE) values('firstnam
 
 insert into bank_account(BANK_ACCOUNT_NUMBER,BANK_ACCOUNT_AMOUNT,BANK_ACCOUNT_CURRENCY,USER_ID) values('333333333','11.1','EURO','3');
 insert into bank_account(BANK_ACCOUNT_NUMBER,BANK_ACCOUNT_AMOUNT,BANK_ACCOUNT_CURRENCY,USER_ID) values('222222222','22.2','EURO','2');
-insert into bank_account(BANK_ACCOUNT_NUMBER,BANK_ACCOUNT_AMOUNT,BANK_ACCOUNT_CURRENCY,USER_ID) values('111111112','52.2','EURO','2');
+insert into bank_account(BANK_ACCOUNT_NUMBER,BANK_ACCOUNT_AMOUNT,BANK_ACCOUNT_CURRENCY,USER_ID) values('111111112','52.2','EURO','1');
 
 insert into account(ACCOUNT_EMAIL,ACCOUNT_PASSWORD,USER_ID) values ('account1@email',SHA('password1'), '1');
 insert into account(ACCOUNT_EMAIL,ACCOUNT_PASSWORD,USER_ID) values ('account2@email',SHA('password2'), '2');
 insert into account(ACCOUNT_EMAIL,ACCOUNT_PASSWORD,USER_ID) values ('account3@email',SHA('password3'), '3');
 
+insert into contact(USER_ID_ACCOUNT,USER_ID_CONTACT) values ('1','2');
+insert into contact(USER_ID_ACCOUNT,USER_ID_CONTACT) values ('1','3');
+insert into contact(USER_ID_ACCOUNT,USER_ID_CONTACT) values ('2','1');

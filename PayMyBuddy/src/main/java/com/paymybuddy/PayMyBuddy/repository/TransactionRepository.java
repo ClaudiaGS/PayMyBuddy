@@ -3,6 +3,7 @@ package com.paymybuddy.PayMyBuddy.repository;
 import com.paymybuddy.PayMyBuddy.config.DataBase;
 import com.paymybuddy.PayMyBuddy.constants.DataBaseConstants;
 import com.paymybuddy.PayMyBuddy.model.Transaction;
+import com.paymybuddy.PayMyBuddy.repository.interfaces.ITransactionRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,21 +14,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class TransactionRepository implements ITransactionRepository{
+public class TransactionRepository implements ITransactionRepository {
     private static final Logger logger = LogManager.getLogger("TransactionRepository");
     @Autowired
     DataBase dataBase;
     @Autowired
     Transaction transaction;
     @Override
-    public Transaction createTransaction(String transactionDescription, double transactionDebitedAmount, int userIDSender, int userIDReceiver) {
+    public Transaction createTransaction(String transactionDescription, double transactionReceivedAmount, int userIDSender, int userIDReceiver) {
         logger.info("Create transaction for user id: " + userIDSender);
         double feePercentage=0.5/100;
-        transaction=null;
+        double feeAmount=transactionReceivedAmount*feePercentage;
+        transaction=new Transaction();
         transaction.setTransactionDescription(transactionDescription);
-        transaction.setTransactionDebitedAmount(transactionDebitedAmount);
-        transaction.setTransactionFeeAmount(transactionDebitedAmount*feePercentage);
-        transaction.setTransactionReceivedAmount(transactionDebitedAmount-transaction.getTransactionFeeAmount());
+        transaction.setTransactionDebitedAmount(transactionReceivedAmount+feeAmount);
+        transaction.setTransactionFeeAmount(feeAmount);
+        transaction.setTransactionReceivedAmount(transactionReceivedAmount);
         transaction.setUserIDSender(userIDSender);
         transaction.setUserIDReceiver(userIDReceiver);
         PreparedStatement ps = null;
@@ -79,7 +81,7 @@ public class TransactionRepository implements ITransactionRepository{
     }
     
     protected Transaction processRow(ResultSet rs) throws SQLException {
-        transaction=null;
+        transaction=new Transaction();
         transaction.setTransactionID(rs.getInt(1));
         transaction.setTransactionDescription(rs.getString(2));
         transaction.setTransactionDebitedAmount(rs.getDouble(3));
