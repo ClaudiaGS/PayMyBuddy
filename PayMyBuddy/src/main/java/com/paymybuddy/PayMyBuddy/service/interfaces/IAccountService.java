@@ -1,0 +1,17 @@
+package com.paymybuddy.PayMyBuddy.service.interfaces;
+
+import com.paymybuddy.PayMyBuddy.model.Account;
+
+import java.util.HashMap;
+import java.util.List;
+
+public interface IAccountService {
+    public Account createAccount(int userID, String email, String password);
+    public Account readAccount(int accountID);
+    public List<Account> readAccountList();
+    public boolean updateAccount(int accountID, HashMap<String, Object> params);
+    public  Account authenticate(String email, String password);
+//    public Account readAccountEmailBased(String email);
+    
+   // public Account registerNewAccount(Account newAccount);
+}

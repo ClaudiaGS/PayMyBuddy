@@ -125,5 +125,53 @@ public class ViewController {
         return new ModelAndView("redirect:/contacts");
     }
     
-   
+    
+    // TRANSACTIONS MANAGEMENT:
+    @GetMapping("/transactions")
+    public String transactionView(Model model) {
+        Iterable<TransactionView> transactionViewList = transactionViewService.getTransactionViewList((int)session.getAttribute("userIDAccount"));
+        model.addAttribute("transactions", transactionViewList);
+        return "Transactions";
+    }
+    
+    @GetMapping("/createTransaction")
+    public String createTransaction(Model model) {
+        Iterable<ContactView> contactViewList = contactViewService.getContactViewList((int)session.getAttribute("userIDAccount"));
+        model.addAttribute("contacts", contactViewList);
+        TransactionView transactionView=new TransactionView();
+        model.addAttribute("transaction",transactionView);
+        
+        logger.info("HERE been in /createTransaction");
+        return "addTransaction";
+    }
+    
+    @PostMapping("/saveTransaction")
+    public ModelAndView saveTransaction(@ModelAttribute TransactionView transaction, String description, Double amount) {
+       for(ContactView cv:contactViewService.getContactViewList((int)session.getAttribute("userIDAccount"))){
+           if(cv.getContactID()==transaction.getContactID()){
+               transaction.setFirstName(cv.getFirstName());
+               transaction.setLastName(cv.getLastName());
+           }
+       }
+       transaction.setDescription(description);
+       transaction.setAmount(amount);
+       
+    
+        logger.info("HERE transaction contactID is "+transaction.getContactID());
+        logger.info("HERE been in /saveTransaction");
+        logger.info("HERE Transaction description is "+transaction.getDescription());
+        logger.info("HERE Transaction amount is "+transaction.getAmount());
+        logger.info("HERE Transaction firstName is "+transaction.getFirstName());
+  
+        int userIDReceiver=0;
+        for(UserComplete user:userCompleteService.readUserCompleteList()) {
+            if (user.getUserFirstName().equals(transaction.getFirstName()) && user.getUserLastName().equals(transaction.getLastName())) {
+                userIDReceiver = user.getUserID();
+            }
+        }
+        transactionService.createTransaction(transaction.getDescription(),transaction.getAmount(),(int)session.getAttribute("userIDAccount"),userIDReceiver);
+    
+        return new ModelAndView("redirect:/transactions");
+    }
+ 
 }
