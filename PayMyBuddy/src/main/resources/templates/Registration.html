@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Login PayMyBuddy</title>
+    <link rel="stylesheet" th:href="@{/connexion.css}"/>
+</head>
+<body>
+
+<div class="container">
+    <p class="heading" style="color:#30F3E8;">Pay My Buddy</p>
+    <p class="heading2" style="color:#30F3E8;">Money Transfer Online</p>
+    <label>Fill in the data below:</label>
+    <form method="post" th:action="@{/registration}" th:object="${userComplete}">
+        <div class="form-group">
+            <div class="box">
+                <p>Email</p>
+                <div>
+                    <input id="emailbox" type="text" th:field="*{accountEmail}" placeholder="Enter email"/>
+                </div>
+            </div>
+            <div class="box">
+                <p>First Name</p>
+                <div>
+                    <input id="firstNamebox" type="firstName" th:field="*{firstName}" placeholder="Enter first name"/>
+                </div>
+            </div>
+            <div class="box">
+                <p>Last Name</p>
+                <div>
+                    <input id="lastNamebox" type="lastName" th:field="*{lastName}" placeholder="Enter last name"/>
+                </div>
+            </div>
+            <div class="box">
+                <p>Birthdate</p>
+                <div>
+                    <input id="birthdatebox" type="birthdate" th:field="*{birthdate}" placeholder="Enter birthdate"/>
+                </div>
+            </div>
+            <a>
+                <button class="loginBtn" type="submit">Login</button>
+            </a>
+        </div>
+    </form>
+    <p class="text">Don't have an account? <a href="#">Signup</a></p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</body>
+</html>
+
+

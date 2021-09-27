@@ -140,7 +140,9 @@ public class ViewController {
         model.addAttribute("contacts", contactViewList);
         TransactionView transactionView=new TransactionView();
         model.addAttribute("transaction",transactionView);
-        
+        UserComplete userComplete=(UserComplete)session.getAttribute("userComplete");
+        model.addAttribute("bankAccountAmount",userComplete.getUsersBankAccount().getBankAccountAmount());
+        model.addAttribute("amount",transactionView.getAmount());
         logger.info("HERE been in /createTransaction");
         return "addTransaction";
     }
@@ -155,7 +157,6 @@ public class ViewController {
        }
        transaction.setDescription(description);
        transaction.setAmount(amount);
-       
     
         logger.info("HERE transaction contactID is "+transaction.getContactID());
         logger.info("HERE been in /saveTransaction");
@@ -169,8 +170,12 @@ public class ViewController {
                 userIDReceiver = user.getUserID();
             }
         }
-        transactionService.createTransaction(transaction.getDescription(),transaction.getAmount(),(int)session.getAttribute("userIDAccount"),userIDReceiver);
-    
+        UserComplete userComplete=(UserComplete)session.getAttribute("userComplete");
+        if(userComplete.getUsersBankAccount().getBankAccountAmount()>=amount) {
+            transactionService.createTransaction(transaction.getDescription(), transaction.getAmount(), (int) session.getAttribute("userIDAccount"), userIDReceiver);
+        }else{
+            logger.error("Available money: "+userComplete.getUsersBankAccount().getBankAccountAmount() +" Cannot send!");
+        }
         return new ModelAndView("redirect:/transactions");
     }
  

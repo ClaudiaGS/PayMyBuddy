@@ -133,7 +133,11 @@ public class BankAccountRepository implements IBankAccountRepository {
                 bankAccountAmount=bankAccountAmount+transferedAmount;
                 break;
             case "substract":
-                bankAccountAmount=bankAccountAmount-(transferedAmount+0.5/100*transferedAmount);
+                if(bankAccountAmount>=(transferedAmount+0.5/100*transferedAmount)) {
+                    bankAccountAmount = bankAccountAmount - (transferedAmount + 0.5 / 100 * transferedAmount);
+                }else{
+                    logger.error("Not enough money in your bank account! You have "+bankAccountAmount+ " euros available.");
+                }
                 break;
             case "default":
                 logger.error("Operation unknown.You have to add or substract money");

@@ -173,6 +173,7 @@ color:white;
                                 <tr th:if="${contacts.empty}">
                                     <td colspan="3">No contact in DB</td>
                                 </tr>
+
                                 <form method="post" th:action="@{/saveTransaction}" th:object="${transaction}">
                                     <div class="form-group">
                                         <tr th:each="contact: ${contacts}">
@@ -185,6 +186,9 @@ color:white;
                                                        placeholder="Enter description"/></td>
                                             <td><input id="amount" type="text" th:field="*{amount}"
                                                        placeholder="Enter amount"/></td>
+<!--                                            <td th:if="${bankAccountAmount &lt; amount}">-->
+<!--                                                <p>Available money:<span th:text="${bankAccountAmount}"></span>. Cannot send!</p>-->
+<!--                                            </td>-->
                                             <td>
                                                 <input type="hidden" name="contactID" id="contactID"
                                                        th:value="${contact.contactID}"/>
