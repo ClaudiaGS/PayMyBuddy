@@ -13,5 +13,5 @@ public class User {
     private String userFirstName;
     private String userLastName;
     private Date userBirthdate;
-   // private Image userProfilePicture;
+
 }

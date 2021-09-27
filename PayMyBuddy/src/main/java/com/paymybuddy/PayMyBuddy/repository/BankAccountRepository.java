@@ -27,7 +27,7 @@ public class BankAccountRepository implements IBankAccountRepository {
     @Override
     public BankAccount createBankAccount(BankAccount bankAccount, int userID) {
         logger.info("Creating bank account for user with id " + userID);
-        bankAccount = null;
+        bankAccount = new BankAccount();
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         try (Connection con = dataBase.getConnection()) {

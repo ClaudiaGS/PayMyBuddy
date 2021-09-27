@@ -29,7 +29,7 @@ public class AccountRepository implements IAccountRepository {
     @Override
     public Account createAccount(int userID, String email, String password) {
         logger.info("Create account with email: " + email + " for user with id: " + userID);
-        account = null;
+        account = new Account();
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         try (Connection con = dataBase.getConnection()) {

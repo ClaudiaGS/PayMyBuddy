@@ -32,11 +32,14 @@ public class ViewController {
     TransactionViewService transactionViewService;
     @Autowired
     TransactionService transactionService;
+    @Autowired
+    UserService userService;
     
-    HttpSession session=null;
+    HttpSession session = null;
     
     private static final Logger logger = LogManager.getLogger("ViewController");
     
+    //LOGIN
     @GetMapping("/login")
     public String connexion(Model model, Account account) {
         
@@ -51,33 +54,52 @@ public class ViewController {
             return "redirect:/login";
         } else {
             session = request.getSession();
-            logger.info("Session id is "+session.getId());
+            logger.info("Session id is " + session.getId());
             int userIDAccount = userComplete.getUserID();
             userComplete = userCompleteService.login(account.getAccountEmail(), account.getAccountPassword());
-    
-            session.setAttribute("userIDAccount",userIDAccount);
-            session.setAttribute("userComplete",userComplete);
+            
+            session.setAttribute("userIDAccount", userIDAccount);
+            session.setAttribute("userComplete", userComplete);
             
             model.addAttribute("user", userComplete);
             return "Home";
             
         }
     }
-    
-    @GetMapping("/homePage")
-    public String homePage( Model model) {
-
-            
-                model.addAttribute("user", (UserComplete)session.getAttribute("userComplete"));
-                return "Home";
-
+    //REGISTRATION
+    @GetMapping("/registration")
+    public String registration(Model model,User user,String accountEmail) {
         
+        
+        model.addAttribute(user);
+        model.addAttribute(accountEmail);
+        return "Registration";
     }
+    
+    @PostMapping("/registerUser")
+    public ModelAndView registerUser(@ModelAttribute User user, String accountEmail, String accountPassword,
+                                     String rePassword,  int bankAccountNumber) {
+        
+       
+        userService.registration(accountEmail,accountPassword,rePassword,user.getUserFirstName(),user.getUserLastName(),user.getUserBirthdate(),bankAccountNumber);
+        
+        
+        return new ModelAndView("redirect:/home");
+    }
+//    @GetMapping("/homePage")
+//    public String homePage(Model model) {
+//
+//
+//        model.addAttribute("user", (UserComplete) session.getAttribute("userComplete"));
+//        return "Home";
+//
+//
+//    }
     
     // CONTACT LIST MANAGEMENT:
     @GetMapping("/contacts")
     public String contactView(Model model) {
-        Iterable<ContactView> contactViewList = contactViewService.getContactViewList((int)session.getAttribute("userIDAccount"));
+        Iterable<ContactView> contactViewList = contactViewService.getContactViewList((int) session.getAttribute("userIDAccount"));
         model.addAttribute("contacts", contactViewList);
         return "Contacts";
     }
@@ -89,11 +111,11 @@ public class ViewController {
         return new ModelAndView("redirect:/contacts");
     }
     
-  
+    
     @GetMapping("/createContact")
     public String createContact(Model model) {
         ContactView contactView = new ContactView();
-        List<ContactView> contactViewList = contactViewService.getContactViewList((int)session.getAttribute("userIDAccount"));
+        List<ContactView> contactViewList = contactViewService.getContactViewList((int) session.getAttribute("userIDAccount"));
         List<String> contactViewMails = new ArrayList<String>();
         for (ContactView cv : contactViewList) {
             contactViewMails.add(cv.getEmail());
@@ -101,7 +123,7 @@ public class ViewController {
         logger.info(contactViewMails);
         List<String> emailList = new ArrayList<String>();
         for (Account account : accountService.readAccountList()) {
-            if (account.getUserID() != ((int)session.getAttribute("userIDAccount")) && !(contactViewMails.contains(account.getAccountEmail()))) {
+            if (account.getUserID() != ((int) session.getAttribute("userIDAccount")) && !(contactViewMails.contains(account.getAccountEmail()))) {
                 emailList.add(account.getAccountEmail());
             }
         }
@@ -121,7 +143,7 @@ public class ViewController {
                 userIDContact = account.getUserID();
             }
         }
-        contactService.createContact((int)session.getAttribute("userIDAccount"), userIDContact);
+        contactService.createContact((int) session.getAttribute("userIDAccount"), userIDContact);
         return new ModelAndView("redirect:/contacts");
     }
     
@@ -129,54 +151,55 @@ public class ViewController {
     // TRANSACTIONS MANAGEMENT:
     @GetMapping("/transactions")
     public String transactionView(Model model) {
-        Iterable<TransactionView> transactionViewList = transactionViewService.getTransactionViewList((int)session.getAttribute("userIDAccount"));
+        Iterable<TransactionView> transactionViewList = transactionViewService.getTransactionViewList((int) session.getAttribute("userIDAccount"));
         model.addAttribute("transactions", transactionViewList);
         return "Transactions";
     }
     
     @GetMapping("/createTransaction")
     public String createTransaction(Model model) {
-        Iterable<ContactView> contactViewList = contactViewService.getContactViewList((int)session.getAttribute("userIDAccount"));
+        Iterable<ContactView> contactViewList = contactViewService.getContactViewList((int) session.getAttribute("userIDAccount"));
         model.addAttribute("contacts", contactViewList);
-        TransactionView transactionView=new TransactionView();
-        model.addAttribute("transaction",transactionView);
-        UserComplete userComplete=(UserComplete)session.getAttribute("userComplete");
-        model.addAttribute("bankAccountAmount",userComplete.getUsersBankAccount().getBankAccountAmount());
-        model.addAttribute("amount",transactionView.getAmount());
+        TransactionView transactionView = new TransactionView();
+        model.addAttribute("transaction", transactionView);
+        UserComplete userComplete = (UserComplete) session.getAttribute("userComplete");
+        model.addAttribute("bankAccountAmount", userComplete.getUsersBankAccount().getBankAccountAmount());
+        model.addAttribute("amount", transactionView.getAmount());
         logger.info("HERE been in /createTransaction");
         return "addTransaction";
     }
     
     @PostMapping("/saveTransaction")
     public ModelAndView saveTransaction(@ModelAttribute TransactionView transaction, String description, Double amount) {
-       for(ContactView cv:contactViewService.getContactViewList((int)session.getAttribute("userIDAccount"))){
-           if(cv.getContactID()==transaction.getContactID()){
-               transaction.setFirstName(cv.getFirstName());
-               transaction.setLastName(cv.getLastName());
-           }
-       }
-       transaction.setDescription(description);
-       transaction.setAmount(amount);
-    
-        logger.info("HERE transaction contactID is "+transaction.getContactID());
+        for (ContactView cv : contactViewService.getContactViewList((int) session.getAttribute("userIDAccount"))) {
+            if (cv.getContactID() == transaction.getContactID()) {
+                transaction.setFirstName(cv.getFirstName());
+                transaction.setLastName(cv.getLastName());
+            }
+        }
+        transaction.setDescription(description);
+        transaction.setAmount(amount);
+        
+        logger.info("HERE transaction contactID is " + transaction.getContactID());
         logger.info("HERE been in /saveTransaction");
-        logger.info("HERE Transaction description is "+transaction.getDescription());
-        logger.info("HERE Transaction amount is "+transaction.getAmount());
-        logger.info("HERE Transaction firstName is "+transaction.getFirstName());
-  
-        int userIDReceiver=0;
-        for(UserComplete user:userCompleteService.readUserCompleteList()) {
+        logger.info("HERE Transaction description is " + transaction.getDescription());
+        logger.info("HERE Transaction amount is " + transaction.getAmount());
+        logger.info("HERE Transaction firstName is " + transaction.getFirstName());
+        
+        int userIDReceiver = 0;
+        for (UserComplete user : userCompleteService.readUserCompleteList()) {
             if (user.getUserFirstName().equals(transaction.getFirstName()) && user.getUserLastName().equals(transaction.getLastName())) {
                 userIDReceiver = user.getUserID();
             }
         }
-        UserComplete userComplete=(UserComplete)session.getAttribute("userComplete");
-        if(userComplete.getUsersBankAccount().getBankAccountAmount()>=amount) {
+        UserComplete userComplete = (UserComplete) session.getAttribute("userComplete");
+        if (userComplete.getUsersBankAccount().getBankAccountAmount() >= amount) {
             transactionService.createTransaction(transaction.getDescription(), transaction.getAmount(), (int) session.getAttribute("userIDAccount"), userIDReceiver);
-        }else{
-            logger.error("Available money: "+userComplete.getUsersBankAccount().getBankAccountAmount() +" Cannot send!");
+        } else {
+            logger.error("Available money: " + userComplete.getUsersBankAccount().getBankAccountAmount() + " Cannot send!");
         }
         return new ModelAndView("redirect:/transactions");
     }
- 
+    
+   
 }

@@ -36,7 +36,6 @@ public class UserRepository implements IUserRepository {
             ps.setString(1, newUser.getUserFirstName());
             ps.setString(2, newUser.getUserLastName());
             ps.setDate(3, newUser.getUserBirthdate());
-            //   ps.setBlob(4, (Blob) newUser.getUserProfilePicture());
             ps.execute();
             resultSet = ps.getGeneratedKeys();
             if (resultSet.next()) {
@@ -46,7 +45,7 @@ public class UserRepository implements IUserRepository {
         } catch (Exception e) {
             logger.error(e.getMessage());
         } finally {
-            dataBase.closeResultSet(resultSet);//OK ou pas
+            dataBase.closeResultSet(resultSet);
             dataBase.closePreparedStatement(ps);
             return result;
         }
@@ -55,7 +54,7 @@ public class UserRepository implements IUserRepository {
     @Override
     public User readUser(int userID) {
         logger.info("Reading user info for id " + userID);
-        user = null;
+        user = new User();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
