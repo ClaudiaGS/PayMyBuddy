@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,12 +52,12 @@ public class BankAccountService implements IBankAccountService {
     
     @Override
     public double updateAmount(int userID, double transferedAmount, String operation) {
-        double amount=bankAccountRepository.updateAmount(userID,transferedAmount,operation);
+        double amount=bankAccountRepository.updateAmount( userID,transferedAmount,operation);
         return amount;
     }
     
     @Override
-    public boolean updateBankAccount(int bankAccountID, HashMap<String, String> params) {
-        return bankAccountRepository.updateBankAccount(bankAccountID,params);
+    public boolean updateBankAccount(Connection connection,int bankAccountID, HashMap<String, String> params) {
+        return bankAccountRepository.updateBankAccount(connection,bankAccountID,params);
     }
 }

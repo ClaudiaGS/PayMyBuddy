@@ -149,7 +149,7 @@ public class BankAccountRepository implements IBankAccountRepository {
     }
     
     @Override
-    public boolean updateBankAccount(int bankAccountID, HashMap<String,String> params) {
+    public boolean updateBankAccount(Connection connection,int bankAccountID, HashMap<String,String> params) {
         logger.info("Updating bank account with ID: " + bankAccountID);
         boolean executed = false;
         bankAccount = readBankAccount(bankAccountID);

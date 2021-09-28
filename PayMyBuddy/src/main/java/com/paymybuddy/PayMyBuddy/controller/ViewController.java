@@ -37,7 +37,7 @@ public class ViewController {
     @Autowired
     BankAccountService bankAccountService;
     
-    HttpSession session = null;
+    
     
     private static final Logger logger = LogManager.getLogger("ViewController");
     
@@ -58,7 +58,7 @@ public class ViewController {
         if (userComplete == null) {
             return "redirect:/login";
         } else {
-            session = request.getSession();
+            HttpSession session = request.getSession();
             logger.info("Session id is " + session.getId());
             int userIDAccount = userComplete.getUserID();
             userComplete = userCompleteService.login(account.getAccountEmail(), account.getAccountPassword());
@@ -81,7 +81,8 @@ public class ViewController {
     }
     
     @GetMapping("/homePage")
-    public String homePage(Model model) {
+    public String homePage(Model model, HttpServletRequest request) {
+        HttpSession session=request.getSession();
         TransactionView transaction = new TransactionView();
         List<TransactionView> transactionViewList = transactionViewService.getTransactionViewList((int) session.getAttribute("userIDAccount"));
         if (transactionViewList.size() > 0) {
@@ -120,7 +121,7 @@ public class ViewController {
                 }
             }
             logger.info("account to home is " + account);
-            
+            HttpSession session=request.getSession();
             UserComplete userComplete = userCompleteService.login(registerInfoView.getEmail(), registerInfoView.getPassword());
             logger.info("userCOmplete in register is " + userComplete);
             session = request.getSession();
@@ -151,7 +152,8 @@ public class ViewController {
     
     // CONTACT LIST MANAGEMENT:
     @GetMapping("/contacts")
-    public String contactView(Model model) {
+    public String contactView(Model model, HttpServletRequest request) {
+        HttpSession session=request.getSession();
         Iterable<ContactView> contactViewList = contactViewService.getContactViewList((int) session.getAttribute("userIDAccount"));
         model.addAttribute("contacts", contactViewList);
         return "Contacts";
@@ -166,7 +168,8 @@ public class ViewController {
     
     
     @GetMapping("/createContact")
-    public String createContact(Model model) {
+    public String createContact(Model model,HttpServletRequest request) {
+        HttpSession session=request.getSession();
         ContactView contactView = new ContactView();
         List<ContactView> contactViewList = contactViewService.getContactViewList((int) session.getAttribute("userIDAccount"));
         List<String> contactViewMails = new ArrayList<String>();
@@ -185,7 +188,8 @@ public class ViewController {
     }
     
     @PostMapping("/saveContact")
-    public ModelAndView saveContact(@ModelAttribute ContactView contact) {
+    public ModelAndView saveContact(@ModelAttribute ContactView contact,HttpServletRequest request) {
+        HttpSession session=request.getSession();
         
         List<Account> accountList = accountService.readAccountList();
         
@@ -202,14 +206,16 @@ public class ViewController {
     
     // TRANSACTIONS MANAGEMENT:
     @GetMapping("/transactions")
-    public String transactionView(Model model) {
+    public String transactionView(Model model,HttpServletRequest request) {
+        HttpSession session=request.getSession();
         Iterable<TransactionView> transactionViewList = transactionViewService.getTransactionViewList((int) session.getAttribute("userIDAccount"));
         model.addAttribute("transactions", transactionViewList);
         return "Transactions";
     }
     
     @GetMapping("/createTransaction")
-    public String createTransaction(Model model) {
+    public String createTransaction(Model model,HttpServletRequest request) {
+        HttpSession session=request.getSession();
         Iterable<ContactView> contactViewList = contactViewService.getContactViewList((int) session.getAttribute("userIDAccount"));
         model.addAttribute("contacts", contactViewList);
         TransactionView transactionView = new TransactionView();
@@ -223,7 +229,8 @@ public class ViewController {
     
     @PostMapping("/saveTransaction")
     public ModelAndView saveTransaction(@ModelAttribute TransactionView transaction, String description, Double
-            amount) {
+            amount,HttpServletRequest request) {
+        HttpSession session=request.getSession();
         for (ContactView cv : contactViewService.getContactViewList((int) session.getAttribute("userIDAccount"))) {
             if (cv.getContactID() == transaction.getContactID()) {
                 transaction.setFirstName(cv.getFirstName());

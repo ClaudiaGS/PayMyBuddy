@@ -21,7 +21,7 @@ public class TransactionRepository implements ITransactionRepository {
     @Autowired
     Transaction transaction;
     @Override
-    public Transaction createTransaction(String transactionDescription, double transactionReceivedAmount, int userIDSender, int userIDReceiver) {
+    public Transaction createTransaction(Connection connection,String transactionDescription, double transactionReceivedAmount, int userIDSender, int userIDReceiver) {
         logger.info("Create transaction for user id: " + userIDSender);
         double feePercentage=0.5/100;
         double feeAmount=transactionReceivedAmount*feePercentage;
@@ -34,8 +34,8 @@ public class TransactionRepository implements ITransactionRepository {
         transaction.setUserIDReceiver(userIDReceiver);
         PreparedStatement ps = null;
         ResultSet resultSet = null;
-        try (java.sql.Connection con = dataBase.getConnection()) {
-            ps = con.prepareStatement(DataBaseConstants.CREATE_TRANSACTION, Statement.RETURN_GENERATED_KEYS);
+        try {
+            ps = connection.prepareStatement(DataBaseConstants.CREATE_TRANSACTION, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, transaction.getTransactionDescription());
             ps.setDouble(2, transaction.getTransactionDebitedAmount());
             ps.setDouble(3,transaction.getTransactionFeeAmount());
@@ -49,10 +49,8 @@ public class TransactionRepository implements ITransactionRepository {
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
-        } finally {
-            dataBase.closeResultSet(resultSet);
-            dataBase.closePreparedStatement(ps);
         }
+        
         return transaction;
     }
     

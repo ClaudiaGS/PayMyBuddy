@@ -2,6 +2,7 @@ package com.paymybuddy.PayMyBuddy.service.interfaces;
 
 import com.paymybuddy.PayMyBuddy.model.BankAccount;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,5 +12,5 @@ public interface IBankAccountService {
     public BankAccount readUsersBankAccount(int userID);
     public double updateAmount(int userID, double transferedAmount, String operation );
     public List<BankAccount> readBankAccountList();
-    public boolean updateBankAccount(int BankAccountID, HashMap<String,String> params);
+    public boolean updateBankAccount(Connection connection,int BankAccountID, HashMap<String,String> params);
 }
