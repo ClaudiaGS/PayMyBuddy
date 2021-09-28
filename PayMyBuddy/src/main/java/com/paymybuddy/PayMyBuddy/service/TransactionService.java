@@ -19,6 +19,7 @@ public class TransactionService implements ITransactionService {
     BankAccountService bankAccountService;
     
     private static final Logger logger = LogManager.getLogger("TransactionService");
+    
     @Override
     public Transaction createTransaction(String transactionDescription, double transactionReceivedAmount, int userIDSender, int userIDReceiver) {
         HashMap<String,String>paramsSender = new HashMap<>();

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class BankAccount {
     private int bankAccountID;
-    private int bankAccountNumber;
     private double bankAccountAmount;
     private String bankAccountCurrency;
     private int userID;

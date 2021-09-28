@@ -47,7 +47,7 @@ public class ContactViewService  implements IContactViewService {
             }
             for (BankAccount bankAccount : bankAccountList) {
                 if (bankAccount.getUserID() == contact.getUserIDContact()) {
-                    contactView.setBankAccountNumber(bankAccount.getBankAccountNumber());
+                    contactView.setBankAccountID(bankAccount.getBankAccountID());
                 }
             }
             contactViewList.add(contactView);

@@ -25,16 +25,19 @@ public class BankAccountRepository implements IBankAccountRepository {
     private static final Logger logger = LogManager.getLogger("BankAccountRepository");
     
     @Override
-    public BankAccount createBankAccount(BankAccount bankAccount, int userID) {
+    public BankAccount createBankAccount(double bankAccountAmount,String bankAccountCurrency, int userID) {
         logger.info("Creating bank account for user with id " + userID);
         bankAccount = new BankAccount();
+        bankAccount.setBankAccountAmount(bankAccountAmount);
+        bankAccount.setBankAccountCurrency(bankAccountCurrency);
+        bankAccount.setUserID(userID);
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.CREATE_BANK_ACCOUNT, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, bankAccount.getBankAccountNumber());
-            ps.setDouble(2, bankAccount.getBankAccountAmount());
-            ps.setString(3, bankAccount.getBankAccountCurrency());
+            ps.setDouble(1, bankAccount.getBankAccountAmount());
+            ps.setString(2, bankAccount.getBankAccountCurrency());
+            ps.setInt(3, bankAccount.getUserID());
             ps.execute();
             resultSet = ps.getGeneratedKeys();
             if (resultSet.next()) {
@@ -119,10 +122,9 @@ public class BankAccountRepository implements IBankAccountRepository {
     protected BankAccount processRow(ResultSet rs) throws SQLException {
         bankAccount=new BankAccount();
         bankAccount.setBankAccountID(rs.getInt(1));
-        bankAccount.setBankAccountNumber(rs.getInt(2));
-        bankAccount.setBankAccountAmount(rs.getDouble(3));
-        bankAccount.setBankAccountCurrency(rs.getString(4));
-        bankAccount.setUserID(rs.getInt(5));
+        bankAccount.setBankAccountAmount(rs.getDouble(2));
+        bankAccount.setBankAccountCurrency(rs.getString(3));
+        bankAccount.setUserID(rs.getInt(4));
         return bankAccount;
     }
     @Override
@@ -153,9 +155,6 @@ public class BankAccountRepository implements IBankAccountRepository {
         bankAccount = readBankAccount(bankAccountID);
         for (Map.Entry<String, String> entry : params.entrySet()) {
             switch (entry.getKey()) {
-                case "bankAccountNumber":
-                    bankAccount.setBankAccountNumber( Integer.parseInt(entry.getValue()));
-                    break;
                 case "bankAccountAmount":
                     bankAccount.setBankAccountAmount( Double.parseDouble(entry.getValue()));
                     break;
@@ -172,11 +171,11 @@ public class BankAccountRepository implements IBankAccountRepository {
         PreparedStatement ps = null;
         try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.UPDATE_BANK_ACCOUNT);
-            ps.setInt(1, bankAccount.getBankAccountNumber());
-            ps.setDouble(2, bankAccount.getBankAccountAmount());
-            ps.setString(3, bankAccount.getBankAccountCurrency());
-            ps.setInt(4, bankAccount.getUserID());
-            ps.setInt(5,bankAccountID);
+      
+            ps.setDouble(1, bankAccount.getBankAccountAmount());
+            ps.setString(2, bankAccount.getBankAccountCurrency());
+            ps.setInt(3, bankAccount.getUserID());
+            ps.setInt(4,bankAccountID);
             ps.execute();
             executed = true;
         } catch (Exception e) {

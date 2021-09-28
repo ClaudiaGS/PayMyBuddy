@@ -34,6 +34,8 @@ public class ViewController {
     TransactionService transactionService;
     @Autowired
     UserService userService;
+    @Autowired
+    BankAccountService bankAccountService;
     
     HttpSession session = null;
     
@@ -44,11 +46,14 @@ public class ViewController {
     public String connexion(Model model, Account account) {
         
         model.addAttribute("account", account);
+        
         return "Login";
     }
     
     @PostMapping("/home")
     public String home(@ModelAttribute Account account, Model model, HttpServletRequest request) {
+        TransactionView transaction = new TransactionView();
+        
         UserComplete userComplete = userCompleteService.login(account.getAccountEmail(), account.getAccountPassword());
         if (userComplete == null) {
             return "redirect:/login";
@@ -60,41 +65,89 @@ public class ViewController {
             
             session.setAttribute("userIDAccount", userIDAccount);
             session.setAttribute("userComplete", userComplete);
-            
+            List<TransactionView> transactionViewList = transactionViewService.getTransactionViewList(userIDAccount);
+            if (transactionViewList.size() > 0) {
+                transaction = transactionViewList.get(transactionViewList.size() - 1);
+            } else {
+                transaction = null;
+            }
+            Double amount = bankAccountService.readUsersBankAccount(userIDAccount).getBankAccountAmount();
+            model.addAttribute("amount", amount);
+            model.addAttribute("transaction", transaction);
             model.addAttribute("user", userComplete);
             return "Home";
             
         }
     }
+    
+    @GetMapping("/homePage")
+    public String homePage(Model model) {
+        TransactionView transaction = new TransactionView();
+        List<TransactionView> transactionViewList = transactionViewService.getTransactionViewList((int) session.getAttribute("userIDAccount"));
+        if (transactionViewList.size() > 0) {
+            transaction = transactionViewList.get(transactionViewList.size() - 1);
+        } else {
+            transaction = null;
+        }
+        Double amount = bankAccountService.readUsersBankAccount((int) session.getAttribute("userIDAccount")).getBankAccountAmount();
+        model.addAttribute("amount", amount);
+        model.addAttribute("transaction", transaction);
+        model.addAttribute("user", (UserComplete) session.getAttribute("userComplete"));
+        return "Home";
+        
+        
+    }
+    
     //REGISTRATION
     @GetMapping("/registration")
-    public String registration(Model model,User user,String accountEmail) {
-        
-        
-        model.addAttribute(user);
-        model.addAttribute(accountEmail);
+    public String registration(Model model) {
+        RegisterInfoView registerInfoView = new RegisterInfoView();
+        model.addAttribute("registerInfoView", registerInfoView);
         return "Registration";
     }
     
     @PostMapping("/registerUser")
-    public ModelAndView registerUser(@ModelAttribute User user, String accountEmail, String accountPassword,
-                                     String rePassword,  int bankAccountNumber) {
+    public String registerUser(@ModelAttribute RegisterInfoView registerInfoView, Model model, HttpServletRequest request) {
+        int userID = 0;
+        userID = userService.registration(registerInfoView.getEmail(), registerInfoView.getPassword(), registerInfoView.getRePassword(), registerInfoView.getFirstName(), registerInfoView.getLastName(), registerInfoView.getBirthdate());
+        if (userID > 0) {
+            List<Account> accountList = accountService.readAccountList();
+            Account account = new Account();
+            for (Account acc : accountList) {
+                if (userID == acc.getUserID()) {
+                    account = acc;
+                    logger.info("account registered is " + account);
+                }
+            }
+            logger.info("account to home is " + account);
+            
+            UserComplete userComplete = userCompleteService.login(registerInfoView.getEmail(), registerInfoView.getPassword());
+            logger.info("userCOmplete in register is " + userComplete);
+            session = request.getSession();
+            logger.info("Session id is " + session.getId());
+            int userIDAccount = userComplete.getUserID();
+            session.setAttribute("userIDAccount", userIDAccount);
+            session.setAttribute("userComplete", userComplete);
+            List<TransactionView> transactionViewList = transactionViewService.getTransactionViewList(userIDAccount);
+            TransactionView transaction = new TransactionView();
+            if (transactionViewList.size() > 0) {
+                transaction = transactionViewList.get(transactionViewList.size() - 1);
+            } else {
+                transaction = null;
+            }
+            Double amount = bankAccountService.readUsersBankAccount(userIDAccount).getBankAccountAmount();
+            model.addAttribute("amount", amount);
+            model.addAttribute("transaction", transaction);
+            model.addAttribute("user", userComplete);
+            model.addAttribute("account", account);
+        } else {
+            logger.error("Missing info to register");
+        }
+        return "Home";
         
-       
-        userService.registration(accountEmail,accountPassword,rePassword,user.getUserFirstName(),user.getUserLastName(),user.getUserBirthdate(),bankAccountNumber);
         
-        
-        return new ModelAndView("redirect:/home");
     }
-//    @GetMapping("/homePage")
-//    public String homePage(Model model) {
-//
-//
-//        model.addAttribute("user", (UserComplete) session.getAttribute("userComplete"));
-//        return "Home";
-//
-//
-//    }
+    
     
     // CONTACT LIST MANAGEMENT:
     @GetMapping("/contacts")
@@ -120,7 +173,6 @@ public class ViewController {
         for (ContactView cv : contactViewList) {
             contactViewMails.add(cv.getEmail());
         }
-        logger.info(contactViewMails);
         List<String> emailList = new ArrayList<String>();
         for (Account account : accountService.readAccountList()) {
             if (account.getUserID() != ((int) session.getAttribute("userIDAccount")) && !(contactViewMails.contains(account.getAccountEmail()))) {
@@ -162,15 +214,16 @@ public class ViewController {
         model.addAttribute("contacts", contactViewList);
         TransactionView transactionView = new TransactionView();
         model.addAttribute("transaction", transactionView);
-        UserComplete userComplete = (UserComplete) session.getAttribute("userComplete");
-        model.addAttribute("bankAccountAmount", userComplete.getUsersBankAccount().getBankAccountAmount());
-        model.addAttribute("amount", transactionView.getAmount());
+//        UserComplete userComplete = (UserComplete) session.getAttribute("userComplete");
+//        model.addAttribute("bankAccountAmount", userComplete.getUsersBankAccount().getBankAccountAmount());
+//        model.addAttribute("amount", transactionView.getAmount());
         logger.info("HERE been in /createTransaction");
         return "addTransaction";
     }
     
     @PostMapping("/saveTransaction")
-    public ModelAndView saveTransaction(@ModelAttribute TransactionView transaction, String description, Double amount) {
+    public ModelAndView saveTransaction(@ModelAttribute TransactionView transaction, String description, Double
+            amount) {
         for (ContactView cv : contactViewService.getContactViewList((int) session.getAttribute("userIDAccount"))) {
             if (cv.getContactID() == transaction.getContactID()) {
                 transaction.setFirstName(cv.getFirstName());
@@ -201,5 +254,5 @@ public class ViewController {
         return new ModelAndView("redirect:/transactions");
     }
     
-   
+    
 }

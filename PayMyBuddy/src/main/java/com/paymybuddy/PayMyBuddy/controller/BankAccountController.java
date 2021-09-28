@@ -15,8 +15,8 @@ public class BankAccountController {
     BankAccountService bankAccountService;
     
     @PostMapping("/createBankAccount")
-    public BankAccount createBankAccount(@RequestBody BankAccount bankAccount, @RequestParam int userID){
-        return bankAccountService.createBankAccount(bankAccount, userID);
+    public BankAccount createBankAccount(@RequestParam double bankAccountAmount,@RequestParam String bankAccountCurrency,@RequestParam int userID){
+        return bankAccountService.createBankAccount(bankAccountAmount,bankAccountCurrency, userID);
     }
     @GetMapping("/readBankAccount")
     public BankAccount readBankAccount(@RequestParam int bankAccountID) {

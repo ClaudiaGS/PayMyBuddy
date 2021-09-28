@@ -11,46 +11,40 @@
     <p class="heading" style="color:#30F3E8;">Pay My Buddy</p>
     <p class="heading2" style="color:#30F3E8;">Money Transfer Online</p>
     <label>Fill in the data below:</label>
-    <form method="post" th:action="@{/registerUser}" th:object="${user}">
+    <form method="post" th:action="@{/registerUser}" th:object="${registerInfoView}">
         <div class="form-group">
             <div class="box">
                 <p>Email</p>
                 <div>
-                    <input id="emailbox" type="text" th:field="*{accountEmail}" placeholder="Enter email"/>
+                    <input id="email" type="text" th:field="*{email}"  placeholder="Enter email"/>
                 </div>
             </div>
-            <div class="password">
+            <div class="box">
                 <p>Password</p>
                 <div>
-                    <input id="passwordbox" type="text" th:field="*{accountPassword}" placeholder="Enter password"/>
+                    <input id="password" type="text" th:field="*{password}" placeholder="Enter password"/>
                 </div>
                 <p>Retype password</p>
                 <div>
-                    <input id="repasswordbox" type="text" th:field="*{rePassword}" placeholder="Retype password"/>
+                    <input id="rePassword" type="text" th:field="*{rePassword}" placeholder="Retype password"/>
                 </div>
             </div>
             <div class="box">
                 <p>First Name</p>
                 <div>
-                    <input id="firstNamebox" type="firstName" th:field="*{user.userFirstName}" placeholder="Enter first name"/>
+                    <input id="firstName" type="text" th:field="*{firstName}" placeholder="Enter first name"/>
                 </div>
             </div>
             <div class="box">
                 <p>Last Name</p>
                 <div>
-                    <input id="lastNamebox" type="lastName" th:field="*{user.userLastName}" placeholder="Enter last name"/>
+                    <input id="lastName" type="text" th:field="*{lastName}" placeholder="Enter last name"/>
                 </div>
             </div>
             <div class="box">
                 <p>Birthdate</p>
                 <div>
-                    <input id="birthdatebox" type="birthdate" th:field="*{user.userBirthdate}" placeholder="Enter birthdate"/>
-                </div>
-            </div>
-            <div class="box">
-                <p>Bank Account Number</p>
-                <div>
-                    <input id="bankAccountNumber" type="bankAccountNumber" th:field="*{bankAccountNumber}" placeholder="Enter bank account number"/>
+                    <input id="birthdate" type="birthdate" th:field="*{birthdate}" placeholder="Enter birthdate"/>
                 </div>
             </div>
             <a>

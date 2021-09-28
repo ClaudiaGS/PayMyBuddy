@@ -24,7 +24,7 @@ public class AccountService implements IAccountService {
     @Override
     public Account createAccount(int userID, String email, String password) {
         Account account = new Account();
-        if(userService.createUser(userService.readUser(userID))) {
+        if(userService.readUser(userID)!=null) {
             account = accountRepository.createAccount(userID,email,password);
         }else{
             logger.error("");
@@ -54,7 +54,7 @@ public class AccountService implements IAccountService {
     
     @Override
     public  Account authenticate(String email, String password){
-        logger.info("Authentifiate user with email "+email);
+        logger.info("Authenticate user with email "+email);
         return accountRepository.authenticate(email,password);
     }
 //    @Autowired

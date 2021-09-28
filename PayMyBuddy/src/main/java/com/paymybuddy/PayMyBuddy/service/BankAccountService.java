@@ -19,9 +19,10 @@ public class BankAccountService implements IBankAccountService {
     UserService userService;
     private static final Logger logger = LogManager.getLogger("BankAccountService");
     @Override
-    public BankAccount createBankAccount(BankAccount bankAccount, int userID) {
-        if(userService.createUser(userService.readUser(userID))) {
-            bankAccount = bankAccountRepository.createBankAccount(bankAccount,userID);
+    public BankAccount createBankAccount(double bankAccountAmount,String bankAccountCurrency, int userID) {
+        BankAccount bankAccount=new BankAccount();
+        if(userService.readUser(userID)!=null) {
+            bankAccount = bankAccountRepository.createBankAccount(bankAccountAmount,bankAccountCurrency,userID);
         }
         logger.info("Created bankAccount "+bankAccount);
         return bankAccount;

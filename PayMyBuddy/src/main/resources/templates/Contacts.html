@@ -128,7 +128,7 @@ color:white;
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email</th>
-                        <th>Bank Account No</th>
+                        <th>Bank Account ID</th>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -140,7 +140,7 @@ color:white;
                         <td><span th:text="${contact.firstName}"> First Name </span></td>
                         <td><span th:text="${contact.lastName}"> Last Name </span></td>
                         <td><span th:text="${contact.email}"> Email </span></td>
-                        <td><span th:text="${contact.bankAccountNumber}"> Bank Account No</span></td>
+                        <td><span th:text="${contact.bankAccountID}"> Bank Account ID</span></td>
                         <td>
                             <a th:href="@{/deleteContact/{id}(id=${contact.contactID})}">
                                 <button class="btn btn-danger">Delete</button>

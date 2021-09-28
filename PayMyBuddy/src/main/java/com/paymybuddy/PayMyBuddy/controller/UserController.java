@@ -5,6 +5,7 @@ import com.paymybuddy.PayMyBuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,6 +32,10 @@ public class UserController {
     public boolean updateUser(@RequestParam int userID, @RequestBody HashMap<String, Object> params){
         return userService.updateUser(userID,params);
     }
-    
+    @PostMapping("/register")
+    public int registration(String email, String password,
+                            String rePassword, String firstName, String lastName, Date birthdate){
+        return userService.registration(email,password,rePassword,firstName,lastName,birthdate);
+    }
 }
 

@@ -1,5 +1,6 @@
 package com.paymybuddy.PayMyBuddy.service;
 
+import com.paymybuddy.PayMyBuddy.model.Account;
 import com.paymybuddy.PayMyBuddy.model.BankAccount;
 import com.paymybuddy.PayMyBuddy.model.User;
 import com.paymybuddy.PayMyBuddy.repository.UserRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,22 +54,31 @@ public class UserService implements IUserService {
     
     @Override
     public int registration(String email, String password,
-                            String rePassword, String firstName, String lastName, Date birthdate, int bankAccountNumber) {
+                            String rePassword, String firstName, String lastName, Date birthdate) {
+        
+        logger.info("Registering");
+        logger.info("Email is " + email);
+        logger.info("Password is " + password + " " + rePassword);
         User user = new User();
         user.setUserFirstName(firstName);
         user.setUserLastName(lastName);
         user.setUserBirthdate(birthdate);
         
-        List<User> userList = readUserList();
+        List<Account> accountList = accountService.readAccountList();
+        List<String> emailList = new ArrayList<>();
+        for (Account acc : accountList) {
+            emailList.add(acc.getAccountEmail());
+        }
         BankAccount bankAccount = new BankAccount();
-        bankAccount.setBankAccountNumber(11011);
-        bankAccount.setBankAccountAmount(5000);
+        bankAccount.setBankAccountAmount(0);
         bankAccount.setBankAccountCurrency("euro");
+        
         if (password.equals(rePassword)) {
-            if (!userList.contains(user)) {
+            if (!emailList.contains(email)) {
+                logger.info("Emaillist contains email " + emailList.contains(email));
                 createUser(user);
                 accountService.createAccount(user.getUserID(), email, password);
-                bankAccountService.createBankAccount(bankAccount, user.getUserID());
+                bankAccountService.createBankAccount(bankAccount.getBankAccountAmount(),bankAccount.getBankAccountCurrency(),user.getUserID());
             } else {
                 logger.error("User already exists");
             }

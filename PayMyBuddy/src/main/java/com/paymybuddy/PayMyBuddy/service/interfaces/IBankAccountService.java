@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface IBankAccountService {
-    public BankAccount createBankAccount(BankAccount bankAccount, int userID);
+    public BankAccount createBankAccount(double bankAccountAmount,String bankAccountCurrency, int userID);
     public BankAccount readBankAccount(int bankAccountID);
     public BankAccount readUsersBankAccount(int userID);
     public double updateAmount(int userID, double transferedAmount, String operation );

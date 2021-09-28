@@ -5,7 +5,7 @@ public class DataBaseConstants {
     public static final String CREATE_USER = "insert INTO user(USER_FIRST_NAME, USER_LAST_NAME,USER_BIRTHDATE) VALUES (?,?,?)";
     //  public static final String CREATE_ACCOUNT= "insert INTO account(ACCOUNT_EMAIL, ACCOUNT_PASSWORD,USER_ID) VALUES (?,SHA(?), (select max(USER_ID)+1 from user))";
     public static final String CREATE_ACCOUNT = "insert INTO account(ACCOUNT_EMAIL, ACCOUNT_PASSWORD,USER_ID) VALUES (?,SHA(?),?)";
-    public static final String CREATE_BANK_ACCOUNT = "insert INTO bank_account(BANK_ACCOUNT_NUMBER, BANK_ACCOUNT_AMOUNT, BANK_ACCOUNT_CURRENCY,USER_ID) VALUES (?,?,?,?)";
+    public static final String CREATE_BANK_ACCOUNT = "insert INTO bank_account(BANK_ACCOUNT_AMOUNT, BANK_ACCOUNT_CURRENCY,USER_ID) VALUES (?,?,?)";
     public static final String CREATE_CONTACT = "insert INTO contact(USER_ID_ACCOUNT, USER_ID_CONTACT) VALUES (?,?)";
     public static final String CREATE_TRANSACTION = "insert INTO transaction(TRANSACTION_DESCRIPTION, TRANSACTION_DEBITED_AMOUNT,TRANSACTION_FEE_AMOUNT, TRANSACTION_RECEIVED_AMOUNT,USER_ID_SENDER, USER_ID_RECEIVER) VALUES (?,?,?,?,?,?)";
     
@@ -30,7 +30,7 @@ public class DataBaseConstants {
     
     public static final String UPDATE_USER = "update user set USER_FIRST_NAME=?, USER_LAST_NAME=?, USER_BIRTHDATE=? where USER_ID=?";
     public static final String UPDATE_ACCOUNT = "update account set ACCOUNT_EMAIL=?, ACCOUNT_PASSWORD=SHA(?), USER_ID=? where ACCOUNT_ID=?";
-    public static final String UPDATE_BANK_ACCOUNT = "update bank_account set BANK_ACCOUNT_NUMBER=?, BANK_ACCOUNT_AMOUNT=?, BANK_ACCOUNT_CURRENCY=?, USER_ID=? where BANK_ACCOUNT_ID=?";
+    public static final String UPDATE_BANK_ACCOUNT = "update bank_account set BANK_ACCOUNT_AMOUNT=?, BANK_ACCOUNT_CURRENCY=?, USER_ID=? where BANK_ACCOUNT_ID=?";
     public static final String UPDATE_CONTACT = "update contact set USER_ID_ACCOUNT=?,USER_ID_CONTACT=? where CONTACT_ID=?";
     
     public static final String DELETE_CONTACT = "delete from contact where CONTACT_ID=?";
