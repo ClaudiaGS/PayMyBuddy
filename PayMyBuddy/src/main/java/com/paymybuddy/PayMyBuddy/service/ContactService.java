@@ -18,19 +18,32 @@ public class ContactService implements IContactService {
     @Autowired
     UserService userService;
     private static final Logger logger = LogManager.getLogger("ContactService");
+    
+    /**
+     * (non-javadoc)
+     *
+     * @see com.paymybuddy.PayMyBuddy.service.interfaces.IContactService#createContact(Contact)
+     */
     @Override
-    public Contact createContact(int userIDAccount, int userIDContact) {
-        Contact contact = null;
-        if(userService.createUser(userService.readUser(userIDAccount))) {
-            contact = contactRepository.createContact(userIDAccount,userIDContact);
+    public boolean createContact(Contact contact) {
+        boolean result=false;
+        if(userService.createUser(userService.readUser(contact.getUserIDAccount()))) {
+            contactRepository.createContact(contact);
+            logger.info("Contact "+contact+" created");
+            result=true;
+        }else
+        {
+            logger.error("Contact "+contact+" cannot be created");
         }
-        if(contact!=null) {
-            logger.info("Created contact " + contact);
-        }else{
-            logger.info("Contact not created");
-        }
-        return contact;
+        
+        return result;
     }
+    
+    /**
+     * (non-javadoc)
+     *
+     * @see IContactService#readContactList()
+     */
     @Override
     public List<Contact> readContactList() {
         List<Contact>contactList=contactRepository.readContactList();
@@ -38,6 +51,11 @@ public class ContactService implements IContactService {
         return contactList;
     }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see IContactService#readUsersContactList(int)
+     */
     @Override
     public List<Contact> readUsersContactList(int userIDAccount) {
         List<Contact>contactList=contactRepository.readUsersContactList(userIDAccount);
@@ -45,6 +63,11 @@ public class ContactService implements IContactService {
         return contactList;
     }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see IContactService#readContact(int)
+     */
     @Override
     public Contact readContact(int contactID) {
         Contact contact=contactRepository.readContact(contactID);
@@ -52,11 +75,28 @@ public class ContactService implements IContactService {
         return contact;
     }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see IContactService#updateContact(int, HashMap)
+     */
     @Override
     public boolean updateContact(int contactID, HashMap<String, Object> params) {
-        return contactRepository.updateContact(contactID,params);
+    
+        Contact contact= this.contactRepository.readContact(contactID);
+    
+        contact.setUserIDAccount((Integer) params.getOrDefault("userIDAccount", contact.getUserIDAccount()));
+        contact.setUserIDContact((Integer) params.getOrDefault("userIDContact",contact.getUserIDContact()));
+        
+    
+        return contactRepository.updateContact(contact);
     }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see IContactService#deleteContact(int)
+     */
     @Override
     public boolean deleteContact(int contactID) {
         logger.info("Deleted contact with id "+contactID);

@@ -7,10 +7,51 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface IBankAccountService {
-    public BankAccount createBankAccount(double bankAccountAmount,String bankAccountCurrency, int userID);
-    public BankAccount readBankAccount(int bankAccountID);
-    public BankAccount readUsersBankAccount(int userID);
-    public double updateAmount(int userID, double transferedAmount, String operation );
+    
+    /**
+     *
+     * @param bankAccount
+     * @return boolean
+     */
+    public boolean createBankAccount(Connection connection,BankAccount bankAccount);
+    
+    /**
+     *
+     * @return List<BankAccount>
+     */
     public List<BankAccount> readBankAccountList();
-    public boolean updateBankAccount(Connection connection,int BankAccountID, HashMap<String,String> params);
+    
+    /**
+     *
+     * @param bankAccountID
+     * @return BankAccount
+     */
+    public BankAccount readBankAccount(int bankAccountID);
+    
+    /**
+     *
+     * @param userID
+     * @return BankAccount
+     */
+    public BankAccount readUsersBankAccount(int userID);
+    
+    /**
+     *
+     * @param userID
+     * @param transferedAmount
+     * @param operation
+     * @return double
+     */
+    public double updateAmount(int userID,double transferedAmount, String operation );
+    
+    /**
+     *
+     * @param connection
+     * @param bankAccountID
+     * @param params
+     * @return boolean
+     */
+    public boolean updateBankAccount(Connection connection,int bankAccountID, HashMap<String,Object> params);
 }
+
+

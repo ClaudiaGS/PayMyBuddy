@@ -3,14 +3,52 @@ package com.paymybuddy.PayMyBuddy.repository.interfaces;
 import com.paymybuddy.PayMyBuddy.model.BankAccount;
 
 import java.sql.Connection;
-import java.util.HashMap;
 import java.util.List;
 
 public interface IBankAccountRepository {
-    public BankAccount createBankAccount(double bankAccountAmount,String bankAccountCurrency, int userID);
-    public BankAccount readBankAccount(int bankAccountID);
+    
+    /**
+     *
+     * @param bankAccount
+     * @return boolean
+     */
+    public boolean createBankAccount(Connection connection,BankAccount bankAccount);
+    
+    /**
+     *
+     * @return List<BankAccount>
+     */
     public List<BankAccount> readBankAccountList();
+    
+    /**
+     *
+     * @param bankAccountID
+     * @return BankAccount
+     */
+    public BankAccount readBankAccount(int bankAccountID);
+    
+    /**
+     *
+     * @param userID
+     * @return BankAccount
+     */
     public BankAccount readUsersBankAccount(int userID);
+    
+    /**
+     *
+     * @param userID
+     * @param transferedAmount
+     * @param operation
+     * @return double
+     */
     public double updateAmount(int userID,double transferedAmount, String operation );
-    public boolean updateBankAccount(Connection connection,int BankAccountID, HashMap<String, String> params);
+    
+    /**
+     *
+     * @param connection
+     * @param bankAccount
+     * @return boolean
+     */
+    public boolean updateBankAccount(Connection connection,final BankAccount bankAccount);
 }
+   

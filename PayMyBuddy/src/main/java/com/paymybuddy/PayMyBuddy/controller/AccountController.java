@@ -5,6 +5,7 @@ import com.paymybuddy.PayMyBuddy.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,8 +15,13 @@ public class AccountController {
     AccountService accountService;
     
     @PostMapping("/createAccount")
-    public Account createAccount(@RequestParam int userID, @RequestParam String email, @RequestParam String password) {
-        return accountService.createAccount(userID, email, password);
+    public boolean createAccount(@RequestParam int userID, @RequestParam String email, @RequestParam String password) {
+        Connection connection = null;
+        Account account = new Account();
+        account.setAccountEmail(email);
+        account.setAccountPassword(password);
+        account.setUserID(userID);
+        return accountService.createAccount(connection, account);
     }
     
     @GetMapping("/readAccountInfo")
@@ -33,24 +39,12 @@ public class AccountController {
         return accountService.updateAccount(accountID, params);
     }
     
-    @GetMapping("/authentificate")
-    public Account authentificate(@RequestParam String email, @RequestParam String password) {
-        return accountService.authenticate(email, password);
+    @GetMapping("/authenticate")
+    public Account authenticate(@RequestParam String email, @RequestParam String password) {
+        Account account = new Account();
+        account.setAccountEmail(email);
+        account.setAccountPassword(password);
+        return accountService.authenticate(account);
     }
     
-//    @GetMapping("/home")
-//    public String home(){
-//        return"home";
-//}
-    
-
-//    @GetMapping("/home")
-//    public String LoginPage(Model model) {
-//        Iterable<Account> listAccounts = accountService.readAccountList();
-//
-//        model.addAttribute("accounts", listAccounts);
-//
-//        return "LoginPage";
-//    }
-        
-    }
+}

@@ -1,16 +1,48 @@
 package com.paymybuddy.PayMyBuddy.service.interfaces;
 
+import com.paymybuddy.PayMyBuddy.model.Account;
 import com.paymybuddy.PayMyBuddy.model.User;
 
-import java.sql.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface IUserService {
-    public boolean createUser(User newUser);
+    
+    /**
+     *
+     * @param newUser
+     * @return boolean
+     */
+    public boolean createUser(final User newUser);
+    
+    /**
+     *
+     * @return List<User>
+     */
     public List<User> readUserList();
-    public User readUser(int userID);
-    public boolean updateUser(int userID, HashMap<String, Object> params);
-    public int registration(String email, String password,
-                            String rePassword, String firstName, String lastName, Date birthdate);
-    }
+    
+    /**
+     *
+     * @param userID
+     * @return User
+     */
+    public User readUser(final int userID);
+    
+    /**
+     *
+     * @param userID
+     * @param params
+     * @return boolean
+     */
+    public boolean updateUser(final int userID, final Map<String, Object> params);
+    
+    /**
+     *
+     * @param account
+     * @param user
+     * @return int
+     */
+    public boolean registration(final Account account, final User user);
+    
+
+}

@@ -27,13 +27,17 @@ public class TransactionService implements ITransactionService {
     
     private static final Logger logger = LogManager.getLogger("TransactionService");
     
+    /**
+     * (non-javadoc)
+     *
+     * @see com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionService#createTransaction(Transaction)
+     */
     @Override
-    public Transaction createTransaction(String transactionDescription, double transactionReceivedAmount, int userIDSender, int userIDReceiver) {
-        HashMap<String,String>paramsSender = new HashMap<>();
-        HashMap<String,String>paramsReceiver=new HashMap<>();
-        logger.info("sender updated amount "+bankAccountService.updateAmount(userIDSender,transactionReceivedAmount,"substract"));
-        paramsSender.put("bankAccountAmount",String.valueOf(bankAccountService.updateAmount(userIDSender,transactionReceivedAmount,"substract")));
-        paramsReceiver.put("bankAccountAmount",String.valueOf(bankAccountService.updateAmount(userIDReceiver,transactionReceivedAmount,"add")));
+    public boolean createTransaction(Transaction transaction) {
+        HashMap<String,Object>paramsSender = new HashMap<>();
+        HashMap<String,Object>paramsReceiver=new HashMap<>();
+        paramsSender.put("bankAccountAmount",bankAccountService.updateAmount(transaction.getUserIDSender(),transaction.getTransactionReceivedAmount(),"substract"));
+        paramsReceiver.put("bankAccountAmount",bankAccountService.updateAmount(transaction.getUserIDReceiver(), transaction.getTransactionReceivedAmount(),"add"));
     
         Connection connection = null;
         boolean result = true;
@@ -42,13 +46,13 @@ public class TransactionService implements ITransactionService {
             connection = this.dataSource.getConnection();
             connection.setAutoCommit(false);
     
-            result = result && bankAccountService.updateBankAccount(connection, bankAccountService.readUsersBankAccount(userIDSender).getBankAccountID(),paramsSender);
-            result = result && bankAccountService.updateBankAccount(connection, bankAccountService.readUsersBankAccount(userIDReceiver).getBankAccountID(),paramsReceiver);
+            result = result && bankAccountService.updateBankAccount(connection, bankAccountService.readUsersBankAccount(transaction.getUserIDSender()).getBankAccountID(),paramsSender);
+            result = result && bankAccountService.updateBankAccount(connection, bankAccountService.readUsersBankAccount(transaction.getUserIDReceiver()).getBankAccountID(),paramsReceiver);
     
-            result = result && transactionRepository.createTransaction(connection, transactionDescription,transactionReceivedAmount,userIDSender,userIDReceiver);
+            result = result && transactionRepository.createTransaction(connection, transaction);
     
     
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             logger.error(e);
             result = false;
         } finally {
@@ -73,26 +77,39 @@ public class TransactionService implements ITransactionService {
                 }
             }
         }
-        return null;
+        return result;
     }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionService#readTransactionList()
+     */
     @Override
     public List<Transaction> readTransactionList() {
         return transactionRepository.readTransactionList();
     }
     
-    @Override
-    public List<Transaction> readUsersTransactionList(int userIDSender) {
-        return transactionRepository.readUsersTransactionList(userIDSender);
-    }
-    
+    /**
+     * (non-javadoc)
+     *
+     * @see com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionService#readTransaction(int)
+     */
     @Override
     public Transaction readTransaction(int transactionID) {
         return transactionRepository.readTransaction(transactionID);
     }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionService#readUsersTransactionList(int)
+     */
     @Override
-    public boolean deleteTransaction(int transactionID) {
-        return transactionRepository.deleteTransaction(transactionID);
+    public List<Transaction> readUsersTransactionList(int userIDSender) {
+        return transactionRepository.readUsersTransactionList(userIDSender);
     }
+
 }
+
+

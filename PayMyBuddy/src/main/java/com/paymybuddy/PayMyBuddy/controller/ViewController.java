@@ -38,7 +38,6 @@ public class ViewController {
     BankAccountService bankAccountService;
     
     
-    
     private static final Logger logger = LogManager.getLogger("ViewController");
     
     //LOGIN
@@ -54,14 +53,14 @@ public class ViewController {
     public String home(@ModelAttribute Account account, Model model, HttpServletRequest request) {
         TransactionView transaction = new TransactionView();
         
-        UserComplete userComplete = userCompleteService.login(account.getAccountEmail(), account.getAccountPassword());
+        UserComplete userComplete = userCompleteService.login(account);
         if (userComplete == null) {
             return "redirect:/login";
         } else {
             HttpSession session = request.getSession();
             logger.info("Session id is " + session.getId());
             int userIDAccount = userComplete.getUserID();
-            userComplete = userCompleteService.login(account.getAccountEmail(), account.getAccountPassword());
+            userComplete = userCompleteService.login(account);
             
             session.setAttribute("userIDAccount", userIDAccount);
             session.setAttribute("userComplete", userComplete);
@@ -82,7 +81,7 @@ public class ViewController {
     
     @GetMapping("/homePage")
     public String homePage(Model model, HttpServletRequest request) {
-        HttpSession session=request.getSession();
+        HttpSession session = request.getSession();
         TransactionView transaction = new TransactionView();
         List<TransactionView> transactionViewList = transactionViewService.getTransactionViewList((int) session.getAttribute("userIDAccount"));
         if (transactionViewList.size() > 0) {
@@ -109,43 +108,50 @@ public class ViewController {
     
     @PostMapping("/registerUser")
     public String registerUser(@ModelAttribute RegisterInfoView registerInfoView, Model model, HttpServletRequest request) {
-        int userID = 0;
-        userID = userService.registration(registerInfoView.getEmail(), registerInfoView.getPassword(), registerInfoView.getRePassword(), registerInfoView.getFirstName(), registerInfoView.getLastName(), registerInfoView.getBirthdate());
-        if (userID > 0) {
-            List<Account> accountList = accountService.readAccountList();
-            Account account = new Account();
-            for (Account acc : accountList) {
-                if (userID == acc.getUserID()) {
-                    account = acc;
-                    logger.info("account registered is " + account);
-                }
-            }
-            logger.info("account to home is " + account);
-            HttpSession session=request.getSession();
-            UserComplete userComplete = userCompleteService.login(registerInfoView.getEmail(), registerInfoView.getPassword());
-            logger.info("userCOmplete in register is " + userComplete);
-            session = request.getSession();
-            logger.info("Session id is " + session.getId());
+       
+        String viewToReturn="Home";
+        Account account = new Account();
+        account.setAccountEmail(registerInfoView.getEmail());
+        account.setAccountPassword(registerInfoView.getPassword());
+        
+        
+        User user = new User();
+        user.setUserFirstName(registerInfoView.getFirstName());
+        user.setUserLastName(registerInfoView.getLastName());
+        user.setUserBirthdate(registerInfoView.getBirthdate());
+        
+        if (userService.registration(account, user)) {
+            
+            logger.info("Registration succeeded");
+            
+            
+            UserComplete userComplete = userCompleteService.login(account);
+            HttpSession session = request.getSession();
             int userIDAccount = userComplete.getUserID();
             session.setAttribute("userIDAccount", userIDAccount);
             session.setAttribute("userComplete", userComplete);
             List<TransactionView> transactionViewList = transactionViewService.getTransactionViewList(userIDAccount);
             TransactionView transaction = new TransactionView();
+            
+            // get last transaction for the Home view
             if (transactionViewList.size() > 0) {
                 transaction = transactionViewList.get(transactionViewList.size() - 1);
             } else {
                 transaction = null;
             }
+            
             Double amount = bankAccountService.readUsersBankAccount(userIDAccount).getBankAccountAmount();
             model.addAttribute("amount", amount);
             model.addAttribute("transaction", transaction);
             model.addAttribute("user", userComplete);
             model.addAttribute("account", account);
+            
+            viewToReturn="Home";
         } else {
             logger.error("Missing info to register");
+            viewToReturn="Registration";
         }
-        return "Home";
-        
+        return viewToReturn;
         
     }
     
@@ -153,7 +159,7 @@ public class ViewController {
     // CONTACT LIST MANAGEMENT:
     @GetMapping("/contacts")
     public String contactView(Model model, HttpServletRequest request) {
-        HttpSession session=request.getSession();
+        HttpSession session = request.getSession();
         Iterable<ContactView> contactViewList = contactViewService.getContactViewList((int) session.getAttribute("userIDAccount"));
         model.addAttribute("contacts", contactViewList);
         return "Contacts";
@@ -168,8 +174,8 @@ public class ViewController {
     
     
     @GetMapping("/createContact")
-    public String createContact(Model model,HttpServletRequest request) {
-        HttpSession session=request.getSession();
+    public String createContact(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
         ContactView contactView = new ContactView();
         List<ContactView> contactViewList = contactViewService.getContactViewList((int) session.getAttribute("userIDAccount"));
         List<String> contactViewMails = new ArrayList<String>();
@@ -188,8 +194,8 @@ public class ViewController {
     }
     
     @PostMapping("/saveContact")
-    public ModelAndView saveContact(@ModelAttribute ContactView contact,HttpServletRequest request) {
-        HttpSession session=request.getSession();
+    public ModelAndView saveContact(@ModelAttribute ContactView contact, HttpServletRequest request) {
+        HttpSession session = request.getSession();
         
         List<Account> accountList = accountService.readAccountList();
         
@@ -199,23 +205,26 @@ public class ViewController {
                 userIDContact = account.getUserID();
             }
         }
-        contactService.createContact((int) session.getAttribute("userIDAccount"), userIDContact);
+        Contact contactBase=new Contact();
+        contactBase.setUserIDAccount((int) session.getAttribute("userIDAccount"));
+        contactBase.setUserIDContact(userIDContact);
+        contactService.createContact(contactBase);
         return new ModelAndView("redirect:/contacts");
     }
     
     
     // TRANSACTIONS MANAGEMENT:
     @GetMapping("/transactions")
-    public String transactionView(Model model,HttpServletRequest request) {
-        HttpSession session=request.getSession();
+    public String transactionView(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
         Iterable<TransactionView> transactionViewList = transactionViewService.getTransactionViewList((int) session.getAttribute("userIDAccount"));
         model.addAttribute("transactions", transactionViewList);
         return "Transactions";
     }
     
     @GetMapping("/createTransaction")
-    public String createTransaction(Model model,HttpServletRequest request) {
-        HttpSession session=request.getSession();
+    public String createTransaction(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
         Iterable<ContactView> contactViewList = contactViewService.getContactViewList((int) session.getAttribute("userIDAccount"));
         model.addAttribute("contacts", contactViewList);
         TransactionView transactionView = new TransactionView();
@@ -229,8 +238,8 @@ public class ViewController {
     
     @PostMapping("/saveTransaction")
     public ModelAndView saveTransaction(@ModelAttribute TransactionView transaction, String description, Double
-            amount,HttpServletRequest request) {
-        HttpSession session=request.getSession();
+            amount, HttpServletRequest request) {
+        HttpSession session = request.getSession();
         for (ContactView cv : contactViewService.getContactViewList((int) session.getAttribute("userIDAccount"))) {
             if (cv.getContactID() == transaction.getContactID()) {
                 transaction.setFirstName(cv.getFirstName());
@@ -239,22 +248,24 @@ public class ViewController {
         }
         transaction.setDescription(description);
         transaction.setAmount(amount);
-        
-        logger.info("HERE transaction contactID is " + transaction.getContactID());
-        logger.info("HERE been in /saveTransaction");
-        logger.info("HERE Transaction description is " + transaction.getDescription());
-        logger.info("HERE Transaction amount is " + transaction.getAmount());
-        logger.info("HERE Transaction firstName is " + transaction.getFirstName());
-        
+
+
         int userIDReceiver = 0;
         for (UserComplete user : userCompleteService.readUserCompleteList()) {
             if (user.getUserFirstName().equals(transaction.getFirstName()) && user.getUserLastName().equals(transaction.getLastName())) {
                 userIDReceiver = user.getUserID();
             }
         }
+    
+        Transaction transactionToCreate=new Transaction();
+        transactionToCreate.setTransactionDescription(transaction.getDescription());
+        transactionToCreate.setTransactionReceivedAmount(amount);
+        transactionToCreate.setUserIDSender((int) session.getAttribute("userIDAccount"));
+        transactionToCreate.setUserIDReceiver(userIDReceiver);
+        
         UserComplete userComplete = (UserComplete) session.getAttribute("userComplete");
         if (userComplete.getUsersBankAccount().getBankAccountAmount() >= amount) {
-            transactionService.createTransaction(transaction.getDescription(), transaction.getAmount(), (int) session.getAttribute("userIDAccount"), userIDReceiver);
+            transactionService.createTransaction(transactionToCreate);
         } else {
             logger.error("Available money: " + userComplete.getUsersBankAccount().getBankAccountAmount() + " Cannot send!");
         }

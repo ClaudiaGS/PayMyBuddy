@@ -2,12 +2,35 @@ package com.paymybuddy.PayMyBuddy.repository.interfaces;
 
 import com.paymybuddy.PayMyBuddy.model.User;
 
-import java.util.HashMap;
 import java.util.List;
 
 public interface IUserRepository {
-    public boolean createUser(User newUser);
+    
+    /**
+     *
+     * @param user
+     * @return boolean
+     */
+    public boolean createUser(final User user);
+    
+    /**
+     *
+     * @return List<User>
+     */
     public List<User> readUserList();
-    public User readUser(int userID);
-    public boolean updateUser(int userID, HashMap<String, Object> params);
+    
+    /**
+     *
+     * @param id
+     * @return User
+     */
+    public User readUser(final int id);
+    
+    /**
+     *
+     * @param user
+     * @return boolean
+     */
+    public boolean updateUser(final User user);
+
 }

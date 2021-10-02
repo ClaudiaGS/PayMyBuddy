@@ -2,6 +2,8 @@ package com.paymybuddy.PayMyBuddy.service;
 
 import com.paymybuddy.PayMyBuddy.model.*;
 import com.paymybuddy.PayMyBuddy.service.interfaces.IUserCompleteService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +23,22 @@ public class UserCompleteService implements IUserCompleteService {
     @Autowired
     TransactionService transactionService;
     
+    private static final Logger logger = LogManager.getLogger("UserCompleteService");
+    
+    
+    /**
+     * (non-javadoc)
+     *
+     * @see com.paymybuddy.PayMyBuddy.service.interfaces.IUserCompleteService#login(Account)
+     */
     @Override
-    public UserComplete login(String email, String password) {
-        UserComplete userComplete = new UserComplete();
+    public UserComplete login(Account account) {
         
-        Account account = accountService.authenticate(email, password);
-        if (account != null) {
+        UserComplete userComplete = new UserComplete();
+        account=accountService.authenticate(account);
+        if (account!=null) {
+            logger.info("HERE");
+            
             User user = userService.readUser(account.getUserID());
             
             BankAccount bankAccount = new BankAccount();
@@ -41,7 +53,6 @@ public class UserCompleteService implements IUserCompleteService {
             
             List<Transaction> transactionList = transactionService.readUsersTransactionList(account.getUserID());
             
-            
             //create master user object with all data
             userComplete.setUserID(account.getUserID());
             userComplete.setUserFirstName(user.getUserFirstName());
@@ -53,10 +64,16 @@ public class UserCompleteService implements IUserCompleteService {
             userComplete.setAccount(account);
             return userComplete;
         } else {
+            logger.error("Cannot authenticate");
             return null;
         }
     }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see IUserCompleteService#readUserCompleteList()
+     */
     @Override
     public List<UserComplete> readUserCompleteList() {
         List<UserComplete> userCompleteList = new ArrayList<UserComplete>();

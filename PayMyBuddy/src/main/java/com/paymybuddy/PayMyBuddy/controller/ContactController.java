@@ -14,8 +14,11 @@ public class ContactController {
     ContactService contactService;
     
     @PostMapping("/createContact")
-    public Contact createContact(@RequestParam int userIDAccount, @RequestParam int userIDContact){
-        return contactService.createContact(userIDAccount,userIDContact);
+    public boolean createContact(@RequestParam int userIDAccount, @RequestParam int userIDContact){
+        Contact contact=new Contact();
+        contact.setUserIDAccount(userIDAccount);
+        contact.setUserIDContact(userIDContact);
+        return contactService.createContact(contact);
     }
     @GetMapping("/readContactInfo")
     public Contact readContact(@RequestParam int contactID){

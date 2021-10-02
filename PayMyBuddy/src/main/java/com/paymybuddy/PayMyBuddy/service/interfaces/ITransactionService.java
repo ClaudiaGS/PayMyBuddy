@@ -5,11 +5,34 @@ import com.paymybuddy.PayMyBuddy.model.Transaction;
 import java.util.List;
 
 public interface ITransactionService {
-    public Transaction createTransaction(String transactionDescription, double transactionReceivedAmount, int userIDSender, int userIDReceiver);
+    
+    /**
+     *
+     * @param transaction
+     * @return boolean
+     */
+    public boolean createTransaction(Transaction transaction);
+    
+    /**
+     *
+     * @return List<Transaction>
+     */
     public List<Transaction> readTransactionList();
-    public List<Transaction> readUsersTransactionList(int userIDSender);
+    
+    
+    /**
+     *
+     * @param transactionID
+     * @return Transaction
+     */
     public Transaction readTransaction(int transactionID);
-
-    public boolean deleteTransaction(int transactionID);
+    
+    
+    /**
+     *
+     * @param userID
+     * @return List<Transaction>
+     */
+    public List<Transaction> readUsersTransactionList(int userID);
     
 }

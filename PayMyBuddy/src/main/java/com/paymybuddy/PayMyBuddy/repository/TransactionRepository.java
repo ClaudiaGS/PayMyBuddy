@@ -20,66 +20,9 @@ public class TransactionRepository implements ITransactionRepository {
     DataBase dataBase;
     @Autowired
     Transaction transaction;
-    @Override
-    public Transaction createTransaction(Connection connection,String transactionDescription, double transactionReceivedAmount, int userIDSender, int userIDReceiver) {
-        logger.info("Create transaction for user id: " + userIDSender);
-        double feePercentage=0.5/100;
-        double feeAmount=transactionReceivedAmount*feePercentage;
-        transaction=new Transaction();
-        transaction.setTransactionDescription(transactionDescription);
-        transaction.setTransactionDebitedAmount(transactionReceivedAmount+feeAmount);
-        transaction.setTransactionFeeAmount(feeAmount);
-        transaction.setTransactionReceivedAmount(transactionReceivedAmount);
-        transaction.setUserIDSender(userIDSender);
-        transaction.setUserIDReceiver(userIDReceiver);
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
-        try {
-            ps = connection.prepareStatement(DataBaseConstants.CREATE_TRANSACTION, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, transaction.getTransactionDescription());
-            ps.setDouble(2, transaction.getTransactionDebitedAmount());
-            ps.setDouble(3,transaction.getTransactionFeeAmount());
-            ps.setDouble(4,transaction.getTransactionReceivedAmount());
-            ps.setInt(5,transaction.getUserIDSender());
-            ps.setInt(6,transaction.getUserIDReceiver());
-            ps.execute();
-            resultSet = ps.getGeneratedKeys();
-            if (resultSet.next()) {
-                transaction.setTransactionID(resultSet.getInt(1));
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
-        
-        return transaction;
-    }
     
-    @Override
-    public List<Transaction> readTransactionList() {
-        logger.info("Reading transaction list from table");
-        List<Transaction> transactionList = new ArrayList<Transaction>();
-        transaction = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try (Connection con = dataBase.getConnection()) {
-            ps = con.prepareStatement(DataBaseConstants.READ_TRANSACTION_LIST);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                transaction= processRow(rs);
-                transactionList.add(transaction);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        } finally {
-            dataBase.closeResultSet(rs);
-            dataBase.closePreparedStatement(ps);
-        }
-        return transactionList;
-    
-    }
-    
-    protected Transaction processRow(ResultSet rs) throws SQLException {
-        transaction=new Transaction();
+    private Transaction processRow(ResultSet rs) throws SQLException {
+        transaction = new Transaction();
         transaction.setTransactionID(rs.getInt(1));
         transaction.setTransactionDescription(rs.getString(2));
         transaction.setTransactionDebitedAmount(rs.getDouble(3));
@@ -90,20 +33,126 @@ public class TransactionRepository implements ITransactionRepository {
         return transaction;
     }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see com.paymybuddy.PayMyBuddy.repository.interfaces.ITransactionRepository#createTransaction(Connection, Transaction)
+     */
+    @Override
+    public boolean createTransaction(Connection connection, Transaction transaction) {
+        
+        double feePercentage = 0.5 / 100;
+        double feeAmount = transaction.getTransactionReceivedAmount() * feePercentage;
+        
+        boolean result=false;
+        
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        try {
+            ps = connection.prepareStatement(DataBaseConstants.CREATE_TRANSACTION, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, transaction.getTransactionDescription());
+            ps.setDouble(2, (transaction.getTransactionReceivedAmount() + feeAmount));
+            ps.setDouble(3, feeAmount);
+            ps.setDouble(4, transaction.getTransactionReceivedAmount());
+            ps.setInt(5, transaction.getUserIDSender());
+            ps.setInt(6, transaction.getUserIDReceiver());
     
+            logger.debug(ps.toString());
+            
+            ps.execute();
+            
+            resultSet = ps.getGeneratedKeys();
+            if (resultSet.next()) {
+                transaction.setTransactionID(resultSet.getInt(1));
+                result=true;
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        
+        return result;
+    }
+    
+    /**
+     * (non-javadoc)
+     *
+     * @see ITransactionRepository#readTransactionList()
+     */
+    @Override
+    public List<Transaction> readTransactionList() {
+        List<Transaction> transactionList = new ArrayList<Transaction>();
+        transaction = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try (Connection con = dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.READ_TRANSACTION_LIST);
+            
+            logger.debug(ps.toString());
+            
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                transaction = processRow(rs);
+                transactionList.add(transaction);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            dataBase.closeResultSet(rs);
+            dataBase.closePreparedStatement(ps);
+        }
+        return transactionList;
+        
+    }
+    
+    /**
+     * (non-javadoc)
+     *
+     * @see ITransactionRepository#readTransaction(int)
+     */
+    @Override
+    public Transaction readTransaction(int transactionID) {
+        transaction = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try (Connection con = dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.READ_TRANSACTION);
+            ps.setInt(1, transactionID);
+    
+            logger.debug(ps.toString());
+            
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                transaction = processRow(rs);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            dataBase.closeResultSet(rs);
+            dataBase.closePreparedStatement(ps);
+        }
+        return transaction;
+    }
+    
+    /**
+     * (non-javadoc)
+     *
+     * @see ITransactionRepository#readUsersTransactionList(int)
+     */
     @Override
     public List<Transaction> readUsersTransactionList(int userIDSender) {
-        logger.info("Reading transaction list for user with id "+userIDSender);
-        List<Transaction> usersTransactionList=new ArrayList<Transaction>();
+        List<Transaction> usersTransactionList = new ArrayList<Transaction>();
         transaction = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.READ_USERS_TRANSACTION_LIST);
-            ps.setInt(1,userIDSender);
+            ps.setInt(1, userIDSender);
+    
+            logger.debug(ps.toString());
+            
             rs = ps.executeQuery();
             while (rs.next()) {
-                transaction= processRow(rs);
+                transaction = processRow(rs);
                 usersTransactionList.add(transaction);
             }
         } catch (Exception e) {
@@ -113,50 +162,6 @@ public class TransactionRepository implements ITransactionRepository {
             dataBase.closePreparedStatement(ps);
         }
         return usersTransactionList;
-    }
-    
-    @Override
-    public Transaction readTransaction(int transactionID) {
-        logger.info("Reading transaction with id: "+transactionID);
-        transaction=null;
-        PreparedStatement ps=null;
-        ResultSet rs=null;
-        try(Connection con= dataBase.getConnection()){
-            ps=con.prepareStatement(DataBaseConstants.READ_TRANSACTION);
-            ps.setInt(1, transactionID);
-            rs=ps.executeQuery();
-            if(rs.next()){
-                transaction=processRow(rs);
-            }
-        }catch (Exception e){
-            logger.error(e.getMessage());
-        }finally {
-            dataBase.closeResultSet(rs);
-            dataBase.closePreparedStatement(ps);
-        }
-        return transaction;
-    }
-    
-    @Override
-    public boolean deleteTransaction(int transactionID) {
-        logger.info("Deleting transaction with ID"+transactionID);
-        PreparedStatement ps=null;
-        ResultSet rs=null;
-        boolean executed=false;
-        transaction=readTransaction(transactionID);
-        List<Transaction>transactionList=readTransactionList();
-        transactionList.remove(transaction);
-        try(Connection con= dataBase.getConnection()){
-            ps=con.prepareStatement(DataBaseConstants.DELETE_TRANSACTION);
-            ps.setInt(1,transactionID);
-            rs=ps.executeQuery();
-            executed=true;
-        }catch (Exception e){
-            logger.error(e.getMessage());
-        }finally {
-            dataBase.closeResultSet(rs);
-            dataBase.closePreparedStatement(ps);
-        }return executed;
     }
 }
 

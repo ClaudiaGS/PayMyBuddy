@@ -2,24 +2,52 @@ package com.paymybuddy.PayMyBuddy.repository.interfaces;
 
 import com.paymybuddy.PayMyBuddy.model.Account;
 
-import java.util.HashMap;
+import java.sql.Connection;
 import java.util.List;
 
 public interface IAccountRepository {
     
-    public Account createAccount(int userID, String email, String password);
-    
-    public Account readAccount(int accountID);
-    
-//    public Account readAccountEmailBased(String email);
-    
+    /**
+     *
+     * @param connection
+     * @param account
+     * @return boolean
+     */
+    public boolean createAccount(Connection connection,Account account);
+  
+    /**
+     *
+     * @return List<Account>
+     */
     public List<Account> readAccountList();
     
-    public boolean updateAccount(int accountID, HashMap<String, Object> params);
+    /**
+     *
+     * @param accountID
+     * @return Account
+     */
+    public Account readAccount(int accountID);
     
-    public Account authenticate(String email, String password);
+    /**
+     *
+     * @param account
+     * @return boolean
+     */
+    public boolean updateAccount(final Account account);
     
-    public String encodePassword(String password);
+    /**
+     *
+     * @param account
+     * @return boolean
+     */
+    public Account authenticate(Account account);
     
+    /**
+     *
+     * @param email
+     * @return boolean
+     */
+    public boolean alreadyExist(String email);
 }
+
 

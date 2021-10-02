@@ -6,10 +6,34 @@ import java.sql.Connection;
 import java.util.List;
 
 public interface ITransactionRepository {
-    public Transaction createTransaction(Connection connection,String transactionDescription, double transactionDebitedAmount, int userIDSender, int userIDReceiver);
+    /**
+     *
+     * @param connection
+     * @param transaction
+     * @return boolean
+     */
+    public boolean createTransaction(Connection connection,Transaction transaction);
+    
+    /**
+     *
+     * @return List<Transaction>
+     */
     public List<Transaction> readTransactionList();
-    public List<Transaction> readUsersTransactionList(int userIDSender);
+    
+    
+    /**
+     *
+     * @param transactionID
+     * @return Transaction
+     */
     public Transaction readTransaction(int transactionID);
-    //public boolean updateTransaction(int contactID, HashMap<String, Object> params);
-    public boolean deleteTransaction(int transactionID);
+    
+    
+    /**
+     *
+     * @param userID
+     * @return List<Transaction>
+     */
+    public List<Transaction> readUsersTransactionList(int userID);
+    
 }

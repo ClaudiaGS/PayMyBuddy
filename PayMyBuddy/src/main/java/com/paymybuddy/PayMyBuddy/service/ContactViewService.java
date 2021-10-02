@@ -22,6 +22,11 @@ public class ContactViewService  implements IContactViewService {
     ContactService contactService;
     private static final Logger logger = LogManager.getLogger("ContactViewService");
     
+    /**
+     * (non-javadoc)
+     *
+     * @see IContactViewService#getContactViewList(int)
+     */
     public List<ContactView> getContactViewList(int userID){
         
         logger.info("Get contacts for user " + userID);
@@ -54,30 +59,8 @@ public class ContactViewService  implements IContactViewService {
             
         }
         
-        
         return contactViewList;
     }
-
-//    public boolean deleteContactView(int contactID) {
-//        logger.info("Delete contact with ID " + contactID);
-//        boolean deleted = false;
-//        Contact contact = contactService.readContact(contactID);
-//        List<ContactView> contactViewList = new ArrayList<ContactView>();
-//
-//        if (contactViewList == null) return true;
-//
-//        for (ContactView contactView : contactViewList) {
-//            if (contactView.getContactID() == contactID) {
-//               // getContactViewList(contact.getUserIDAccount()).remove(contactView);
-//                contactService.deleteContact(contactID);
-//
-//                deleted = true;
-//            }
-//        }
-//        return deleted;
-//
-//    }
-    
     
 }
 

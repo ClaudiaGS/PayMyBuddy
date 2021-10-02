@@ -24,12 +24,16 @@ public class TransactionViewService implements ITransactionViewService {
     
     private static final Logger logger = LogManager.getLogger("TransactionViewService");
     
+    /**
+     * (non-javadoc)
+     *
+     * @see com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionViewService#getTransactionViewList(int)
+     */
     @Override
     public List<TransactionView> getTransactionViewList(int userID) {
         logger.info("Get transactions for user with id:" + userID);
-        List<TransactionView> transactionViewList = new ArrayList<TransactionView>();
+        List<TransactionView> transactionViewList = new ArrayList<>();
         List<Transaction> transactionList = transactionService.readUsersTransactionList(userID);
-        
     
         for (Transaction transaction : transactionList) {
             TransactionView transactionView = new TransactionView();

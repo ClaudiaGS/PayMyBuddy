@@ -5,6 +5,7 @@ import com.paymybuddy.PayMyBuddy.service.BankAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,8 +16,13 @@ public class BankAccountController {
     BankAccountService bankAccountService;
     
     @PostMapping("/createBankAccount")
-    public BankAccount createBankAccount(@RequestParam double bankAccountAmount,@RequestParam String bankAccountCurrency,@RequestParam int userID){
-        return bankAccountService.createBankAccount(bankAccountAmount,bankAccountCurrency, userID);
+    public boolean createBankAccount(@RequestParam double bankAccountAmount,@RequestParam String bankAccountCurrency,@RequestParam int userID){
+        BankAccount bankAccount=new BankAccount();
+        bankAccount.setBankAccountAmount(bankAccountAmount);
+        bankAccount.setBankAccountCurrency(bankAccountCurrency);
+        bankAccount.setUserID(userID);
+        Connection connection=null;
+        return bankAccountService.createBankAccount(connection,bankAccount);
     }
     @GetMapping("/readBankAccount")
     public BankAccount readBankAccount(@RequestParam int bankAccountID) {
@@ -31,8 +37,9 @@ public class BankAccountController {
         return bankAccountService.readUsersBankAccount(userID);
     }
     @PutMapping("/updateBankAccount")
-    public boolean updateBankAccount(@RequestParam int bankAccountID, @RequestBody HashMap<String, String> params) {
-        return bankAccountService.updateBankAccount(bankAccountID,params);
+    public boolean updateBankAccount(@RequestParam int bankAccountID, @RequestBody HashMap<String,Object> params) {
+        Connection connection=null;
+        return bankAccountService.updateBankAccount(connection,bankAccountID,params);
     }
     
 }
