@@ -21,16 +21,20 @@ public class AccountService implements IAccountService {
     UserService userService;
     
     private static final Logger logger = LogManager.getLogger("AccountService");
+    
     /**
      * (non-javadoc)
      *
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService#createAccount(Connection, Account)
      */
     @Override
-    public boolean createAccount(Connection connection,Account account) {
-
-            return accountRepository.createAccount(connection,account);
-   
+    public boolean createAccount(Connection connection, Account account) {
+        if (account.getAccountEmail().isEmpty()|| account.getAccountPassword().isEmpty()) {
+            return false;
+            
+        } else {
+            return accountRepository.createAccount(connection, account);
+        }
     }
     
     /**
@@ -40,8 +44,8 @@ public class AccountService implements IAccountService {
      */
     @Override
     public List<Account> readAccountList() {
-        List<Account>accountList=accountRepository.readAccountList();
-        logger.info("Account list is "+accountList);
+        List<Account> accountList = accountRepository.readAccountList();
+        logger.info("Account list is " + accountList);
         return accountList;
     }
     
@@ -52,8 +56,8 @@ public class AccountService implements IAccountService {
      */
     @Override
     public Account readAccount(int accountID) {
-        Account account=accountRepository.readAccount(accountID);
-        logger.info("Account with id "+accountID+" is: "+account);
+        Account account = accountRepository.readAccount(accountID);
+        logger.info("Account with id " + accountID + " is: " + account);
         return account;
     }
     
@@ -64,12 +68,12 @@ public class AccountService implements IAccountService {
      */
     @Override
     public boolean updateAccount(int accountID, HashMap<String, Object> params) {
-    
+        
         Account account = this.accountRepository.readAccount(accountID);
-    
-        account.setAccountEmail((String) params.getOrDefault("accountEmail",account.getAccountEmail()));
-        account.setAccountPassword((String) params.getOrDefault("accountPassword",account.getAccountPassword()));
-        account.setUserID((Integer) params.getOrDefault("userID",account.getUserID()));
+        
+        account.setAccountEmail((String) params.getOrDefault("accountEmail", account.getAccountEmail()));
+        account.setAccountPassword((String) params.getOrDefault("accountPassword", account.getAccountPassword()));
+        account.setUserID((Integer) params.getOrDefault("userID", account.getUserID()));
         
         return accountRepository.updateAccount(account);
         
@@ -82,15 +86,15 @@ public class AccountService implements IAccountService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService#authenticate(Account)
      */
     @Override
-    public  Account authenticate(Account account){
-        logger.info("Authentified account "+accountRepository.authenticate(account));
+    public Account authenticate(Account account) {
+        logger.info("Authentified account " + accountRepository.authenticate(account));
         return accountRepository.authenticate(account);
     }
     
     /**
      * (non-javadoc)
      *
-     * @see com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService#alreadyExist(String) 
+     * @see com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService#alreadyExist(String)
      */
     @Override
     public boolean alreadyExist(String email) {

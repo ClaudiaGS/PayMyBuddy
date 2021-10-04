@@ -36,15 +36,6 @@ public interface IBankAccountRepository {
     
     /**
      *
-     * @param userID
-     * @param transferedAmount
-     * @param operation
-     * @return double
-     */
-    public double updateAmount(int userID,double transferedAmount, String operation );
-    
-    /**
-     *
      * @param connection
      * @param bankAccount
      * @return boolean

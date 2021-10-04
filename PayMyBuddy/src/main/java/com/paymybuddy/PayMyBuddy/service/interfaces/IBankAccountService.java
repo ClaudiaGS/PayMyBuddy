@@ -52,6 +52,15 @@ public interface IBankAccountService {
      * @return boolean
      */
     public boolean updateBankAccount(Connection connection,int bankAccountID, HashMap<String,Object> params);
+    
+    /**
+     *
+     * @param amount
+     * @param amountForOperation
+     * @param operation
+     * @return double
+     */
+    public double updateAmountPersonalAccount(double amount,double amountForOperation, String operation);
 }
 
 

@@ -40,8 +40,12 @@ public class UserService implements IUserService {
      */
     @Override
     public boolean createUser(final User newUser) {
-        logger.info("Created user with data:" + newUser);
-        return userRepository.createUser(newUser);
+        if (newUser.getUserFirstName().isEmpty()|| newUser.getUserLastName().isEmpty()||newUser.getUserBirthdate()==null) {
+            return false;
+        } else {
+            logger.info("Created user with data:" + newUser);
+            return userRepository.createUser(newUser);
+        }
     }
     
     /**
@@ -106,16 +110,16 @@ public class UserService implements IUserService {
             if (!this.accountService.alreadyExist(account.getAccountEmail())) {
                 
                 success = this.createUser(user);
-                logger.info("HERE ACCOUNT"+ success);
+                logger.info("HERE ACCOUNT" + success);
                 if (success) {
                     account.setUserID(user.getUserID());
                     bankAccount.setUserID(user.getUserID());
                 }
                 
-                success = success && this.accountService.createAccount(connection,account);
-                logger.info("here1"+success);
-                success = success && this.bankAccountService.createBankAccount(connection,bankAccount);
-                logger.info("here2"+success);
+                success = success && this.accountService.createAccount(connection, account);
+                logger.info("here1" + success);
+                success = success && this.bankAccountService.createBankAccount(connection, bankAccount);
+                logger.info("here2" + success);
             } else {
                 success = false;
                 logger.error("User already exists");
@@ -143,7 +147,7 @@ public class UserService implements IUserService {
                 }
             }
         }
-        logger.info("Registration is "+success);
+        logger.info("Registration is " + success);
         return success;
     }
 }

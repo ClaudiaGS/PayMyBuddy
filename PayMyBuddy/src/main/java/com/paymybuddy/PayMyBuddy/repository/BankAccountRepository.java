@@ -68,7 +68,7 @@ public class BankAccountRepository implements IBankAccountRepository {
     @Override
     public BankAccount readBankAccount(int bankAccountID) {
         logger.info("Read bank account info for bank account ID: " + bankAccountID);
-        bankAccount = null;
+        bankAccount = new BankAccount();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
@@ -130,7 +130,7 @@ public class BankAccountRepository implements IBankAccountRepository {
     @Override
     public BankAccount readUsersBankAccount(int userID){
         logger.info("Read bank account info for user with ID: " + userID);
-        bankAccount = null;
+        bankAccount = new BankAccount();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
@@ -151,33 +151,7 @@ public class BankAccountRepository implements IBankAccountRepository {
             return bankAccount;
         }
     }
-    
-    /**
-     * (non-javadoc)
-     *
-     * @see IBankAccountRepository#updateAmount(int, double, String) 
-     */
-    @Override
-    public double updateAmount(int userID, double transferedAmount, String operation ){
-        double bankAccountAmount=readUsersBankAccount(userID).getBankAccountAmount();
-        switch (operation){
-            case "add":
-                bankAccountAmount=bankAccountAmount+transferedAmount;
-                break;
-            case "substract":
-                if(bankAccountAmount>=(transferedAmount+0.5/100*transferedAmount)) {
-                    bankAccountAmount = bankAccountAmount - (transferedAmount + 0.5 / 100 * transferedAmount);
-                }else{
-                    logger.error("Not enough money in your bank account! You have "+bankAccountAmount+ " euros available.");
-                }
-                break;
-            case "default":
-                logger.error("Operation unknown.You have to add or substract money");
-        }
-        logger.info("Amount after update is "+bankAccountAmount);
-        return bankAccountAmount;
-    }
-    
+   
     /**
      * (non-javadoc)
      *

@@ -23,14 +23,14 @@ public class BankAccountService implements IBankAccountService {
     /**
      * (non-javadoc)
      *
-     * @see com.paymybuddy.PayMyBuddy.service.interfaces.IBankAccountService#createBankAccount(Connection,BankAccount)
+     * @see com.paymybuddy.PayMyBuddy.service.interfaces.IBankAccountService#createBankAccount(Connection, BankAccount)
      */
     @Override
-    public boolean createBankAccount(Connection connection,BankAccount bankAccount) {
+    public boolean createBankAccount(Connection connection, BankAccount bankAccount) {
         if (userService.readUser(bankAccount.getUserID()) != null) {
-            bankAccountRepository.createBankAccount(connection,bankAccount);
+            bankAccountRepository.createBankAccount(connection, bankAccount);
         }
-        return bankAccountRepository.createBankAccount(connection,bankAccount);
+        return bankAccountRepository.createBankAccount(connection, bankAccount);
     }
     
     /**
@@ -76,7 +76,49 @@ public class BankAccountService implements IBankAccountService {
      */
     @Override
     public double updateAmount(int userID, double transferedAmount, String operation) {
-        double amount = bankAccountRepository.updateAmount(userID, transferedAmount, operation);
+        
+        double bankAccountAmount = readUsersBankAccount(userID).getBankAccountAmount();
+        switch (operation) {
+            case "add":
+                bankAccountAmount = bankAccountAmount + transferedAmount;
+                break;
+            case "substract":
+                if (bankAccountAmount >= (transferedAmount + 0.5 / 100 * transferedAmount)) {
+                    bankAccountAmount = bankAccountAmount - (transferedAmount + 0.5 / 100 * transferedAmount);
+                } else {
+                    logger.error("Not enough money in your bank account! You have " + bankAccountAmount + " euros available.");
+                }
+                break;
+            default:
+                logger.error("Operation unknown.You have to add or substract money");
+        }
+        logger.info("Amount after update is " + bankAccountAmount);
+        return bankAccountAmount;
+    }
+    
+    /**
+     * (non-javadoc)
+     *
+     * @see com.paymybuddy.PayMyBuddy.service.interfaces.IBankAccountService#updateAmountPersonalAccount(double, double, String)
+     */
+    @Override
+    public double updateAmountPersonalAccount(double amount, double amountForOperation, String operation) {
+        
+        switch (operation) {
+            case "add":
+                amount += amountForOperation;
+                break;
+            case "substract":
+                if (amountForOperation <= amount) {
+                    amount -= amountForOperation;
+                }else{
+                    logger.error("Cannot withdraw.Not enough money");
+                }
+                break;
+            default:
+                logger.error("Operation unknown.You have to add or substract money");
+        }
+        logger.info("Amount after update is " + amount);
         return amount;
     }
     

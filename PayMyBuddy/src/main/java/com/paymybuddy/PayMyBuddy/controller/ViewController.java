@@ -1,5 +1,6 @@
 package com.paymybuddy.PayMyBuddy.controller;
 
+import com.paymybuddy.PayMyBuddy.config.DataBase;
 import com.paymybuddy.PayMyBuddy.model.*;
 import com.paymybuddy.PayMyBuddy.service.*;
 import org.apache.logging.log4j.LogManager;
@@ -15,11 +16,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
 public class ViewController {
+    @Autowired
+    DataBase dataSource;
     @Autowired
     UserCompleteService userCompleteService;
     @Autowired
@@ -108,8 +113,8 @@ public class ViewController {
     
     @PostMapping("/registerUser")
     public String registerUser(@ModelAttribute RegisterInfoView registerInfoView, Model model, HttpServletRequest request) {
-       
-        String viewToReturn="Home";
+        
+        String viewToReturn = "Home";
         Account account = new Account();
         account.setAccountEmail(registerInfoView.getEmail());
         account.setAccountPassword(registerInfoView.getPassword());
@@ -118,38 +123,45 @@ public class ViewController {
         User user = new User();
         user.setUserFirstName(registerInfoView.getFirstName());
         user.setUserLastName(registerInfoView.getLastName());
-        user.setUserBirthdate(registerInfoView.getBirthdate());
-        
-        if (userService.registration(account, user)) {
-            
-            logger.info("Registration succeeded");
-            
-            
-            UserComplete userComplete = userCompleteService.login(account);
-            HttpSession session = request.getSession();
-            int userIDAccount = userComplete.getUserID();
-            session.setAttribute("userIDAccount", userIDAccount);
-            session.setAttribute("userComplete", userComplete);
-            List<TransactionView> transactionViewList = transactionViewService.getTransactionViewList(userIDAccount);
-            TransactionView transaction = new TransactionView();
-            
-            // get last transaction for the Home view
-            if (transactionViewList.size() > 0) {
-                transaction = transactionViewList.get(transactionViewList.size() - 1);
-            } else {
-                transaction = null;
-            }
-            
-            Double amount = bankAccountService.readUsersBankAccount(userIDAccount).getBankAccountAmount();
-            model.addAttribute("amount", amount);
-            model.addAttribute("transaction", transaction);
-            model.addAttribute("user", userComplete);
-            model.addAttribute("account", account);
-            
-            viewToReturn="Home";
+        if (registerInfoView.getBirthdate() == null) {
+            user.setUserBirthdate(null);
         } else {
-            logger.error("Missing info to register");
-            viewToReturn="Registration";
+            user.setUserBirthdate(registerInfoView.getBirthdate());
+        }
+        if (registerInfoView.getPassword().equals(registerInfoView.getRePassword())) {
+            if (userService.registration(account, user)) {
+                
+                logger.info("Registration succeeded");
+                
+                UserComplete userComplete = userCompleteService.login(account);
+                HttpSession session = request.getSession();
+                int userIDAccount = userComplete.getUserID();
+                session.setAttribute("userIDAccount", userIDAccount);
+                session.setAttribute("userComplete", userComplete);
+                List<TransactionView> transactionViewList = transactionViewService.getTransactionViewList(userIDAccount);
+                TransactionView transaction = new TransactionView();
+                
+                // get last transaction for the Home view
+                if (transactionViewList.size() > 0) {
+                    transaction = transactionViewList.get(transactionViewList.size() - 1);
+                } else {
+                    transaction = null;
+                }
+                
+                Double amount = bankAccountService.readUsersBankAccount(userIDAccount).getBankAccountAmount();
+                model.addAttribute("amount", amount);
+                model.addAttribute("transaction", transaction);
+                model.addAttribute("user", userComplete);
+                model.addAttribute("account", account);
+                
+                viewToReturn = "Home";
+            } else {
+                logger.error("Missing info to register");
+                viewToReturn = "Registration";
+            }
+        } else {
+            viewToReturn = "Registration";
+            logger.error("Password not the same");
         }
         return viewToReturn;
         
@@ -205,7 +217,7 @@ public class ViewController {
                 userIDContact = account.getUserID();
             }
         }
-        Contact contactBase=new Contact();
+        Contact contactBase = new Contact();
         contactBase.setUserIDAccount((int) session.getAttribute("userIDAccount"));
         contactBase.setUserIDContact(userIDContact);
         contactService.createContact(contactBase);
@@ -248,16 +260,16 @@ public class ViewController {
         }
         transaction.setDescription(description);
         transaction.setAmount(amount);
-
-
+        
+        
         int userIDReceiver = 0;
         for (UserComplete user : userCompleteService.readUserCompleteList()) {
             if (user.getUserFirstName().equals(transaction.getFirstName()) && user.getUserLastName().equals(transaction.getLastName())) {
                 userIDReceiver = user.getUserID();
             }
         }
-    
-        Transaction transactionToCreate=new Transaction();
+        
+        Transaction transactionToCreate = new Transaction();
         transactionToCreate.setTransactionDescription(transaction.getDescription());
         transactionToCreate.setTransactionReceivedAmount(amount);
         transactionToCreate.setUserIDSender((int) session.getAttribute("userIDAccount"));
@@ -273,4 +285,42 @@ public class ViewController {
     }
     
     
+    //ACCOUNT AMOUNT OPERATIONS
+    
+    @GetMapping("/amountOperation")
+    public String operatePersonalAmount(Model model, Operation operation, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Double amount = bankAccountService.readUsersBankAccount((int) session.getAttribute("userIDAccount")).getBankAccountAmount();
+        
+        operation.setAmount(amount);
+        logger.info("amount first " + operation.getAmount());
+        model.addAttribute("operation", operation);
+        
+        return "Operation";
+    }
+    
+    @PostMapping("/updatePersonalAmount")
+    public ModelAndView updateAmountPersonalAccount(@ModelAttribute Operation operation, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Connection connection = null;
+        try {
+            
+            connection = this.dataSource.getConnection();
+            
+            
+            UserComplete userComplete = (UserComplete) session.getAttribute("userComplete");
+            operation.setAmount(userComplete.getUsersBankAccount().getBankAccountAmount());
+            
+            
+            logger.info("amount is " + operation.getAmount() + " operation name " + operation.getOperationName() + " operation amount " + operation.getAmountForOperation());
+            
+            BankAccount bankAccount = bankAccountService.readUsersBankAccount((int) session.getAttribute("userIDAccount"));
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("bankAccountAmount", bankAccountService.updateAmountPersonalAccount(operation.getAmount(), operation.getAmountForOperation(), operation.getOperationName()));
+            bankAccountService.updateBankAccount(connection, bankAccount.getBankAccountID(), params);
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return new ModelAndView("redirect:/homePage");
+    }
 }
