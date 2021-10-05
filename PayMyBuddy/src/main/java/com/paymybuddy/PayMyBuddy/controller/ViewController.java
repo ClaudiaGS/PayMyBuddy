@@ -271,19 +271,37 @@ public class ViewController {
     
     //ACCOUNT AMOUNT OPERATIONS
     
-    @GetMapping("/amountOperation")
-    public String operatePersonalAmount(Model model, Operation operation, HttpServletRequest request) {
+    @GetMapping("/amountOperationAdd")
+    public String operatePersonalAmountAdd(Model model, Operation operation, HttpServletRequest request) {
         HttpSession session = request.getSession();
         Double amount = bankAccountService.readUsersBankAccount((int) session.getAttribute("userIDAccount")).getBankAccountAmount();
         
         operation.setAmount(amount);
+        String opName="add";
+       operation.setOperationName(opName);
         model.addAttribute("operation", operation);
+        model.addAttribute("opName",opName);
+        logger.info("opName "+opName);
         
         return "Operation";
     }
-    
+    @GetMapping("/amountOperationWithdraw")
+    public String operatePersonalAmountWithdraw(Model model, Operation operation, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Double amount = bankAccountService.readUsersBankAccount((int) session.getAttribute("userIDAccount")).getBankAccountAmount();
+        
+        operation.setAmount(amount);
+        String opName="subtract";
+        operation.setOperationName(opName);
+        model.addAttribute("operation", operation);
+        model.addAttribute("opName",opName);
+       
+        
+        return "Operation";
+    }
     @PostMapping("/updatePersonalAmount")
-    public ModelAndView updateAmountPersonalAccount(@ModelAttribute Operation operation, Model model, HttpServletRequest request) {
+    public ModelAndView updateAmountPersonalAccount(@ModelAttribute Operation operation,String opName, HttpServletRequest request) {
+      
         HttpSession session = request.getSession();
         Connection connection = null;
         try {
@@ -293,9 +311,7 @@ public class ViewController {
             UserComplete userComplete = userCompleteService.readUserComplete((int) session.getAttribute("userIDAccount"));
             operation.setAmount(bankAccountService.readUsersBankAccount((int) session.getAttribute("userIDAccount")).getBankAccountAmount());
             
-            
-            logger.info("amount is " + operation.getAmount() + " operation name " + operation.getOperationName() + " operation amount " + operation.getAmountForOperation());
-            
+           
             BankAccount bankAccount = bankAccountService.readUsersBankAccount((int) session.getAttribute("userIDAccount"));
             HashMap<String, Object> params = new HashMap<>();
             params.put("bankAccountAmount", bankAccountService.updateAmountPersonalAccount(operation.getAmount(), operation.getAmountForOperation(), operation.getOperationName()));

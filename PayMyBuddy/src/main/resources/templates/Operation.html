@@ -148,20 +148,12 @@ font-size:large;
 
                                 <td><input id="amountForOperation" type="text" th:field="*{amountForOperation}"
                                            placeholder="Enter amount"/></td>
-                                <td>
-                                    <form name="form1">
-                                        <input type="hidden" th:name="operationName"
-                                               th:value="add"/>
-                                        <button type="submit">Credit account</button>
-                                    </form>
+                                <td >
+                                       <input type="hidden" th:field="*{operationName}" th:value="${opName}">
+                                        <button type="submit">Done</button>
+
                                 </td>
-                                <td>
-                                    <form name="form2" >
-                                        <input type="hidden" th:name="operationName"
-                                               th:value="subtract"/>
-                                        <button type="submit">Withdraw money</button>
-                                    </form>
-                                </td>
+
                             </form>
                         </tr>
 

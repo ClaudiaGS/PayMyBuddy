@@ -142,8 +142,8 @@ font-size:large;
                         <div th:if="${transaction}">
                             <td><span th:text="${transaction.firstName}"> First Name </span></td>
                             <td><span th:text="${transaction.lastName}"> Last Name </span></td>
-                            <td><span th:text="${transaction.description}"> Email </span></td>
-                            <td><span th:text="${transaction.amount}"> Bank Account No</span></td>
+                            <td><span th:text="${transaction.description}"> Description </span></td>
+                            <td><span th:text="${transaction.amount}"> Amount</span></td>
                         </div>
                     </tr>
                     </tbody>
@@ -152,9 +152,13 @@ font-size:large;
             <h3>Your available amount is:</h3>
             <span id="amount" type="text" th:field="${amount}"
                   th:text="${amount}"></span>
-            <h3><a th:href="@{/amountOperation}">
+
+            <a th:href="@{/amountOperationAdd}">
             <button class="btn btn-danger">Add Money</button>
-            </a></h3>
+            </a>
+            <a th:href="@{/amountOperationWithdraw}">
+                <button class="btn btn-danger">Withdraw Money</button>
+            </a>
         </div>
 
 
