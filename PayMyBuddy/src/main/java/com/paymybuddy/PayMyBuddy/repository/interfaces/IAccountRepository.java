@@ -30,6 +30,13 @@ public interface IAccountRepository {
     
     /**
      *
+     * @param userID
+     * @return Account
+     */
+    public Account readUsersAccount(int userID);
+    
+    /**
+     *
      * @param account
      * @return boolean
      */

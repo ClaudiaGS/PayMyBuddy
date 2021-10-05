@@ -30,6 +30,12 @@ public interface IAccountService {
      */
     public Account readAccount(int accountID);
     
+    /**
+     *
+     * @param userID
+     * @return Account
+     */
+    public Account readUsersAccount(int userID);
     
     /**
      *

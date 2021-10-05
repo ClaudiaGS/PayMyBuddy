@@ -23,6 +23,8 @@ public class TransactionService implements ITransactionService {
     @Autowired
     TransactionRepository transactionRepository;
     @Autowired
+    UserService userService;
+    @Autowired
     BankAccountService bankAccountService;
     
     private static final Logger logger = LogManager.getLogger("TransactionService");
@@ -34,48 +36,61 @@ public class TransactionService implements ITransactionService {
      */
     @Override
     public boolean createTransaction(Transaction transaction) {
-        HashMap<String,Object>paramsSender = new HashMap<>();
-        HashMap<String,Object>paramsReceiver=new HashMap<>();
-        paramsSender.put("bankAccountAmount",bankAccountService.updateAmount(transaction.getUserIDSender(),transaction.getTransactionReceivedAmount(),"substract"));
-        paramsReceiver.put("bankAccountAmount",bankAccountService.updateAmount(transaction.getUserIDReceiver(), transaction.getTransactionReceivedAmount(),"add"));
-    
-        Connection connection = null;
         boolean result = true;
-        try {
-        
-            connection = this.dataSource.getConnection();
-            connection.setAutoCommit(false);
-    
-            result = result && bankAccountService.updateBankAccount(connection, bankAccountService.readUsersBankAccount(transaction.getUserIDSender()).getBankAccountID(),paramsSender);
-            result = result && bankAccountService.updateBankAccount(connection, bankAccountService.readUsersBankAccount(transaction.getUserIDReceiver()).getBankAccountID(),paramsReceiver);
-    
-            result = result && transactionRepository.createTransaction(connection, transaction);
-    
-    
-        } catch (SQLException | ClassNotFoundException e) {
-            logger.error(e);
-            result = false;
-        } finally {
-        
-            if(connection != null) {
-                try {
-                    if ( !result ) {
-                        connection.rollback();
-                    } else {
-                        connection.commit();
-                    }
-                    connection.setAutoCommit(true);
+        double feePercentage = 0.5 / 100;
+        double feeAmount = transaction.getTransactionReceivedAmount() * feePercentage;
+        if (transaction.getTransactionReceivedAmount() > 0) {
+            if (bankAccountService.readUsersBankAccount(transaction.getUserIDSender()).getBankAccountAmount() >= (transaction.getTransactionReceivedAmount() +feeAmount)) {
+                HashMap<String, Object> paramsSender = new HashMap<>();
+                HashMap<String, Object> paramsReceiver = new HashMap<>();
+                paramsSender.put("bankAccountAmount", bankAccountService.updateAmount(transaction.getUserIDSender(), transaction.getTransactionReceivedAmount(), "substract"));
+                paramsReceiver.put("bankAccountAmount", bankAccountService.updateAmount(transaction.getUserIDReceiver(), transaction.getTransactionReceivedAmount(), "add"));
                 
-                } catch (SQLException e) {
+                Connection connection = null;
+                
+                try {
+                    
+                    connection = this.dataSource.getConnection();
+                    connection.setAutoCommit(false);
+                    
+                    result = result && bankAccountService.updateBankAccount(connection, bankAccountService.readUsersBankAccount(transaction.getUserIDSender()).getBankAccountID(), paramsSender);
+                    result = result && bankAccountService.updateBankAccount(connection, bankAccountService.readUsersBankAccount(transaction.getUserIDReceiver()).getBankAccountID(), paramsReceiver);
+                    
+                    result = result && transactionRepository.createTransaction(connection, transaction);
+                    
+                    
+                } catch (SQLException | ClassNotFoundException e) {
                     logger.error(e);
+                    result = false;
                 } finally {
-                    try {
-                        connection.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                    
+                    if (connection != null) {
+                        try {
+                            if (!result) {
+                                connection.rollback();
+                            } else {
+                                connection.commit();
+                            }
+                            connection.setAutoCommit(true);
+                            
+                        } catch (SQLException e) {
+                            logger.error(e);
+                        } finally {
+                            try {
+                                connection.close();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
+            } else {
+                logger.error("Not enough money.Cannot send !");
+                result=false;
             }
+        } else {
+            logger.error("Transaction amount not valid");
+            result = false;
         }
         return result;
     }
@@ -109,7 +124,7 @@ public class TransactionService implements ITransactionService {
     public List<Transaction> readUsersTransactionList(int userIDSender) {
         return transactionRepository.readUsersTransactionList(userIDSender);
     }
-
+    
 }
 
 

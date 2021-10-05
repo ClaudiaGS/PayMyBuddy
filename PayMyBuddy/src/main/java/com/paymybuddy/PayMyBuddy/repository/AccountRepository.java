@@ -123,6 +123,34 @@ public class AccountRepository implements IAccountRepository {
         }
     }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see IAccountRepository#readUsersAccount(int)
+     */
+    @Override
+    public Account readUsersAccount(int userID) {
+        account = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        try (Connection con = dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.READ_USERS_ACCOUNT);
+            ps.setInt(1, userID);
+            
+            logger.debug(ps.toString());
+            
+            resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                account = processRow(resultSet);
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+        } finally {
+            dataBase.closeResultSet(resultSet);
+            dataBase.closePreparedStatement(ps);
+            return account;
+        }
+    }
     
     /**
      * (non-javadoc)

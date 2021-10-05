@@ -79,12 +79,14 @@ color:white;
 .table-fill{
  background-color:#30F3E8;
  color:black;
+ text-align: left;
 }
 #amount{
 background-color:white;
 color:black;
 font-size:large;
 }
+
 
 
 
@@ -147,21 +149,21 @@ font-size:large;
                                 <td><input id="amountForOperation" type="text" th:field="*{amountForOperation}"
                                            placeholder="Enter amount"/></td>
                                 <td>
-                                    <form id="1">
+                                    <form name="form1">
                                         <input type="hidden" th:name="operationName"
                                                th:value="add"/>
                                         <button type="submit">Credit account</button>
                                     </form>
-                                    <form id="2">
+                                </td>
+                                <td>
+                                    <form name="form2" >
                                         <input type="hidden" th:name="operationName"
-                                               th:value="substract"/>
+                                               th:value="subtract"/>
                                         <button type="submit">Withdraw money</button>
                                     </form>
                                 </td>
                             </form>
                         </tr>
-
-
 
 
                     </div>

@@ -82,7 +82,7 @@ public class BankAccountService implements IBankAccountService {
             case "add":
                 bankAccountAmount = bankAccountAmount + transferedAmount;
                 break;
-            case "substract":
+            case "subtract":
                 if (bankAccountAmount >= (transferedAmount + 0.5 / 100 * transferedAmount)) {
                     bankAccountAmount = bankAccountAmount - (transferedAmount + 0.5 / 100 * transferedAmount);
                 } else {
@@ -108,7 +108,7 @@ public class BankAccountService implements IBankAccountService {
             case "add":
                 amount += amountForOperation;
                 break;
-            case "substract":
+            case "subtract":
                 if (amountForOperation <= amount) {
                     amount -= amountForOperation;
                 }else{

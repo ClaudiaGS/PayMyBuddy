@@ -141,8 +141,8 @@ color:white;
                     <tr th:each="transaction: ${transactions}">
                         <td><span th:text="${transaction.firstName}"> First Name </span></td>
                         <td><span th:text="${transaction.lastName}"> Last Name </span></td>
-                        <td><span th:text="${transaction.description}"> Email </span></td>
-                        <td><span th:text="${transaction.amount}"> Bank Account No</span></td>
+                        <td><span th:text="${transaction.description}"> Description </span></td>
+                        <td><span th:text="${transaction.amount}"> Amount</span></td>
 
                     </tr>
                     </tbody>

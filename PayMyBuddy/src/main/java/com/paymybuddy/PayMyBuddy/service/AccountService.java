@@ -48,7 +48,15 @@ public class AccountService implements IAccountService {
         logger.info("Account list is " + accountList);
         return accountList;
     }
-    
+    /**
+     * (non-javadoc)
+     *
+     * @see com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService#readUsersAccount(int)
+     */
+    @Override
+    public Account readUsersAccount(int userID) {
+        return accountRepository.readUsersAccount(userID);
+    }
     /**
      * (non-javadoc)
      *
