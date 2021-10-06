@@ -5,17 +5,17 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 
-public class DataBase {
+public class DataBase implements IDataBase{
     
     private static final Logger logger = LogManager.getLogger("DataBaseConfig");
-    
+    @Override
     public Connection getConnection() throws ClassNotFoundException, SQLException {
         logger.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/paymybuddyDB", "claudia", "parola");
     }
-    
+    @Override
     public void closeConnection(Connection con) {
         if (con != null) {
             try {
@@ -26,7 +26,7 @@ public class DataBase {
             }
         }
     }
-    
+    @Override
     public void closePreparedStatement(PreparedStatement ps) {
         if (ps != null) {
             try {
@@ -37,7 +37,7 @@ public class DataBase {
             }
         }
     }
-    
+    @Override
     public void closeResultSet(ResultSet rs) {
         if (rs != null) {
             try {

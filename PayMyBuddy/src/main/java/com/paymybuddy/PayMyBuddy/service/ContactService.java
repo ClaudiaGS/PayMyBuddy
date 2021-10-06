@@ -100,7 +100,6 @@ public class ContactService implements IContactService {
     @Override
     public boolean deleteContact(int contactID) {
         logger.info("Deleted contact with id "+contactID);
-        logger.info("Contact list after delete is "+contactRepository.readContactList());
         return contactRepository.deleteContact(contactID);
     }
 }

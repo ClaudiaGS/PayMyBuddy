@@ -3,8 +3,6 @@ package com.paymybuddy.PayMyBuddy.model;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
-
 @Data
 @Component
 public class RegisterInfoView {
@@ -13,5 +11,4 @@ public class RegisterInfoView {
     private String rePassword;
     private String firstName;
     private String lastName;
-    private Date birthdate;
 }

@@ -8,6 +8,7 @@
     <title>Pay My Buddy Application</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
@@ -66,33 +67,25 @@
             text-align: center;
             margin-top:5%;
         }
-        .special {
-		    padding-top:50px;
-	    }
-        .container-special{
-        padding-top:10%;
-        display:flex;
-        flex-direction:column;
-        justify-content:center;
-        align-items:center;
 
-	        color:#30F3E8;
-	    }
-        .h2{
-            text-align: center;
-        }
-        .form-group{
-        display:flex;
-        flex-direction:row;
-        justify-content:center;
-        }
+         .table table-striped table-sm{
+        background-color:pink;
 
-        .button{
-        color:#30F3E8;
-        margin-top:10%;
-        width:20%;
-        }
+}
+.column-name{
+color:white;
+}
 
+.table-fill{
+ background-color:#30F3E8;
+ color:black;
+text-align: left;
+}
+#amount{
+background-color:white;
+color:black;
+font-size:large;
+}
 
     </style>
 </head>
@@ -105,14 +98,14 @@
 
         <div class="nav-bar">
             <ul class="nav-list">
-                <li >
+                <li>
                     <a class="nav-element" th:href="@{/homePage}">Home</a>
                 </li>
-                <li >
-                    <a class="nav-element" th:href="@{/profile}">Profile</a>
+                <li>
+                    <a class="active-nav-element" href="#">Profile</a>
                 </li>
-                <li >
-                    <a class="active-nav-element" th:href="@{/contacts}">Contacts</a>
+                <li>
+                    <a class="nav-element" th:href="@{/contacts}">Contacts</a>
                 </li>
                 <li>
                     <a class="nav-element" th:href="@{/transactions}">Transactions</a>
@@ -127,33 +120,14 @@
 
     <div class="carousel-item active"
          style="background-image: url('https://source.unsplash.com/RCAhiGJsUUE/1920x1080')">
-
-        <div class="container-special">
-
-
-
-            <h2 class="h2">Add new contact</h2>
-
-            <div>
-                <form method="post"
-                      th:action="@{/saveContact}" th:object="${contact}">
-                    <div class="form-group">
-                        <label class="col-form-label">Choose Email</label>
-
-                        <select id="email" name="email" th:field="*{email}" >
-                            <option value="">Select Email</option>
-                            <option th:each="email : ${emails}" th:value="${email}" th:text="${email}"></option>
-                        </select>
-                        <input type="submit" value="Submit">
-
-                    </div>
-
-
-                </form>
-            </div>
-            <button class="button back" type="button"><a th:href="@{/contacts}">Back to contact list</a></button>
+        <div class="section-text">
+            <h2>First Name: <span style="color:#30F3E8" th:text="${user.userFirstName}"></span></h2>
+            <h2>Last Name: <span style="color:#30F3E8" th:text="${user.userLastName}"></span></h2>
+            <h2>Email: <span style="color:#30F3E8" th:field="${email}" th:text="${email}"></span></h2>
+            <h2>Amount: <span style="color:#30F3E8" id="amount" type="text" th:field="${amount}" th:text="${amount}"></span> </h2>
         </div>
-    </div>
+
+
     </div>
 </section>
 
@@ -161,29 +135,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
         crossorigin="anonymous"></script>
-<script
-        src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script
-        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
-<script
-        src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script
-        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
-
-<link rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-      crossorigin="anonymous">
-
-<link rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
-      crossorigin="anonymous">
-
 </body>
 </html>
 

@@ -43,7 +43,7 @@ public class TransactionService implements ITransactionService {
             if (bankAccountService.readUsersBankAccount(transaction.getUserIDSender()).getBankAccountAmount() >= (transaction.getTransactionReceivedAmount() +feeAmount)) {
                 HashMap<String, Object> paramsSender = new HashMap<>();
                 HashMap<String, Object> paramsReceiver = new HashMap<>();
-                paramsSender.put("bankAccountAmount", bankAccountService.updateAmount(transaction.getUserIDSender(), transaction.getTransactionReceivedAmount(), "substract"));
+                paramsSender.put("bankAccountAmount", bankAccountService.updateAmount(transaction.getUserIDSender(), transaction.getTransactionReceivedAmount(), "subtract"));
                 paramsReceiver.put("bankAccountAmount", bankAccountService.updateAmount(transaction.getUserIDReceiver(), transaction.getTransactionReceivedAmount(), "add"));
                 
                 Connection connection = null;
@@ -58,7 +58,7 @@ public class TransactionService implements ITransactionService {
                     
                     result = result && transactionRepository.createTransaction(connection, transaction);
                     
-                    
+                    logger.info("Created transaction "+transaction);
                 } catch (SQLException | ClassNotFoundException e) {
                     logger.error(e);
                     result = false;

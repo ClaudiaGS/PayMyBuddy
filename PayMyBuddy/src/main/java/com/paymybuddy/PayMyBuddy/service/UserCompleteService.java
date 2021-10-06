@@ -37,7 +37,6 @@ public class UserCompleteService implements IUserCompleteService {
         UserComplete userComplete = new UserComplete();
         account = accountService.authenticate(account);
         if (account != null) {
-            logger.info("HERE");
             
             User user = userService.readUser(account.getUserID());
             
@@ -50,7 +49,6 @@ public class UserCompleteService implements IUserCompleteService {
             userComplete.setUserID(account.getUserID());
             userComplete.setUserFirstName(user.getUserFirstName());
             userComplete.setUserLastName(user.getUserLastName());
-            userComplete.setUserBirthdate(user.getUserBirthdate());
             userComplete.setUsersBankAccount(bankAccount);
             userComplete.setContactList(contactsList);
             userComplete.setTransactionList(transactionList);
@@ -79,7 +77,6 @@ public class UserCompleteService implements IUserCompleteService {
             userComplete.setUserID(account.getUserID());
             userComplete.setUserFirstName(userService.readUser(account.getUserID()).getUserFirstName());
             userComplete.setUserLastName(userService.readUser(account.getUserID()).getUserLastName());
-            userComplete.setUserBirthdate(userService.readUser(account.getUserID()).getUserBirthdate());
             userComplete.setUsersBankAccount(bankAccountService.readUsersBankAccount(account.getUserID()));
             
             userComplete.setContactList(contactService.readUsersContactList(account.getUserID()));
@@ -104,7 +101,6 @@ public class UserCompleteService implements IUserCompleteService {
         userComplete.setUserID(account.getUserID());
         userComplete.setUserFirstName(user.getUserFirstName());
         userComplete.setUserLastName(user.getUserLastName());
-        userComplete.setUserBirthdate(user.getUserBirthdate());
         userComplete.setUsersBankAccount(bankAccountService.readUsersBankAccount(userID));
         List<Contact> contactsList = contactService.readUsersContactList(userID);
     

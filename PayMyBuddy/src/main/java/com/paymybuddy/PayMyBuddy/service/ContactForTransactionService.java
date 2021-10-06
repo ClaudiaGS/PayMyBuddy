@@ -37,7 +37,11 @@ public class ContactForTransactionService implements IContactForTransaction {
         return contactForTransactionList;
     }
     
-    
+    /**
+     * (non-javadoc)
+     *
+     * @see IContactForTransaction#readContactForTransaction(int)
+     */
     @Override
     public ContactForTransaction readContactForTransaction(int contactID) {
         Contact contact= contactService.readContact(contactID);

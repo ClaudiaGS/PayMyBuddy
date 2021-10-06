@@ -2,8 +2,6 @@ package com.paymybuddy.PayMyBuddy.service;
 
 import com.paymybuddy.PayMyBuddy.model.*;
 import com.paymybuddy.PayMyBuddy.service.interfaces.IContactViewService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +18,7 @@ public class ContactViewService  implements IContactViewService {
     BankAccountService bankAccountService;
     @Autowired
     ContactService contactService;
-    private static final Logger logger = LogManager.getLogger("ContactViewService");
+
     
     /**
      * (non-javadoc)
@@ -29,7 +27,6 @@ public class ContactViewService  implements IContactViewService {
      */
     public List<ContactView> getContactViewList(int userID){
         
-        logger.info("Get contacts for user " + userID);
         List<ContactView> contactViewList = new ArrayList<ContactView>();
         List<User> userList = userService.readUserList();
         List<Account> accountList = accountService.readAccountList();

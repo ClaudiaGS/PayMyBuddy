@@ -1,7 +1,7 @@
 package com.paymybuddy.PayMyBuddy.service;
 
 import com.paymybuddy.PayMyBuddy.model.Account;
-import com.paymybuddy.PayMyBuddy.repository.AccountRepository;
+import com.paymybuddy.PayMyBuddy.repository.interfaces.IAccountRepository;
 import com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,10 +15,7 @@ import java.util.List;
 @Service
 public class AccountService implements IAccountService {
     @Autowired
-    AccountRepository accountRepository;
-    
-    @Autowired
-    UserService userService;
+    IAccountRepository accountRepository;
     
     private static final Logger logger = LogManager.getLogger("AccountService");
     
@@ -95,7 +92,7 @@ public class AccountService implements IAccountService {
      */
     @Override
     public Account authenticate(Account account) {
-        logger.info("Authentified account " + accountRepository.authenticate(account));
+        logger.info("Authentified account is " + accountRepository.authenticate(account));
         return accountRepository.authenticate(account);
     }
     

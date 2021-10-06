@@ -67,7 +67,6 @@ public class BankAccountRepository implements IBankAccountRepository {
      */
     @Override
     public BankAccount readBankAccount(int bankAccountID) {
-        logger.info("Read bank account info for bank account ID: " + bankAccountID);
         bankAccount = new BankAccount();
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -97,7 +96,6 @@ public class BankAccountRepository implements IBankAccountRepository {
      */
     @Override
     public List<BankAccount> readBankAccountList() {
-        logger.info("Reading bank account list from table");
         List<BankAccount> bankAccountList = new ArrayList<BankAccount>();
         bankAccount = null;
         PreparedStatement ps = null;
@@ -129,7 +127,7 @@ public class BankAccountRepository implements IBankAccountRepository {
      */
     @Override
     public BankAccount readUsersBankAccount(int userID){
-        logger.info("Read bank account info for user with ID: " + userID);
+        
         bankAccount = new BankAccount();
         PreparedStatement ps = null;
         ResultSet rs = null;

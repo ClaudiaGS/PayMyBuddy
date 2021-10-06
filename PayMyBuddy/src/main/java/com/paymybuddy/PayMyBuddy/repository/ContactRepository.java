@@ -30,7 +30,6 @@ public class ContactRepository implements IContactRepository {
         return contact;
     }
     
-    
     /**
      * (non-javadoc)
      *

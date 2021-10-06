@@ -103,7 +103,26 @@ public class ViewController {
         
         
     }
-    
+    @GetMapping("/profile")
+    public String profilePage(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        TransactionView transaction = new TransactionView();
+        List<TransactionView> transactionViewList = transactionViewService.getTransactionViewList((int) session.getAttribute("userIDAccount"));
+        if (transactionViewList.size() > 0) {
+            transaction = transactionViewList.get(transactionViewList.size() - 1);
+        } else {
+            transaction = null;
+        }
+        
+        UserComplete userComplete=userCompleteService.readUserComplete((int)session.getAttribute("userIDAccount"));
+        model.addAttribute("amount", bankAccountService.readUsersBankAccount((int)session.getAttribute("userIDAccount")).getBankAccountAmount());
+        model.addAttribute("transaction", transaction);
+        model.addAttribute("user", userComplete);
+        model.addAttribute("email",userComplete.getAccount().getAccountEmail());
+        return "Profile";
+        
+        
+    }
     //REGISTRATION
     @GetMapping("/registration")
     public String registration(Model model) {
@@ -124,11 +143,7 @@ public class ViewController {
         User user = new User();
         user.setUserFirstName(registerInfoView.getFirstName());
         user.setUserLastName(registerInfoView.getLastName());
-        if (registerInfoView.getBirthdate() == null) {
-            user.setUserBirthdate(null);
-        } else {
-            user.setUserBirthdate(registerInfoView.getBirthdate());
-        }
+
         if (registerInfoView.getPassword().equals(registerInfoView.getRePassword())) {
             if (userService.registration(account, user)) {
                 

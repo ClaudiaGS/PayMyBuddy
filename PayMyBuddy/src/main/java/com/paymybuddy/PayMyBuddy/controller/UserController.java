@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +41,7 @@ public class UserController {
     
     @PostMapping("/register")
     public int registration(String email, String password,
-                            String rePassword, String firstName, String lastName, Date birthdate) {
+                            String rePassword, String firstName, String lastName) {
         
         int result = 0;
         if (rePassword.equals(password)) {
@@ -54,7 +53,6 @@ public class UserController {
             User user = new User();
             user.setUserFirstName(firstName);
             user.setUserLastName(lastName);
-            user.setUserBirthdate(birthdate);
             
             if (userService.registration(account, user)) {
                 result = user.getUserID();

@@ -25,7 +25,6 @@ public class UserRepository implements IUserRepository {
         user.setUserID(rs.getInt(1));
         user.setUserFirstName(rs.getString(2));
         user.setUserLastName(rs.getString(3));
-        user.setUserBirthdate(rs.getDate(4));
         return user;
     }
     
@@ -47,8 +46,7 @@ public class UserRepository implements IUserRepository {
             
             ps.setString(1, user.getUserFirstName());
             ps.setString(2, user.getUserLastName());
-            ps.setDate(3, user.getUserBirthdate());
-            
+          
             logger.debug(ps.toString());
             
             ps.execute();
@@ -157,8 +155,7 @@ public class UserRepository implements IUserRepository {
             ps = con.prepareStatement(DataBaseConstants.UPDATE_USER);
             ps.setString(1, user.getUserFirstName());
             ps.setString(2, user.getUserLastName());
-            ps.setDate(3, user.getUserBirthdate());
-            ps.setInt(4, user.getUserID());
+            ps.setInt(3, user.getUserID());
             
             logger.debug(ps.toString());
             

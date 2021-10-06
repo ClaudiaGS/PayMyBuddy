@@ -2,10 +2,10 @@ package com.paymybuddy.PayMyBuddy.constants;
 
 public class DataBaseConstants {
     
-    public static final String CREATE_USER = "insert INTO user(USER_FIRST_NAME, USER_LAST_NAME,USER_BIRTHDATE) VALUES (?,?,?)";
+    public static final String CREATE_USER = "insert INTO user(USER_FIRST_NAME, USER_LAST_NAME) VALUES (?,?)";
     public static final String READ_USER = "select * from user WHERE USER_ID=?";
     public static final String READ_USER_LIST = "select * from user";
-    public static final String UPDATE_USER = "update user set USER_FIRST_NAME=?, USER_LAST_NAME=?, USER_BIRTHDATE=? where USER_ID=?";
+    public static final String UPDATE_USER = "update user set USER_FIRST_NAME=?, USER_LAST_NAME=? where USER_ID=?";
     public static final String ACCOUNT_EXIST = "SELECT * FROM account WHERE ACCOUNT_EMAIL=?";
     
     
@@ -39,8 +39,6 @@ public class DataBaseConstants {
     public static final String READ_TRANSACTION = "select * from transaction where TRANSACTION_ID=?";
     public static final String READ_TRANSACTION_LIST = "select * from transaction";
     public static final String READ_USERS_TRANSACTION_LIST = "select * from transaction where USER_ID_SENDER=?";
-    
-    public static final String READ_ACCOUNT_EMAIL_BASED = "select * from account where ACCOUNT_EMAIL=?";
     
     
    

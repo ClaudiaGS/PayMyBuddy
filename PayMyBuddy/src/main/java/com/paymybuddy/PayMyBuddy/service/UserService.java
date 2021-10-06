@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +39,7 @@ public class UserService implements IUserService {
      */
     @Override
     public boolean createUser(final User newUser) {
-        if (newUser.getUserFirstName().isEmpty()|| newUser.getUserLastName().isEmpty()||newUser.getUserBirthdate()==null) {
+        if (newUser.getUserFirstName().isEmpty()|| newUser.getUserLastName().isEmpty()) {
             return false;
         } else {
             logger.info("Created user with data:" + newUser);
@@ -84,7 +83,7 @@ public class UserService implements IUserService {
         
         user.setUserFirstName(params.getOrDefault("firstName", (Object) user.getUserFirstName()).toString());
         user.setUserLastName(params.getOrDefault("lastName", (Object) user.getUserLastName()).toString());
-        user.setUserBirthdate((Date) params.getOrDefault("firstName", (Object) user.getUserBirthdate()));
+       
         
         return userRepository.updateUser(user);
     }
@@ -110,16 +109,14 @@ public class UserService implements IUserService {
             if (!this.accountService.alreadyExist(account.getAccountEmail())) {
                 
                 success = this.createUser(user);
-                logger.info("HERE ACCOUNT" + success);
                 if (success) {
                     account.setUserID(user.getUserID());
                     bankAccount.setUserID(user.getUserID());
                 }
                 
                 success = success && this.accountService.createAccount(connection, account);
-                logger.info("here1" + success);
                 success = success && this.bankAccountService.createBankAccount(connection, bankAccount);
-                logger.info("here2" + success);
+              
             } else {
                 success = false;
                 logger.error("User already exists");
