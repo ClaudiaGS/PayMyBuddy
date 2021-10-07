@@ -41,7 +41,7 @@ public class UserServiceIT {
     }
     
     @Test
-    public void createUser() {
+    public void createUserIT() {
         User user=new User();
         user.setUserFirstName("firstName4");
         user.setUserLastName("lastName4");

@@ -40,7 +40,7 @@ public class ContactServiceIT {
     }
     
     @Test
-    public void createContact() {
+    public void createContactIT() {
         Contact contact=new Contact();
         contact.setUserIDContact(2);
         contact.setUserIDAccount(1);

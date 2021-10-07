@@ -40,7 +40,7 @@ public class AccountServiceIT {
     }
     
     @Test
-    public void createAccount() {
+    public void createAccountIT() {
         Account account=new Account();
         account.setAccountEmail("account4@email");
         account.setAccountPassword("password4");
