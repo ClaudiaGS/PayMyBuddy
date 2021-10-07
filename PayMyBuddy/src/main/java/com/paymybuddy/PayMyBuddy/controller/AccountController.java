@@ -29,6 +29,11 @@ public class AccountController {
         return accountService.readAccount(accountID);
     }
     
+    @GetMapping("/readUsersAccountInfo")
+    public Account readUsersAccount(@RequestParam int userID) {
+        return accountService.readAccount(userID);
+    }
+    
     @GetMapping("/readAccountListInfo")
     public List<Account> readAccountList() {
         return accountService.readAccountList();

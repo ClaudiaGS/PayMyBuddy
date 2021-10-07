@@ -42,7 +42,7 @@ public class AccountService implements IAccountService {
     @Override
     public List<Account> readAccountList() {
         List<Account> accountList = accountRepository.readAccountList();
-        logger.info("Account list is " + accountList);
+        logger.info("Account list is " + accountList.toString());
         return accountList;
     }
     /**
