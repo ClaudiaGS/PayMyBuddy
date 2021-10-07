@@ -157,38 +157,6 @@ public class ContactRepository implements IContactRepository {
     /**
      * (non-javadoc)
      *
-     * @see IContactRepository#updateContact(Contact)
-     */
-    @Override
-    public boolean updateContact(Contact contact) {
-        
-        boolean executed = false;
-        
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try (Connection con = dataBase.getConnection()) {
-            ps = con.prepareStatement(DataBaseConstants.UPDATE_CONTACT);
-            ps.setInt(1, contact.getUserIDContact());
-            ps.setInt(2, contact.getUserIDAccount());
-            ps.setInt(3, contact.getContactID());
-            
-            logger.debug(ps.toString());
-            
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                executed = true;
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        } finally {
-            dataBase.closePreparedStatement(ps);
-        }
-        return executed;
-    }
-    
-    /**
-     * (non-javadoc)
-     *
      * @see IContactRepository#deleteContact(int)
      */
     @Override

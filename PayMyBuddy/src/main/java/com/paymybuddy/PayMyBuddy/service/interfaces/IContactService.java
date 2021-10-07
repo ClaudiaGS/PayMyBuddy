@@ -2,7 +2,6 @@ package com.paymybuddy.PayMyBuddy.service.interfaces;
 
 import com.paymybuddy.PayMyBuddy.model.Contact;
 
-import java.util.HashMap;
 import java.util.List;
 
 public interface IContactService {
@@ -34,14 +33,7 @@ public interface IContactService {
      * @return Contact
      */
     public Contact readContact(int contactID);
-    
-    /**
-     *
-     * @param contactID
-     * @param params
-     * @return boolean
-     */
-    public boolean updateContact(int contactID, HashMap<String, Object> params);
+
     
     /**
      *

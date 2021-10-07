@@ -35,15 +35,6 @@ public interface IContactRepository {
      */
     public Contact readContact(int contactID);
     
-    
-    /**
-     *
-     * @param contact
-     * @return boolean
-     */
-    public boolean updateContact(Contact contact);
-    
-    
     /**
      *
      * @param contactID

@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -75,22 +74,6 @@ public class ContactService implements IContactService {
         return contact;
     }
     
-    /**
-     * (non-javadoc)
-     *
-     * @see IContactService#updateContact(int, HashMap)
-     */
-    @Override
-    public boolean updateContact(int contactID, HashMap<String, Object> params) {
-    
-        Contact contact= this.contactRepository.readContact(contactID);
-    
-        contact.setUserIDAccount((Integer) params.getOrDefault("userIDAccount", contact.getUserIDAccount()));
-        contact.setUserIDContact((Integer) params.getOrDefault("userIDContact",contact.getUserIDContact()));
-        
-    
-        return contactRepository.updateContact(contact);
-    }
     
     /**
      * (non-javadoc)
