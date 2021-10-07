@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Import;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -55,6 +56,28 @@ public class AccountServiceIT {
     @Test
     public void readUsersAccountIT(){
         assertThat(asJsonString(accountService.readUsersAccount(1))).isEqualTo("{\"accountID\":1,\"accountEmail\":\"account1@email\",\"accountPassword\":\"e38ad214943daad1d64c102faec29de4afe9da3d\",\"userID\":1}");
+    }
+    
+    @Test
+    public void readAccountIT(){
+        assertThat(asJsonString(accountService.readAccount(1))).isEqualTo("{\"accountID\":1,\"accountEmail\":\"account1@email\",\"accountPassword\":\"e38ad214943daad1d64c102faec29de4afe9da3d\",\"userID\":1}");
+    }
+    @Test
+    public void updateAccountIT(){
+        HashMap<String,Object>params=new HashMap<>();
+        params.put("accountPassword", "newPassword");
+        assertThat((accountService.updateAccount(1,params))).isEqualTo(true);
+    }
+    @Test
+    public void authenticateIT(){
+        Account account=new Account();
+        account.setAccountEmail("account2@email");
+        account.setAccountPassword("password2");
+        assertThat(asJsonString(accountService.authenticate(account))).isEqualTo("{\"accountID\":2,\"accountEmail\":\"account2@email\",\"accountPassword\":\"2aa60a8ff7fcd473d321e0146afd9e26df395147\",\"userID\":2}");
+    }
+    @Test
+    public  void alreadyExistIT(){
+        assertThat(asJsonString(accountService.alreadyExist("account2@email"))).isEqualTo(true);
     }
     
     public static String asJsonString(final Object obj) {

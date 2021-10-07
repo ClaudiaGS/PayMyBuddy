@@ -164,9 +164,10 @@ public class AccountRepository implements IAccountRepository {
         PreparedStatement ps = null;
         try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.UPDATE_ACCOUNT);
+            ps.setInt(4, account.getAccountID());
             ps.setString(1, account.getAccountEmail());
             ps.setString(2, account.getAccountPassword());
-            ps.setInt(5, account.getUserID());
+            ps.setInt(3, account.getUserID());
             
             logger.debug(ps.toString());
             
