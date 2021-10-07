@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymybuddy.PayMyBuddy.config.IDataBase;
 import com.paymybuddy.PayMyBuddy.integration.config.DataBaseTestConfig;
 import com.paymybuddy.PayMyBuddy.model.Account;
-import com.paymybuddy.PayMyBuddy.repository.interfaces.IAccountRepository;
 import com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,8 +23,6 @@ public class AccountServiceIT {
     
     @Autowired
     IAccountService accountService;
-    @Autowired
-    IAccountRepository accountRepository;
     @Autowired
     IDataBase dataBaseTest;
     

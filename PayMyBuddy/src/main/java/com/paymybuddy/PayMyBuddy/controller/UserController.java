@@ -20,8 +20,11 @@ public class UserController {
     IUserService userService;
     
     @PostMapping("/createUser")
-    public boolean createUser(@RequestBody User newUser) {
-        return userService.createUser(newUser);
+    public boolean createUser(@RequestParam String userFirstName, @RequestParam String userLastName) {
+        User user=new User();
+        user.setUserFirstName(userFirstName);
+        user.setUserLastName(userLastName);
+        return userService.createUser(user);
     }
     
     @GetMapping("/readUserInfo")
