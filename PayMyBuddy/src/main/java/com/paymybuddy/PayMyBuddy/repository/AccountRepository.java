@@ -222,8 +222,7 @@ public class AccountRepository implements IAccountRepository {
      * @see com.paymybuddy.PayMyBuddy.repository.interfaces.IAccountRepository#alreadyExist(String)
      */
     @Override
-    public boolean alreadyExist(String email) {
-        
+    public boolean alreadyExist(final String email) {
         boolean result = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -244,6 +243,7 @@ public class AccountRepository implements IAccountRepository {
         } catch (Exception e) {
             logger.error(e.getMessage());
         } finally {
+            dataBase.closeResultSet(rs);
             dataBase.closePreparedStatement(ps);
         }
         

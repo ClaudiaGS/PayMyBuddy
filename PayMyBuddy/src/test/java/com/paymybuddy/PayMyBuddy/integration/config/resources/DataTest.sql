@@ -1,13 +1,17 @@
-/* Setting up PayMyBuddy DB Test */
-create database paymybuddyDBTest;
+/* Setting up PayMyBuddy DB */
+
 use paymybuddyDBTest;
 
-
+drop table if exists transaction;
+drop table if exists bank_account;
+drop table if exists contact;
+drop table if exists account;
+drop table if exists user;
 
 create table IF NOT EXISTS user(
 USER_ID int PRIMARY KEY AUTO_INCREMENT,
 USER_FIRST_NAME varchar(30),
-USER_LAST_NAME varchar(30),
+USER_LAST_NAME varchar(30)
 )ENGINE=INNODB;
 
 create table IF NOT EXISTS account (
@@ -58,3 +62,6 @@ insert into bank_account(BANK_ACCOUNT_AMOUNT,BANK_ACCOUNT_CURRENCY,USER_ID) valu
 insert into account(ACCOUNT_EMAIL,ACCOUNT_PASSWORD,USER_ID) values ('account1@email',SHA('password1'), '1');
 insert into account(ACCOUNT_EMAIL,ACCOUNT_PASSWORD,USER_ID) values ('account2@email',SHA('password2'), '2');
 insert into account(ACCOUNT_EMAIL,ACCOUNT_PASSWORD,USER_ID) values ('account3@email',SHA('password3'), '3');
+
+
+

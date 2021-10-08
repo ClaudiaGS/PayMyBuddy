@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Primary;
 @TestConfiguration
 public class DataBaseTestConfig {
     @Autowired
-    private DataBaseTest dataBaseTest;
+    private IDataBase dataBaseTest;
     @Bean
     @Primary
-    public IDataBase createDatabase() {
+    public IDataBase createDatabaseTest() {
         return new DataBaseTest();
     }
 }

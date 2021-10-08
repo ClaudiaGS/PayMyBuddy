@@ -7,7 +7,7 @@ use paymybuddyDB;
 create table IF NOT EXISTS user(
 USER_ID int PRIMARY KEY AUTO_INCREMENT,
 USER_FIRST_NAME varchar(30),
-USER_LAST_NAME varchar(30),
+USER_LAST_NAME varchar(30)
 )ENGINE=INNODB;
 
 create table IF NOT EXISTS account (

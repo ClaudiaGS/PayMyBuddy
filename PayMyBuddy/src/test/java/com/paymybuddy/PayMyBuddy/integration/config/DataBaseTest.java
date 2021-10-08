@@ -14,9 +14,12 @@ public class DataBaseTest implements IDataBase {
     public Connection getConnection() throws ClassNotFoundException, SQLException {
         logger.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
+        
         return DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/paymybuddyDBTest", "claudia", "parola");
+ 
     }
+    
     
     @Override
     public void closeConnection(Connection con) {

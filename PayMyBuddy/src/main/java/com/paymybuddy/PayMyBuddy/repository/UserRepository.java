@@ -1,6 +1,6 @@
 package com.paymybuddy.PayMyBuddy.repository;
 
-import com.paymybuddy.PayMyBuddy.config.DataBase;
+import com.paymybuddy.PayMyBuddy.config.IDataBase;
 import com.paymybuddy.PayMyBuddy.constants.DataBaseConstants;
 import com.paymybuddy.PayMyBuddy.model.User;
 import com.paymybuddy.PayMyBuddy.repository.interfaces.IUserRepository;
@@ -18,7 +18,7 @@ public class UserRepository implements IUserRepository {
     private static final Logger logger = LogManager.getLogger("UserRepository");
     
     @Autowired
-    public DataBase dataBase;
+    public IDataBase dataBase;
     
     private User processRow(final ResultSet rs) throws SQLException {
         User user = new User();

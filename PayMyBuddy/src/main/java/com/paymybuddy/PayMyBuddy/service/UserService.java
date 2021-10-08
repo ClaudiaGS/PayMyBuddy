@@ -83,7 +83,6 @@ public class UserService implements IUserService {
         
         user.setUserFirstName(params.getOrDefault("firstName", (Object) user.getUserFirstName()).toString());
         user.setUserLastName(params.getOrDefault("lastName", (Object) user.getUserLastName()).toString());
-       
         
         return userRepository.updateUser(user);
     }

@@ -64,7 +64,6 @@ public class TransactionServiceIT {
         assertThat(asJsonString(transactionService.readTransaction(1))).isEqualTo("[{\"transactionID\":1,\"transactionDescription\":\"cake\",\"transactionDebitedAmount\":1.51,\"transactionFeeAmount\":0.01,\"transactionReceivedAmount\":1.5,\"userIDSender\":2,\"userIDReceiver\":1}]");
     }
     
-    
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

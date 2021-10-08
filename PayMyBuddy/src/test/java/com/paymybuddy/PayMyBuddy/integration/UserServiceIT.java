@@ -6,12 +6,17 @@ import com.paymybuddy.PayMyBuddy.integration.config.DataBaseTestConfig;
 import com.paymybuddy.PayMyBuddy.model.Account;
 import com.paymybuddy.PayMyBuddy.model.User;
 import com.paymybuddy.PayMyBuddy.service.interfaces.IUserService;
+import org.apache.ibatis.jdbc.ScriptRunner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -27,19 +32,54 @@ public class UserServiceIT {
     @Autowired
     IDataBase dataBaseTest;
     
-    Connection testConnection;
-    
     @BeforeEach
-    public void config() {
+    public void config(){
+        Connection con= null;
         try {
-            testConnection = dataBaseTest.getConnection();
+            con = dataBaseTest.getConnection();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        ScriptRunner sr = new ScriptRunner(con);
+        //Creating a reader object
+        Reader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader("F:\\OPENCLASSROOMS\\PROJET 6\\PayMyBuddyGit\\PayMyBuddy\\src\\test\\java\\com\\paymybuddy\\PayMyBuddy\\integration\\config\\resources\\DataTest.sql"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        //Running the script
+        sr.runScript(reader);
+      
     }
     
+//    @AfterEach
+//    public void config2(Connection connection){
+//        try {
+//            connection=dataBaseTest.getConnection();
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+//        dataBaseTest.closeConnection(connection);
+//    }
+    
+    @Test
+    public void readUserListIT(){
+        
+        assertThat(asJsonString(userService.readUserList())).isEqualTo("[{\"userID\":1,\"userFirstName\":\"firstname1\",\"userLastName\":\"lastname1\"},{\"userID\":2,\"userFirstName\":\"firstname2\",\"userLastName\":\"lastname2\"},{\"userID\":3,\"userFirstName\":\"firstname3\",\"userLastName\":\"lastname3\"}]");
+    }
+    
+ 
+    @Test
+    public void readUserIT(){
+        assertThat(asJsonString(userService.readUser(1))).isEqualTo("{\"userID\":1,\"userFirstName\":\"firstname1\",\"userLastName\":\"lastname1\"}");
+    }
+    
+
     @Test
     public void createUserIT() {
         User user=new User();
@@ -47,29 +87,23 @@ public class UserServiceIT {
         user.setUserLastName("lastName4");
         assertThat(userService.createUser(user)).isEqualTo(true);
     }
-    @Test
-    public void readUserListIT(){
-        assertThat(asJsonString(userService.readUserList())).isEqualTo("[{\"userID\":1,\"userFirstName\":\"firstname1\",\"userLastName\":\"lastname1\"},{\"userID\":2,\"userFirstName\":\"firstname2\",\"userLastName\":\"lastname2\"},{\"userID\":3,\"userFirstName\":\"firstname3\",\"userLastName\":\"lastname3\"},{\"userID\":4,\"userFirstName\":\"firstname4\",\"userLastName\":\"lastname4\"}]");
-    }
-    @Test
-    public void readUserIT(){
-        assertThat(asJsonString(userService.readUser(1))).isEqualTo("{\"userID\":1,\"userFirstName\":\"firstname1\",\"userLastName\":\"lastname1\"}");
-    }
+   
     @Test
     public void updateUserIT(){
         HashMap<String,Object> params=new HashMap<>();
         params.put("firstName", "updatedFirstName");
         assertThat((userService.updateUser(1,params))).isEqualTo(true);
     }
+
     @Test
     public void registrationIT(){
         Account account=new Account();
-        account.setAccountEmail("account5@email");
-        account.setAccountPassword("password5");
+        account.setAccountEmail("account50@email");
+        account.setAccountPassword("password50");
         User user=new User();
-        user.setUserFirstName("firstName5");
-        user.setUserLastName("lastName5");
-        assertThat(asJsonString(userService.registration(account,user))).isEqualTo(true);
+        user.setUserFirstName("firstName50");
+        user.setUserLastName("lastName50");
+        assertThat((userService.registration(account,user))).isEqualTo(true);
     }
 
     public static String asJsonString(final Object obj) {
