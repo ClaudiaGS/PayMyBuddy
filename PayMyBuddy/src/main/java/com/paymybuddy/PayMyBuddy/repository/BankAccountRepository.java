@@ -1,6 +1,6 @@
 package com.paymybuddy.PayMyBuddy.repository;
 
-import com.paymybuddy.PayMyBuddy.config.DataBase;
+import com.paymybuddy.PayMyBuddy.config.IDataBase;
 import com.paymybuddy.PayMyBuddy.constants.DataBaseConstants;
 import com.paymybuddy.PayMyBuddy.model.BankAccount;
 import com.paymybuddy.PayMyBuddy.repository.interfaces.IBankAccountRepository;
@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public class BankAccountRepository implements IBankAccountRepository {
     @Autowired
-    public DataBase dataBase;
+    public IDataBase dataBase;
     @Autowired
     BankAccount bankAccount;
     

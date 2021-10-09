@@ -1,6 +1,6 @@
 package com.paymybuddy.PayMyBuddy.service;
 
-import com.paymybuddy.PayMyBuddy.config.DataBase;
+import com.paymybuddy.PayMyBuddy.config.IDataBase;
 import com.paymybuddy.PayMyBuddy.model.Transaction;
 import com.paymybuddy.PayMyBuddy.repository.TransactionRepository;
 import com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionService;
@@ -18,7 +18,7 @@ import java.util.List;
 public class TransactionService implements ITransactionService {
     
     @Autowired
-    public DataBase dataSource;
+    public IDataBase dataSource;
     
     @Autowired
     TransactionRepository transactionRepository;

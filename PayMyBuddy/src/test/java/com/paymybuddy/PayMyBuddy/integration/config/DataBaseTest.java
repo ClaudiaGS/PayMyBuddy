@@ -6,9 +6,10 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 
+
 public class DataBaseTest implements IDataBase {
     
-    private static final Logger logger = LogManager.getLogger("DataBaseConfig");
+    private static final Logger logger = LogManager.getLogger("DataBaseTestConfig");
     
     @Override
     public Connection getConnection() throws ClassNotFoundException, SQLException {

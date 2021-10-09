@@ -1,6 +1,6 @@
 package com.paymybuddy.PayMyBuddy.repository;
 
-import com.paymybuddy.PayMyBuddy.config.DataBase;
+import com.paymybuddy.PayMyBuddy.config.IDataBase;
 import com.paymybuddy.PayMyBuddy.constants.DataBaseConstants;
 import com.paymybuddy.PayMyBuddy.model.Contact;
 import com.paymybuddy.PayMyBuddy.repository.interfaces.IContactRepository;
@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public class ContactRepository implements IContactRepository {
     @Autowired
-    DataBase dataBase;
+    public IDataBase dataBase;
     @Autowired
     Contact contact;
     private static final Logger logger = LogManager.getLogger("ContactRepository");

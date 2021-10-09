@@ -1,6 +1,6 @@
 package com.paymybuddy.PayMyBuddy.repository;
 
-import com.paymybuddy.PayMyBuddy.config.DataBase;
+import com.paymybuddy.PayMyBuddy.config.IDataBase;
 import com.paymybuddy.PayMyBuddy.constants.DataBaseConstants;
 import com.paymybuddy.PayMyBuddy.model.Transaction;
 import com.paymybuddy.PayMyBuddy.repository.interfaces.ITransactionRepository;
@@ -17,7 +17,7 @@ import java.util.List;
 public class TransactionRepository implements ITransactionRepository {
     private static final Logger logger = LogManager.getLogger("TransactionRepository");
     @Autowired
-    DataBase dataBase;
+    public IDataBase dataBase;
     @Autowired
     Transaction transaction;
     

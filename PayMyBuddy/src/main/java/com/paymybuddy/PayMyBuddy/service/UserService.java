@@ -1,6 +1,6 @@
 package com.paymybuddy.PayMyBuddy.service;
 
-import com.paymybuddy.PayMyBuddy.config.DataBase;
+import com.paymybuddy.PayMyBuddy.config.IDataBase;
 import com.paymybuddy.PayMyBuddy.model.Account;
 import com.paymybuddy.PayMyBuddy.model.BankAccount;
 import com.paymybuddy.PayMyBuddy.model.User;
@@ -30,7 +30,7 @@ public class UserService implements IUserService {
     BankAccountService bankAccountService;
     
     @Autowired
-    public DataBase dataBase;
+    public IDataBase dataBase;
     
     /**
      * (non-javadoc)
