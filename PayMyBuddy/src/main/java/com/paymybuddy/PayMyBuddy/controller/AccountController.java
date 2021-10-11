@@ -1,7 +1,7 @@
 package com.paymybuddy.PayMyBuddy.controller;
 
 import com.paymybuddy.PayMyBuddy.model.Account;
-import com.paymybuddy.PayMyBuddy.service.AccountService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 public class AccountController {
     @Autowired
-    AccountService accountService;
+    IAccountService accountService;
     
     @PostMapping("/createAccount")
     public boolean createAccount(@RequestParam int userID, @RequestParam String email, @RequestParam String password) {

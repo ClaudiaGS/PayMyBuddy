@@ -3,7 +3,10 @@ package com.paymybuddy.PayMyBuddy.service;
 import com.paymybuddy.PayMyBuddy.model.ContactView;
 import com.paymybuddy.PayMyBuddy.model.Transaction;
 import com.paymybuddy.PayMyBuddy.model.TransactionView;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IContactViewService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionService;
 import com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionViewService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +19,11 @@ import java.util.List;
 public class TransactionViewService implements ITransactionViewService {
     
     @Autowired
-    TransactionService transactionService;
+    ITransactionService transactionService;
     @Autowired
-    ContactViewService contactViewService;
+    IContactViewService contactViewService;
     @Autowired
-    UserService userService;
+    IUserService userService;
     
     private static final Logger logger = LogManager.getLogger("TransactionViewService");
     

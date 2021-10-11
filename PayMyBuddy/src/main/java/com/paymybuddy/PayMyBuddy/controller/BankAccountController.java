@@ -1,7 +1,7 @@
 package com.paymybuddy.PayMyBuddy.controller;
 
 import com.paymybuddy.PayMyBuddy.model.BankAccount;
-import com.paymybuddy.PayMyBuddy.service.BankAccountService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IBankAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 public class BankAccountController {
     @Autowired
-    BankAccountService bankAccountService;
+    IBankAccountService bankAccountService;
     
     @PostMapping("/createBankAccount")
     public boolean createBankAccount(@RequestParam double bankAccountAmount,@RequestParam String bankAccountCurrency,@RequestParam int userID){

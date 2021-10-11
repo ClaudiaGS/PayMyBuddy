@@ -1,8 +1,9 @@
 package com.paymybuddy.PayMyBuddy.service;
 
 import com.paymybuddy.PayMyBuddy.model.Contact;
-import com.paymybuddy.PayMyBuddy.repository.ContactRepository;
+import com.paymybuddy.PayMyBuddy.repository.interfaces.IContactRepository;
 import com.paymybuddy.PayMyBuddy.service.interfaces.IContactService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,9 @@ import java.util.List;
 @Service
 public class ContactService implements IContactService {
     @Autowired
-    ContactRepository contactRepository;
+    IContactRepository contactRepository;
     @Autowired
-    UserService userService;
+    IUserService userService;
     private static final Logger logger = LogManager.getLogger("ContactService");
     
     /**

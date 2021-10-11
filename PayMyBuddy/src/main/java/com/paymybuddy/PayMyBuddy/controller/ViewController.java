@@ -1,8 +1,8 @@
 package com.paymybuddy.PayMyBuddy.controller;
 
-import com.paymybuddy.PayMyBuddy.config.DataBase;
+import com.paymybuddy.PayMyBuddy.config.IDataBase;
 import com.paymybuddy.PayMyBuddy.model.*;
-import com.paymybuddy.PayMyBuddy.service.*;
+import com.paymybuddy.PayMyBuddy.service.interfaces.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,26 +25,36 @@ import java.util.List;
 @Controller
 public class ViewController {
     @Autowired
-    DataBase dataSource;
-    @Autowired
-    UserCompleteService userCompleteService;
-    @Autowired
-    AccountService accountService;
-    @Autowired
-    ContactService contactService;
-    @Autowired
-    ContactViewService contactViewService;
-    @Autowired
-    TransactionViewService transactionViewService;
-    @Autowired
-    TransactionService transactionService;
-    @Autowired
-    UserService userService;
-    @Autowired
-    BankAccountService bankAccountService;
-    @Autowired
-    ContactForTransactionService contactForTransactionService;
+    public IDataBase dataSource;
+  
     
+    @Autowired
+    IAccountService accountService;
+    
+    @Autowired
+    IContactService contactService;
+    
+    @Autowired
+    IContactViewService contactViewService;
+    
+    @Autowired
+    ITransactionViewService transactionViewService;
+    
+    @Autowired
+    ITransactionService transactionService;
+    
+    @Autowired
+    IUserService userService;
+    
+    @Autowired
+    IBankAccountService bankAccountService;
+    
+    @Autowired
+    IContactForTransaction contactForTransactionService;
+    
+    
+    @Autowired
+    IUserCompleteService userCompleteService;
     
     private static final Logger logger = LogManager.getLogger("ViewController");
     
@@ -70,7 +80,7 @@ public class ViewController {
             int userIDAccount = userComplete.getUserID();
             
             session.setAttribute("userIDAccount", userIDAccount);
-          //  session.setAttribute("userComplete", userComplete);
+          
             List<TransactionView> transactionViewList = transactionViewService.getTransactionViewList(userIDAccount);
             if (transactionViewList.size() > 0) {
                 transaction = transactionViewList.get(transactionViewList.size() - 1);
@@ -94,15 +104,16 @@ public class ViewController {
         } else {
             transaction = null;
         }
-       
-        UserComplete userComplete=userCompleteService.readUserComplete((int)session.getAttribute("userIDAccount"));
-        model.addAttribute("amount", bankAccountService.readUsersBankAccount((int)session.getAttribute("userIDAccount")).getBankAccountAmount());
+        
+        UserComplete userComplete = userCompleteService.readUserComplete((int) session.getAttribute("userIDAccount"));
+        model.addAttribute("amount", bankAccountService.readUsersBankAccount((int) session.getAttribute("userIDAccount")).getBankAccountAmount());
         model.addAttribute("transaction", transaction);
         model.addAttribute("user", userComplete);
         return "Home";
         
         
     }
+    
     @GetMapping("/profile")
     public String profilePage(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -114,15 +125,16 @@ public class ViewController {
             transaction = null;
         }
         
-        UserComplete userComplete=userCompleteService.readUserComplete((int)session.getAttribute("userIDAccount"));
-        model.addAttribute("amount", bankAccountService.readUsersBankAccount((int)session.getAttribute("userIDAccount")).getBankAccountAmount());
+        UserComplete userComplete = userCompleteService.readUserComplete((int) session.getAttribute("userIDAccount"));
+        model.addAttribute("amount", bankAccountService.readUsersBankAccount((int) session.getAttribute("userIDAccount")).getBankAccountAmount());
         model.addAttribute("transaction", transaction);
         model.addAttribute("user", userComplete);
-        model.addAttribute("email",userComplete.getAccount().getAccountEmail());
+        model.addAttribute("email", userComplete.getAccount().getAccountEmail());
         return "Profile";
         
         
     }
+    
     //REGISTRATION
     @GetMapping("/registration")
     public String registration(Model model) {
@@ -143,7 +155,7 @@ public class ViewController {
         User user = new User();
         user.setUserFirstName(registerInfoView.getFirstName());
         user.setUserLastName(registerInfoView.getLastName());
-
+        
         if (registerInfoView.getPassword().equals(registerInfoView.getRePassword())) {
             if (userService.registration(account, user)) {
                 
@@ -253,20 +265,20 @@ public class ViewController {
     @GetMapping("/createTransaction")
     public String createTransaction(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        Iterable<ContactForTransaction> contactForTransactionList = contactForTransactionService.getContactForTransactionList((int)session.getAttribute("userIDAccount"));
+        Iterable<ContactForTransaction> contactForTransactionList = contactForTransactionService.getContactForTransactionList((int) session.getAttribute("userIDAccount"));
         model.addAttribute("contactForTransactionList", contactForTransactionList);
         TransactionView transactionView = new TransactionView();
         model.addAttribute("transaction", transactionView);
-
-       ContactForTransaction contactForTransaction=new ContactForTransaction();
-  
+        
+        ContactForTransaction contactForTransaction = new ContactForTransaction();
+        
         return "addTransaction";
     }
     
     @PostMapping("/saveTransaction")
     public ModelAndView saveTransaction(@ModelAttribute TransactionView transaction, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        logger.info("HERE transaction.contactID"+transaction.getContactID()+" description "+transaction.getDescription()+" amount "+transaction.getAmount());
+        logger.info("HERE transaction.contactID" + transaction.getContactID() + " description " + transaction.getDescription() + " amount " + transaction.getAmount());
         int userIDReceiver = contactService.readContact(transaction.getContactID()).getUserIDContact();
         
         
@@ -276,10 +288,10 @@ public class ViewController {
         transactionToCreate.setUserIDSender((int) session.getAttribute("userIDAccount"));
         transactionToCreate.setUserIDReceiver(userIDReceiver);
         
- 
-            transactionService.createTransaction(transactionToCreate);
-    
-            
+        
+        transactionService.createTransaction(transactionToCreate);
+        
+        
         return new ModelAndView("redirect:/transactions");
     }
     
@@ -292,31 +304,33 @@ public class ViewController {
         Double amount = bankAccountService.readUsersBankAccount((int) session.getAttribute("userIDAccount")).getBankAccountAmount();
         
         operation.setAmount(amount);
-        String opName="add";
-       operation.setOperationName(opName);
+        String opName = "add";
+        operation.setOperationName(opName);
         model.addAttribute("operation", operation);
-        model.addAttribute("opName",opName);
-        logger.info("opName "+opName);
+        model.addAttribute("opName", opName);
+        logger.info("opName " + opName);
         
         return "Operation";
     }
+    
     @GetMapping("/amountOperationWithdraw")
     public String operatePersonalAmountWithdraw(Model model, Operation operation, HttpServletRequest request) {
         HttpSession session = request.getSession();
         Double amount = bankAccountService.readUsersBankAccount((int) session.getAttribute("userIDAccount")).getBankAccountAmount();
         
         operation.setAmount(amount);
-        String opName="subtract";
+        String opName = "subtract";
         operation.setOperationName(opName);
         model.addAttribute("operation", operation);
-        model.addAttribute("opName",opName);
-       
+        model.addAttribute("opName", opName);
+        
         
         return "Operation";
     }
+    
     @PostMapping("/updatePersonalAmount")
-    public ModelAndView updateAmountPersonalAccount(@ModelAttribute Operation operation,String opName, HttpServletRequest request) {
-      
+    public ModelAndView updateAmountPersonalAccount(@ModelAttribute Operation operation, String opName, HttpServletRequest request) {
+        
         HttpSession session = request.getSession();
         Connection connection = null;
         try {
@@ -326,12 +340,12 @@ public class ViewController {
             UserComplete userComplete = userCompleteService.readUserComplete((int) session.getAttribute("userIDAccount"));
             operation.setAmount(bankAccountService.readUsersBankAccount((int) session.getAttribute("userIDAccount")).getBankAccountAmount());
             
-           
+            
             BankAccount bankAccount = bankAccountService.readUsersBankAccount((int) session.getAttribute("userIDAccount"));
             HashMap<String, Object> params = new HashMap<>();
             params.put("bankAccountAmount", bankAccountService.updateAmountPersonalAccount(operation.getAmount(), operation.getAmountForOperation(), operation.getOperationName()));
             bankAccountService.updateBankAccount(connection, bankAccount.getBankAccountID(), params);
-          
+            
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException throwables) {

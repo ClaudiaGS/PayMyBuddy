@@ -1,7 +1,7 @@
 package com.paymybuddy.PayMyBuddy.service;
 
 import com.paymybuddy.PayMyBuddy.model.*;
-import com.paymybuddy.PayMyBuddy.service.interfaces.IUserCompleteService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +13,15 @@ import java.util.List;
 @Service
 public class UserCompleteService implements IUserCompleteService {
     @Autowired
-    UserService userService;
+    IUserService userService;
     @Autowired
-    AccountService accountService;
+    IAccountService accountService;
     @Autowired
-    BankAccountService bankAccountService;
+    IBankAccountService bankAccountService;
     @Autowired
-    ContactService contactService;
+    IContactService contactService;
     @Autowired
-    TransactionService transactionService;
+    ITransactionService transactionService;
     
     private static final Logger logger = LogManager.getLogger("UserCompleteService");
     

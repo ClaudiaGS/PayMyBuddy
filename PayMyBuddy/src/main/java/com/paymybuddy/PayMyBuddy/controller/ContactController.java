@@ -1,7 +1,7 @@
 package com.paymybuddy.PayMyBuddy.controller;
 
 import com.paymybuddy.PayMyBuddy.model.Contact;
-import com.paymybuddy.PayMyBuddy.service.ContactService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 public class ContactController {
     @Autowired
-    ContactService contactService;
+    IContactService contactService;
     
     @PostMapping("/createContact")
     public boolean createContact(@RequestParam int userIDAccount, @RequestParam int userIDContact){

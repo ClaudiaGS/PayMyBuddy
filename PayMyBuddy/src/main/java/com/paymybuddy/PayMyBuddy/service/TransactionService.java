@@ -2,8 +2,10 @@ package com.paymybuddy.PayMyBuddy.service;
 
 import com.paymybuddy.PayMyBuddy.config.IDataBase;
 import com.paymybuddy.PayMyBuddy.model.Transaction;
-import com.paymybuddy.PayMyBuddy.repository.TransactionRepository;
+import com.paymybuddy.PayMyBuddy.repository.interfaces.ITransactionRepository;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IBankAccountService;
 import com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,11 @@ public class TransactionService implements ITransactionService {
     public IDataBase dataSource;
     
     @Autowired
-    TransactionRepository transactionRepository;
+    ITransactionRepository transactionRepository;
     @Autowired
-    UserService userService;
+    IUserService userService;
     @Autowired
-    BankAccountService bankAccountService;
+    IBankAccountService bankAccountService;
     
     private static final Logger logger = LogManager.getLogger("TransactionService");
     

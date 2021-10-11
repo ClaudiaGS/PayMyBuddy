@@ -5,6 +5,8 @@ import com.paymybuddy.PayMyBuddy.model.Account;
 import com.paymybuddy.PayMyBuddy.model.BankAccount;
 import com.paymybuddy.PayMyBuddy.model.User;
 import com.paymybuddy.PayMyBuddy.repository.interfaces.IUserRepository;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IBankAccountService;
 import com.paymybuddy.PayMyBuddy.service.interfaces.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,10 +26,10 @@ public class UserService implements IUserService {
     IUserRepository userRepository;
     
     @Autowired
-    AccountService accountService;
+    IAccountService accountService;
     
     @Autowired
-    BankAccountService bankAccountService;
+    IBankAccountService bankAccountService;
     
     @Autowired
     public IDataBase dataBase;

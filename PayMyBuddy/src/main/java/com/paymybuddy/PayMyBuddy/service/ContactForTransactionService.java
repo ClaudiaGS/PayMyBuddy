@@ -1,7 +1,13 @@
 package com.paymybuddy.PayMyBuddy.service;
 
-import com.paymybuddy.PayMyBuddy.model.*;
+import com.paymybuddy.PayMyBuddy.model.Account;
+import com.paymybuddy.PayMyBuddy.model.Contact;
+import com.paymybuddy.PayMyBuddy.model.ContactForTransaction;
+import com.paymybuddy.PayMyBuddy.model.User;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService;
 import com.paymybuddy.PayMyBuddy.service.interfaces.IContactForTransaction;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IContactService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,11 +17,11 @@ import java.util.List;
 @Service
 public class ContactForTransactionService implements IContactForTransaction {
     @Autowired
-    UserService userService;
+    IUserService userService;
     @Autowired
-    AccountService accountService;
+    IAccountService accountService;
     @Autowired
-    ContactService contactService;
+    IContactService contactService;
     
     /**
      * (non-javadoc)

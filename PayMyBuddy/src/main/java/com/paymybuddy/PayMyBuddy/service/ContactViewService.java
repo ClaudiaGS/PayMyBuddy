@@ -1,7 +1,7 @@
 package com.paymybuddy.PayMyBuddy.service;
 
 import com.paymybuddy.PayMyBuddy.model.*;
-import com.paymybuddy.PayMyBuddy.service.interfaces.IContactViewService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +11,13 @@ import java.util.List;
 @Service
 public class ContactViewService  implements IContactViewService {
     @Autowired
-    UserService userService;
+    IUserService userService;
     @Autowired
-    AccountService accountService;
+    IAccountService accountService;
     @Autowired
-    BankAccountService bankAccountService;
+    IBankAccountService bankAccountService;
     @Autowired
-    ContactService contactService;
+    IContactService contactService;
 
     
     /**

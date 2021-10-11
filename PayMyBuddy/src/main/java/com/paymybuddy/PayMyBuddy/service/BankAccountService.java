@@ -1,8 +1,9 @@
 package com.paymybuddy.PayMyBuddy.service;
 
 import com.paymybuddy.PayMyBuddy.model.BankAccount;
-import com.paymybuddy.PayMyBuddy.repository.BankAccountRepository;
+import com.paymybuddy.PayMyBuddy.repository.interfaces.IBankAccountRepository;
 import com.paymybuddy.PayMyBuddy.service.interfaces.IBankAccountService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,9 @@ import java.util.List;
 @Service
 public class BankAccountService implements IBankAccountService {
     @Autowired
-    BankAccountRepository bankAccountRepository;
+    IBankAccountRepository bankAccountRepository;
     @Autowired
-    UserService userService;
+    IUserService userService;
     private static final Logger logger = LogManager.getLogger("BankAccountService");
     
     /**
