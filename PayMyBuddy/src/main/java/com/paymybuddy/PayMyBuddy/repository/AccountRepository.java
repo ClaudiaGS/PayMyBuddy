@@ -15,15 +15,14 @@ import java.util.List;
 
 @Repository
 public class AccountRepository implements IAccountRepository {
-    @Autowired
-    Account account;
-    private static final Logger logger = LogManager.getLogger("AccountRepository");
+    
     @Autowired
     public IDataBase dataBase;
-
+    
+    private static final Logger logger = LogManager.getLogger("AccountRepository");
     
     private Account processRow(ResultSet rs) throws SQLException {
-        account = new Account();
+        Account account = new Account();
         account.setAccountID(rs.getInt(1));
         account.setAccountEmail(rs.getString(2));
         account.setAccountPassword(rs.getString(3));
@@ -37,7 +36,7 @@ public class AccountRepository implements IAccountRepository {
      * @see com.paymybuddy.PayMyBuddy.repository.interfaces.IAccountRepository#createAccount(Connection, Account)
      */
     @Override
-    public boolean createAccount(Connection connection, Account account) {
+    public boolean createAccount(Connection connection, final Account account) {
         boolean result = false;
         PreparedStatement ps = null;
         ResultSet resultSet = null;
@@ -69,7 +68,7 @@ public class AccountRepository implements IAccountRepository {
      */
     public List<Account> readAccountList() {
         List<Account> accountList = new ArrayList<Account>();
-        account = null;
+        Account account = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
@@ -98,8 +97,8 @@ public class AccountRepository implements IAccountRepository {
      * @see IAccountRepository#readAccount(int)
      */
     @Override
-    public Account readAccount(int accountID) {
-        account = null;
+    public Account readAccount(final int accountID) {
+        Account account = null;
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         try (Connection con = dataBase.getConnection()) {
@@ -127,8 +126,8 @@ public class AccountRepository implements IAccountRepository {
      * @see IAccountRepository#readUsersAccount(int)
      */
     @Override
-    public Account readUsersAccount(int userID) {
-        account = null;
+    public Account readUsersAccount(final int userID) {
+        Account account = null;
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         try (Connection con = dataBase.getConnection()) {
@@ -185,7 +184,7 @@ public class AccountRepository implements IAccountRepository {
      * @see IAccountRepository#authenticate(Account)
      */
     @Override
-    public Account authenticate(Account account) {
+    public Account authenticate(final Account account) {
         
         PreparedStatement ps = null;
         ResultSet rs = null;

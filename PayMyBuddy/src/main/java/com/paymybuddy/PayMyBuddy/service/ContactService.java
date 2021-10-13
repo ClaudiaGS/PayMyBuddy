@@ -25,7 +25,7 @@ public class ContactService implements IContactService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IContactService#createContact(Contact)
      */
     @Override
-    public boolean createContact(Contact contact) {
+    public boolean createContact(final Contact contact) {
         boolean result=false;
         if(userService.createUser(userService.readUser(contact.getUserIDAccount()))) {
             contactRepository.createContact(contact);
@@ -57,7 +57,7 @@ public class ContactService implements IContactService {
      * @see IContactService#readUsersContactList(int)
      */
     @Override
-    public List<Contact> readUsersContactList(int userIDAccount) {
+    public List<Contact> readUsersContactList(final int userIDAccount) {
         List<Contact>contactList=contactRepository.readUsersContactList(userIDAccount);
         logger.info("Contact list for user "+userIDAccount+" is "+contactList);
         return contactList;
@@ -69,7 +69,7 @@ public class ContactService implements IContactService {
      * @see IContactService#readContact(int)
      */
     @Override
-    public Contact readContact(int contactID) {
+    public Contact readContact(final int contactID) {
         Contact contact=contactRepository.readContact(contactID);
         logger.info("Contact with id "+contactID+" is "+contact);
         return contact;
@@ -82,7 +82,7 @@ public class ContactService implements IContactService {
      * @see IContactService#deleteContact(int)
      */
     @Override
-    public boolean deleteContact(int contactID) {
+    public boolean deleteContact(final int contactID) {
         logger.info("Deleted contact with id "+contactID);
         return contactRepository.deleteContact(contactID);
     }

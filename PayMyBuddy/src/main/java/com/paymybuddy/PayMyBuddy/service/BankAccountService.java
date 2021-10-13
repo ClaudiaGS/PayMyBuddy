@@ -27,7 +27,7 @@ public class BankAccountService implements IBankAccountService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IBankAccountService#createBankAccount(Connection, BankAccount)
      */
     @Override
-    public boolean createBankAccount(Connection connection, BankAccount bankAccount) {
+    public boolean createBankAccount(Connection connection, final BankAccount bankAccount) {
         if (userService.readUser(bankAccount.getUserID()) != null) {
             bankAccountRepository.createBankAccount(connection, bankAccount);
         }
@@ -40,7 +40,7 @@ public class BankAccountService implements IBankAccountService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IBankAccountService#readBankAccount(int)
      */
     @Override
-    public BankAccount readBankAccount(int bankAccountID) {
+    public BankAccount readBankAccount(final int bankAccountID) {
         BankAccount bankAccount = bankAccountRepository.readBankAccount(bankAccountID);
         logger.info("Bank account with id " + bankAccountID + " is " + bankAccount);
         return bankAccount;
@@ -64,7 +64,7 @@ public class BankAccountService implements IBankAccountService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IBankAccountService#readUsersBankAccount(int)
      */
     @Override
-    public BankAccount readUsersBankAccount(int userID) {
+    public BankAccount readUsersBankAccount(final int userID) {
         BankAccount bankAccount = bankAccountRepository.readUsersBankAccount(userID);
         logger.info("Bank account for user with id " + userID + " is " + bankAccount);
         return bankAccount;
@@ -76,7 +76,7 @@ public class BankAccountService implements IBankAccountService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IBankAccountService#updateAmount(int, double, String)
      */
     @Override
-    public double updateAmount(int userID, double transferedAmount, String operation) {
+    public double updateAmount(final int userID,final double transferedAmount,final String operation) {
         
         double bankAccountAmount = readUsersBankAccount(userID).getBankAccountAmount();
         switch (operation) {
@@ -103,7 +103,7 @@ public class BankAccountService implements IBankAccountService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IBankAccountService#updateAmountPersonalAccount(double, double, String)
      */
     @Override
-    public double updateAmountPersonalAccount(double amount, double amountForOperation, String operation) {
+    public double updateAmountPersonalAccount(double amount, final double amountForOperation,final String operation) {
         
         switch (operation) {
             case "add":
@@ -129,7 +129,7 @@ public class BankAccountService implements IBankAccountService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IBankAccountService#updateBankAccount(java.sql.Connection, int, java.util.HashMap)
      */
     @Override
-    public boolean updateBankAccount(Connection connection, int bankAccountID, HashMap<String, Object> params) {
+    public boolean updateBankAccount(Connection connection,final int bankAccountID,final HashMap<String, Object> params) {
         
         BankAccount bankAccount = this.bankAccountRepository.readBankAccount(bankAccountID);
         

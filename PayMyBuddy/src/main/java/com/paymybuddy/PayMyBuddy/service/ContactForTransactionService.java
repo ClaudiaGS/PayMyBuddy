@@ -5,7 +5,7 @@ import com.paymybuddy.PayMyBuddy.model.Contact;
 import com.paymybuddy.PayMyBuddy.model.ContactForTransaction;
 import com.paymybuddy.PayMyBuddy.model.User;
 import com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService;
-import com.paymybuddy.PayMyBuddy.service.interfaces.IContactForTransaction;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IContactForTransactionService;
 import com.paymybuddy.PayMyBuddy.service.interfaces.IContactService;
 import com.paymybuddy.PayMyBuddy.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ContactForTransactionService implements IContactForTransaction {
+public class ContactForTransactionService implements IContactForTransactionService {
     @Autowired
     IUserService userService;
     @Autowired
@@ -26,9 +26,9 @@ public class ContactForTransactionService implements IContactForTransaction {
     /**
      * (non-javadoc)
      *
-     * @see IContactForTransaction#getContactForTransactionList(int)
+     * @see IContactForTransactionService#getContactForTransactionList(int)
      */
-    public List<ContactForTransaction> getContactForTransactionList(int userID){
+    public List<ContactForTransaction> getContactForTransactionList(final int userID){
         List<ContactForTransaction> contactForTransactionList = new ArrayList<ContactForTransaction>();
         
         List<Contact> contactList = contactService.readUsersContactList(userID);
@@ -46,10 +46,10 @@ public class ContactForTransactionService implements IContactForTransaction {
     /**
      * (non-javadoc)
      *
-     * @see IContactForTransaction#readContactForTransaction(int)
+     * @see IContactForTransactionService#readContactForTransaction(int)
      */
     @Override
-    public ContactForTransaction readContactForTransaction(int contactID) {
+    public ContactForTransaction readContactForTransaction(final int contactID) {
         Contact contact= contactService.readContact(contactID);
         User user=userService.readUser(contact.getUserIDContact());
         Account account=accountService.readUsersAccount(contact.getUserIDContact());

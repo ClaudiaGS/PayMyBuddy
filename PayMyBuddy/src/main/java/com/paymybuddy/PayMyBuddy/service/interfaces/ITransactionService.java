@@ -11,7 +11,7 @@ public interface ITransactionService {
      * @param transaction
      * @return boolean
      */
-    public boolean createTransaction(Transaction transaction);
+    public boolean createTransaction(final Transaction transaction);
     
     /**
      *
@@ -25,7 +25,7 @@ public interface ITransactionService {
      * @param transactionID
      * @return Transaction
      */
-    public Transaction readTransaction(int transactionID);
+    public Transaction readTransaction(final int transactionID);
     
     
     /**
@@ -33,6 +33,6 @@ public interface ITransactionService {
      * @param userID
      * @return List<Transaction>
      */
-    public List<Transaction> readUsersTransactionList(int userID);
+    public List<Transaction> readUsersTransactionList(final int userID);
     
 }

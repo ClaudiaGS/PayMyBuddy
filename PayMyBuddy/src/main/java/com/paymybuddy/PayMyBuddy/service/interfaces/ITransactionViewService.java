@@ -11,5 +11,5 @@ public interface ITransactionViewService {
      * @param userID
      * @return List<TransactionView>
      */
-    public List<TransactionView> getTransactionViewList(int userID);
+    public List<TransactionView> getTransactionViewList(final int userID);
 }

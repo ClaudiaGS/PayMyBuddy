@@ -37,7 +37,7 @@ public class TransactionService implements ITransactionService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionService#createTransaction(Transaction)
      */
     @Override
-    public boolean createTransaction(Transaction transaction) {
+    public boolean createTransaction(final Transaction transaction) {
         boolean result = true;
         double feePercentage = 0.5 / 100;
         double feeAmount = transaction.getTransactionReceivedAmount() * feePercentage;
@@ -113,7 +113,7 @@ public class TransactionService implements ITransactionService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionService#readTransaction(int)
      */
     @Override
-    public Transaction readTransaction(int transactionID) {
+    public Transaction readTransaction(final int transactionID) {
         return transactionRepository.readTransaction(transactionID);
     }
     
@@ -123,7 +123,7 @@ public class TransactionService implements ITransactionService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionService#readUsersTransactionList(int)
      */
     @Override
-    public List<Transaction> readUsersTransactionList(int userIDSender) {
+    public List<Transaction> readUsersTransactionList(final int userIDSender) {
         return transactionRepository.readUsersTransactionList(userIDSender);
     }
     

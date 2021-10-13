@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymybuddy.PayMyBuddy.config.IDataBase;
 import com.paymybuddy.PayMyBuddy.integration.config.DataBaseTestConfig;
 import com.paymybuddy.PayMyBuddy.model.Contact;
-import com.paymybuddy.PayMyBuddy.service.interfaces.IContactForTransaction;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IContactForTransactionService;
 import com.paymybuddy.PayMyBuddy.service.interfaces.IContactService;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,7 +29,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class ContactForTransactionServiceIT {
     
     @Autowired
-    IContactForTransaction contactForTransactionService;
+    IContactForTransactionService contactForTransactionService;
     @Autowired
     IContactService contactService;
     @Autowired

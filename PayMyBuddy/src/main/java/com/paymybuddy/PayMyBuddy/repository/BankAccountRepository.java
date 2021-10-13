@@ -17,11 +17,9 @@ import java.util.List;
 public class BankAccountRepository implements IBankAccountRepository {
     @Autowired
     public IDataBase dataBase;
-    @Autowired
-    BankAccount bankAccount;
-    
+
     private BankAccount processRow(ResultSet rs) throws SQLException {
-        bankAccount=new BankAccount();
+        BankAccount bankAccount=new BankAccount();
         bankAccount.setBankAccountID(rs.getInt(1));
         bankAccount.setBankAccountAmount(rs.getDouble(2));
         bankAccount.setBankAccountCurrency(rs.getString(3));
@@ -36,7 +34,7 @@ public class BankAccountRepository implements IBankAccountRepository {
      * @see com.paymybuddy.PayMyBuddy.repository.interfaces.IBankAccountRepository#createBankAccount(Connection,BankAccount)
      */
     @Override
-    public boolean createBankAccount(Connection connection,BankAccount bankAccount) {
+    public boolean createBankAccount(Connection connection,final BankAccount bankAccount) {
         boolean result=false;
         PreparedStatement ps = null;
         ResultSet resultSet = null;
@@ -66,8 +64,8 @@ public class BankAccountRepository implements IBankAccountRepository {
      * @see com.paymybuddy.PayMyBuddy.repository.interfaces.IBankAccountRepository#readBankAccount(int)
      */
     @Override
-    public BankAccount readBankAccount(int bankAccountID) {
-        bankAccount = new BankAccount();
+    public BankAccount readBankAccount(final int bankAccountID) {
+        BankAccount bankAccount = new BankAccount();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
@@ -97,7 +95,7 @@ public class BankAccountRepository implements IBankAccountRepository {
     @Override
     public List<BankAccount> readBankAccountList() {
         List<BankAccount> bankAccountList = new ArrayList<BankAccount>();
-        bankAccount = null;
+        BankAccount bankAccount = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
@@ -126,9 +124,9 @@ public class BankAccountRepository implements IBankAccountRepository {
      * @see IBankAccountRepository#readUsersBankAccount(int) 
      */
     @Override
-    public BankAccount readUsersBankAccount(int userID){
+    public BankAccount readUsersBankAccount(final int userID){
         
-        bankAccount = new BankAccount();
+        BankAccount bankAccount = new BankAccount();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {

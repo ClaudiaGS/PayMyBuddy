@@ -92,9 +92,9 @@ public class UserService implements IUserService {
     /**
      * (non-javadoc)
      *
-     * @see com.paymybuddy.PayMyBuddy.service.interfaces.IUserService#registration(Account, User)
+     * @see com.paymybuddy.PayMyBuddy.service.interfaces.IUserService#register(Account, User)
      */
-    public boolean registration(Account account, User user) {
+    public boolean register(Account account, User user) {
         
         BankAccount bankAccount = new BankAccount();
         bankAccount.setBankAccountAmount(0);

@@ -124,7 +124,7 @@ public class UserControllerTest {
         account.setAccountPassword("pass");
 
         try {
-            when(userService.registration(account,userToRegister)).thenReturn(true);
+            when(userService.register(account,userToRegister)).thenReturn(true);
             this.mvc.perform(MockMvcRequestBuilders
                     .post("/register")
                     .param("email", "email")

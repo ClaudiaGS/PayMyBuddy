@@ -18,11 +18,9 @@ public class TransactionRepository implements ITransactionRepository {
     private static final Logger logger = LogManager.getLogger("TransactionRepository");
     @Autowired
     public IDataBase dataBase;
-    @Autowired
-    Transaction transaction;
     
     private Transaction processRow(ResultSet rs) throws SQLException {
-        transaction = new Transaction();
+        Transaction transaction = new Transaction();
         transaction.setTransactionID(rs.getInt(1));
         transaction.setTransactionDescription(rs.getString(2));
         transaction.setTransactionDebitedAmount(rs.getDouble(3));
@@ -39,7 +37,7 @@ public class TransactionRepository implements ITransactionRepository {
      * @see com.paymybuddy.PayMyBuddy.repository.interfaces.ITransactionRepository#createTransaction(Connection, Transaction)
      */
     @Override
-    public boolean createTransaction(Connection connection, Transaction transaction) {
+    public boolean createTransaction(Connection connection,final Transaction transaction) {
         
         double feePercentage = 0.5 / 100;
         double feeAmount = transaction.getTransactionReceivedAmount() * feePercentage;
@@ -81,7 +79,7 @@ public class TransactionRepository implements ITransactionRepository {
     @Override
     public List<Transaction> readTransactionList() {
         List<Transaction> transactionList = new ArrayList<Transaction>();
-        transaction = null;
+        Transaction transaction = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
@@ -110,8 +108,8 @@ public class TransactionRepository implements ITransactionRepository {
      * @see ITransactionRepository#readTransaction(int)
      */
     @Override
-    public Transaction readTransaction(int transactionID) {
-        transaction = null;
+    public Transaction readTransaction(final int transactionID) {
+        Transaction transaction = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
@@ -139,9 +137,9 @@ public class TransactionRepository implements ITransactionRepository {
      * @see ITransactionRepository#readUsersTransactionList(int)
      */
     @Override
-    public List<Transaction> readUsersTransactionList(int userIDSender) {
+    public List<Transaction> readUsersTransactionList(final int userIDSender) {
         List<Transaction> usersTransactionList = new ArrayList<Transaction>();
-        transaction = null;
+        Transaction transaction = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {

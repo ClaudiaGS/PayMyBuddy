@@ -33,7 +33,7 @@ public class TransactionViewService implements ITransactionViewService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionViewService#getTransactionViewList(int)
      */
     @Override
-    public List<TransactionView> getTransactionViewList(int userID) {
+    public List<TransactionView> getTransactionViewList(final int userID) {
         logger.info("Get transactions for user with id:" + userID);
         List<TransactionView> transactionViewList = new ArrayList<>();
         List<Transaction> transactionList = transactionService.readUsersTransactionList(userID);

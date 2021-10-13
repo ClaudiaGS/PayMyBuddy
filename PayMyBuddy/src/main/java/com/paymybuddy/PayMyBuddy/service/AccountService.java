@@ -25,7 +25,7 @@ public class AccountService implements IAccountService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService#createAccount(Connection, Account)
      */
     @Override
-    public boolean createAccount(Connection connection, Account account) {
+    public boolean createAccount(Connection connection,final Account account) {
         if (account.getAccountEmail().isEmpty()|| account.getAccountPassword().isEmpty()) {
             return false;
             
@@ -51,7 +51,7 @@ public class AccountService implements IAccountService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService#readUsersAccount(int)
      */
     @Override
-    public Account readUsersAccount(int userID) {
+    public Account readUsersAccount(final int userID) {
         return accountRepository.readUsersAccount(userID);
     }
     /**
@@ -60,7 +60,7 @@ public class AccountService implements IAccountService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService#readAccount(int)
      */
     @Override
-    public Account readAccount(int accountID) {
+    public Account readAccount(final int accountID) {
         Account account = accountRepository.readAccount(accountID);
         logger.info("Account with id " + accountID + " is: " + account);
         return account;
@@ -72,7 +72,7 @@ public class AccountService implements IAccountService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService#updateAccount(int, HashMap)
      */
     @Override
-    public boolean updateAccount(int accountID, HashMap<String, Object> params) {
+    public boolean updateAccount(final int accountID, final HashMap<String, Object> params) {
         
         Account account = this.accountRepository.readAccount(accountID);
         
@@ -91,7 +91,7 @@ public class AccountService implements IAccountService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService#authenticate(Account)
      */
     @Override
-    public Account authenticate(Account account) {
+    public Account authenticate(final Account account) {
         logger.info("Authentified account is " + accountRepository.authenticate(account));
         return accountRepository.authenticate(account);
     }
@@ -102,7 +102,7 @@ public class AccountService implements IAccountService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService#alreadyExist(String)
      */
     @Override
-    public boolean alreadyExist(String email) {
+    public boolean alreadyExist(final String email) {
         return accountRepository.alreadyExist(email);
         
     }

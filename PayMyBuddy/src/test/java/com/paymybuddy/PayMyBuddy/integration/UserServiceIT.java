@@ -97,7 +97,7 @@ public class UserServiceIT {
         User user=new User();
         user.setUserFirstName("firstName10");
         user.setUserLastName("lastName10");
-        assertThat((userService.registration(account,user))).isEqualTo(true);
+        assertThat((userService.register(account,user))).isEqualTo(true);
     }
 
     public static String asJsonString(final Object obj) {

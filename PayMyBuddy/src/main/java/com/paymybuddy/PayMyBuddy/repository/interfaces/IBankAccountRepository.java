@@ -12,7 +12,7 @@ public interface IBankAccountRepository {
      * @param bankAccount
      * @return boolean
      */
-    public boolean createBankAccount(Connection connection,BankAccount bankAccount);
+    public boolean createBankAccount(Connection connection,final BankAccount bankAccount);
     
     /**
      *
@@ -25,14 +25,14 @@ public interface IBankAccountRepository {
      * @param bankAccountID
      * @return BankAccount
      */
-    public BankAccount readBankAccount(int bankAccountID);
+    public BankAccount readBankAccount(final int bankAccountID);
     
     /**
      *
      * @param userID
      * @return BankAccount
      */
-    public BankAccount readUsersBankAccount(int userID);
+    public BankAccount readUsersBankAccount(final int userID);
     
     /**
      *

@@ -17,13 +17,11 @@ import java.util.List;
 public class ContactRepository implements IContactRepository {
     @Autowired
     public IDataBase dataBase;
-    @Autowired
-    Contact contact;
+
     private static final Logger logger = LogManager.getLogger("ContactRepository");
     
-    
     private Contact processRow(ResultSet rs) throws SQLException {
-        contact = new Contact();
+        Contact contact = new Contact();
         contact.setContactID(rs.getInt(1));
         contact.setUserIDAccount(rs.getInt(2));
         contact.setUserIDContact(rs.getInt(3));
@@ -36,7 +34,7 @@ public class ContactRepository implements IContactRepository {
      * @see IContactRepository#createContact(Contact)
      */
     @Override
-    public boolean createContact(Contact contact) {
+    public boolean createContact(final Contact contact) {
         
         boolean result = false;
         PreparedStatement ps = null;
@@ -71,7 +69,7 @@ public class ContactRepository implements IContactRepository {
     @Override
     public List<Contact> readContactList() {
         List<Contact> contactList = new ArrayList<Contact>();
-        contact = null;
+        Contact contact = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
@@ -100,9 +98,9 @@ public class ContactRepository implements IContactRepository {
      * @see IContactRepository#readUsersContactList(int)
      */
     @Override
-    public List<Contact> readUsersContactList(int userIDAccount) {
+    public List<Contact> readUsersContactList(final int userIDAccount) {
         List<Contact> userscontactList = new ArrayList<Contact>();
-        contact = null;
+        Contact contact = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
@@ -131,8 +129,8 @@ public class ContactRepository implements IContactRepository {
      * @see IContactRepository#readContact(int)
      */
     @Override
-    public Contact readContact(int contactID) {
-        contact = null;
+    public Contact readContact(final int contactID) {
+        Contact contact = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
@@ -160,13 +158,13 @@ public class ContactRepository implements IContactRepository {
      * @see IContactRepository#deleteContact(int)
      */
     @Override
-    public boolean deleteContact(int contactID) {
+    public boolean deleteContact(final int contactID) {
        
         PreparedStatement ps = null;
         ResultSet rs = null;
         boolean executed = false;
         List<Contact> contactList = readContactList();
-        contact = readContact(contactID);
+        Contact contact = readContact(contactID);
         contactList.remove(contact);
         
         try (Connection con = dataBase.getConnection()) {

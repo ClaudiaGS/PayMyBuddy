@@ -4,19 +4,19 @@ import com.paymybuddy.PayMyBuddy.model.ContactForTransaction;
 
 import java.util.List;
 
-public interface IContactForTransaction {
+public interface IContactForTransactionService {
     
     /**
      *
      * @param contactID
      * @return ContactForTransaction
      */
-    public ContactForTransaction readContactForTransaction(int contactID);
+    public ContactForTransaction readContactForTransaction(final int contactID);
     
     /**
      *
      * @param userID
      * @return List<ContactForTransaction>
      */
-    public List<ContactForTransaction> getContactForTransactionList(int userID);
+    public List<ContactForTransaction> getContactForTransactionList(final int userID);
 }

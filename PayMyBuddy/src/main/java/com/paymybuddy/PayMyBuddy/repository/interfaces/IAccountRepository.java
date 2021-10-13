@@ -13,7 +13,7 @@ public interface IAccountRepository {
      * @param account
      * @return boolean
      */
-    public boolean createAccount(Connection connection,Account account);
+    public boolean createAccount(Connection connection,final Account account);
   
     /**
      *
@@ -26,14 +26,14 @@ public interface IAccountRepository {
      * @param accountID
      * @return Account
      */
-    public Account readAccount(int accountID);
+    public Account readAccount(final int accountID);
     
     /**
      *
      * @param userID
      * @return Account
      */
-    public Account readUsersAccount(int userID);
+    public Account readUsersAccount(final int userID);
     
     /**
      *
@@ -47,14 +47,14 @@ public interface IAccountRepository {
      * @param account
      * @return boolean
      */
-    public Account authenticate(Account account);
+    public Account authenticate(final Account account);
     
     /**
      *
      * @param email
      * @return boolean
      */
-    public boolean alreadyExist(String email);
+    public boolean alreadyExist(final String email);
 }
 
 

@@ -42,7 +42,7 @@ public interface IUserService {
      * @param user
      * @return int
      */
-    public boolean registration(final Account account, final User user);
+    public boolean register(final Account account, final User user);
     
 
 }

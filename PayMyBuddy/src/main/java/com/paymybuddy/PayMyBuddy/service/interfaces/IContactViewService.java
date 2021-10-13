@@ -11,5 +11,5 @@ public interface IContactViewService {
      * @param userID
      * @return List<ContactView>
      */
-    public List<ContactView> getContactViewList(int userID);
+    public List<ContactView> getContactViewList(final int userID);
 }

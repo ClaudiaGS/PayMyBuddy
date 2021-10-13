@@ -13,7 +13,7 @@ public interface IBankAccountService {
      * @param bankAccount
      * @return boolean
      */
-    public boolean createBankAccount(Connection connection,BankAccount bankAccount);
+    public boolean createBankAccount(Connection connection,final BankAccount bankAccount);
     
     /**
      *
@@ -26,14 +26,14 @@ public interface IBankAccountService {
      * @param bankAccountID
      * @return BankAccount
      */
-    public BankAccount readBankAccount(int bankAccountID);
+    public BankAccount readBankAccount(final int bankAccountID);
     
     /**
      *
      * @param userID
      * @return BankAccount
      */
-    public BankAccount readUsersBankAccount(int userID);
+    public BankAccount readUsersBankAccount(final int userID);
     
     /**
      *
@@ -42,7 +42,7 @@ public interface IBankAccountService {
      * @param operation
      * @return double
      */
-    public double updateAmount(int userID,double transferedAmount, String operation );
+    public double updateAmount(final int userID,final double transferedAmount, final String operation );
     
     /**
      *
@@ -51,7 +51,7 @@ public interface IBankAccountService {
      * @param params
      * @return boolean
      */
-    public boolean updateBankAccount(Connection connection,int bankAccountID, HashMap<String,Object> params);
+    public boolean updateBankAccount(Connection connection,final int bankAccountID,final HashMap<String,Object> params);
     
     /**
      *
@@ -60,7 +60,7 @@ public interface IBankAccountService {
      * @param operation
      * @return double
      */
-    public double updateAmountPersonalAccount(double amount,double amountForOperation, String operation);
+    public double updateAmountPersonalAccount(double amount,final double amountForOperation,final String operation);
 }
 
 

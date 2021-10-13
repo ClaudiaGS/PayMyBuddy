@@ -32,7 +32,7 @@ public class UserCompleteService implements IUserCompleteService {
      * @see com.paymybuddy.PayMyBuddy.service.interfaces.IUserCompleteService#login(Account)
      */
     @Override
-    public UserComplete login(Account account) {
+    public UserComplete login( Account account) {
         
         UserComplete userComplete = new UserComplete();
         account = accountService.authenticate(account);
@@ -93,7 +93,7 @@ public class UserCompleteService implements IUserCompleteService {
      * @see IUserCompleteService#readUserComplete(int userID)
      */
     @Override
-    public UserComplete readUserComplete(int userID) {
+    public UserComplete readUserComplete(final int userID) {
         UserComplete userComplete = new UserComplete();
         User user = userService.readUser(userID);
         Account account = accountService.readUsersAccount(userID);

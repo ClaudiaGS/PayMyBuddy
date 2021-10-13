@@ -43,8 +43,8 @@ public class UserController {
     }
     
     @PostMapping("/register")
-    public int registration(String email, String password,
-                            String rePassword, String firstName, String lastName) {
+    public int register(String email, String password,
+                        String rePassword, String firstName, String lastName) {
         
         int result = 0;
         if (rePassword.equals(password)) {
@@ -57,7 +57,7 @@ public class UserController {
             user.setUserFirstName(firstName);
             user.setUserLastName(lastName);
             
-            if (userService.registration(account, user)) {
+            if (userService.register(account, user)) {
                 result = user.getUserID();
             }
             

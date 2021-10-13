@@ -12,7 +12,7 @@ public interface ITransactionRepository {
      * @param transaction
      * @return boolean
      */
-    public boolean createTransaction(Connection connection,Transaction transaction);
+    public boolean createTransaction(Connection connection,final Transaction transaction);
     
     /**
      *
@@ -26,7 +26,7 @@ public interface ITransactionRepository {
      * @param transactionID
      * @return Transaction
      */
-    public Transaction readTransaction(int transactionID);
+    public Transaction readTransaction(final int transactionID);
     
     
     /**
@@ -34,6 +34,6 @@ public interface ITransactionRepository {
      * @param userID
      * @return List<Transaction>
      */
-    public List<Transaction> readUsersTransactionList(int userID);
+    public List<Transaction> readUsersTransactionList(final int userID);
     
 }

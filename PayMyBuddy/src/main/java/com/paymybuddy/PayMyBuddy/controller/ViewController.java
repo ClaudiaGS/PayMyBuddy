@@ -25,8 +25,7 @@ import java.util.List;
 @Controller
 public class ViewController {
     @Autowired
-    public IDataBase dataSource;
-  
+    public IDataBase dataBase;
     
     @Autowired
     IAccountService accountService;
@@ -50,7 +49,7 @@ public class ViewController {
     IBankAccountService bankAccountService;
     
     @Autowired
-    IContactForTransaction contactForTransactionService;
+    IContactForTransactionService contactForTransactionService;
     
     
     @Autowired
@@ -157,7 +156,7 @@ public class ViewController {
         user.setUserLastName(registerInfoView.getLastName());
         
         if (registerInfoView.getPassword().equals(registerInfoView.getRePassword())) {
-            if (userService.registration(account, user)) {
+            if (userService.register(account, user)) {
                 
                 logger.info("Registration succeeded");
                 
@@ -334,7 +333,7 @@ public class ViewController {
         HttpSession session = request.getSession();
         Connection connection = null;
         try {
-            connection = dataSource.getConnection();
+            connection = dataBase.getConnection();
             
             
             UserComplete userComplete = userCompleteService.readUserComplete((int) session.getAttribute("userIDAccount"));

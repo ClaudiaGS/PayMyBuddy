@@ -25,7 +25,7 @@ public class ContactViewService  implements IContactViewService {
      *
      * @see IContactViewService#getContactViewList(int)
      */
-    public List<ContactView> getContactViewList(int userID){
+    public List<ContactView> getContactViewList(final int userID){
         
         List<ContactView> contactViewList = new ArrayList<ContactView>();
         List<User> userList = userService.readUserList();

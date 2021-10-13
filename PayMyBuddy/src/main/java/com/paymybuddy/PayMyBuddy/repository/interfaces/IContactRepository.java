@@ -10,7 +10,7 @@ public interface IContactRepository {
      * @param contact
      * @return boolean
      */
-    public boolean createContact(Contact contact);
+    public boolean createContact(final Contact contact);
     
     
     /**
@@ -25,7 +25,7 @@ public interface IContactRepository {
      * @param userIDAccount
      * @return List<Contact>
      */
-    public List<Contact> readUsersContactList(int userIDAccount);
+    public List<Contact> readUsersContactList(final int userIDAccount);
     
     
     /**
@@ -33,13 +33,13 @@ public interface IContactRepository {
      * @param contactID
      * @return Contact
      */
-    public Contact readContact(int contactID);
+    public Contact readContact(final int contactID);
     
     /**
      *
      * @param contactID
      * @return boolean
      */
-    public boolean deleteContact(int contactID);
+    public boolean deleteContact(final int contactID);
 }
 

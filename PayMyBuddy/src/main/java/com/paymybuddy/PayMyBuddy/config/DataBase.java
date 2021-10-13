@@ -8,12 +8,21 @@ import java.sql.*;
 public class DataBase implements IDataBase{
     
     private static final Logger logger = LogManager.getLogger("DataBaseConfig");
+    private String url;
+    private String user;
+    private String password;
+    
+    public DataBase(final String url, final String user, final String password) {
+        this.url = url;
+        this.user = user;
+        this.password = password;
+    }
+    
     @Override
     public Connection getConnection() throws ClassNotFoundException, SQLException {
         logger.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/paymybuddyDB", "claudia", "parola");
+        return DriverManager.getConnection(url, user, password);
     }
     @Override
     public void closeConnection(Connection con) {

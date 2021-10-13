@@ -13,7 +13,7 @@ public interface IAccountService {
      * @param account
      * @return boolean
      */
-    public boolean createAccount(Connection connection,Account account);
+    public boolean createAccount(Connection connection,final Account account);
     
     /**
      *
@@ -28,14 +28,14 @@ public interface IAccountService {
      * @param accountID
      * @return Account
      */
-    public Account readAccount(int accountID);
+    public Account readAccount( final int accountID);
     
     /**
      *
      * @param userID
      * @return Account
      */
-    public Account readUsersAccount(int userID);
+    public Account readUsersAccount(final int userID);
     
     /**
      *
@@ -43,19 +43,19 @@ public interface IAccountService {
      * @param params
      * @return boolean
      */
-    public boolean updateAccount(int accountID, HashMap<String, Object> params);
+    public boolean updateAccount(final int accountID,final HashMap<String, Object> params);
     
     /**
      *
      * @param account
      * @return Account
      */
-    public  Account authenticate(Account account);
+    public  Account authenticate(final Account account);
     
     /**
      *
      * @param email
      * @return boolean
      */
-    public boolean alreadyExist(String email);
+    public boolean alreadyExist(final String email);
 }
