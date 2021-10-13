@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Login PayMyBuddy</title>
+    <link rel="stylesheet" th:href="@{/connexion.css}"/>
+</head>
+<body>
+
+<div class="container">
+    <p class="heading" style="color:#30F3E8;">Pay My Buddy</p>
+    <p class="heading2" style="color:#30F3E8;">Money Transfer Online</p>
+    <form method="post" th:action="@{/home}" th:object="${account}">
+        <div class="form-group">
+            <div class="box">
+                <p>Email</p>
+                <div>
+                    <input id="emailbox" type="text" th:field="*{accountEmail}" placeholder="Enter email"/>
+
+                </div>
+            </div>
+            <div class="box">
+                <p>Password</p>
+                <div>
+                    <input id="passwordbox" type="password" th:field="*{accountPassword}" placeholder="Enter password"/>
+                </div>
+            </div>
+            <a>
+                <button class="loginBtn" type="submit">Login</button>
+            </a>
+        </div>
+    </form>
+    <p class="text">Don't have an account? <a th:href="@{/registration}">Signup</a></p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</body>
+</html>
+
+
