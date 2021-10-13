@@ -1,20 +1,23 @@
 package com.paymybuddy.PayMyBuddy.controller;
 
 import com.paymybuddy.PayMyBuddy.model.Transaction;
-import com.paymybuddy.PayMyBuddy.service.TransactionService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 public class TransactionController {
     @Autowired
-    TransactionService transactionService;
+    ITransactionService transactionService;
     
     @PostMapping("/createTransaction")
-    public Transaction createTransaction(String transactionDescription, double transactionDebitedAmount, int userIDSender, int userIDReceiver){
-        return transactionService.createTransaction(transactionDescription,transactionDebitedAmount,userIDSender,userIDReceiver);
+    public boolean createTransaction(Transaction transaction){
+        return transactionService.createTransaction(transaction);
     }
     @GetMapping("/readTransactionInfo")
     public Transaction readTransaction(@RequestParam int transactionID){
@@ -29,10 +32,6 @@ public class TransactionController {
         return transactionService.readUsersTransactionList(userIDSender);
         
     }
-    
-    @DeleteMapping("deleteTransaction")
-    public boolean deleteTransaction(@RequestParam int transactionID){
-        return transactionService.deleteTransaction(transactionID);
-    }
+
     
 }

@@ -1,8 +1,9 @@
 package com.paymybuddy.PayMyBuddy.repository;
 
-import com.paymybuddy.PayMyBuddy.config.DataBase;
+import com.paymybuddy.PayMyBuddy.config.IDataBase;
 import com.paymybuddy.PayMyBuddy.constants.DataBaseConstants;
 import com.paymybuddy.PayMyBuddy.model.Account;
+import com.paymybuddy.PayMyBuddy.repository.interfaces.IAccountRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,70 +11,18 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class AccountRepository implements IAccountRepository {
+    
     @Autowired
-    Account account;
+    public IDataBase dataBase;
+    
     private static final Logger logger = LogManager.getLogger("AccountRepository");
-    @Autowired
-    public DataBase dataBase;
     
-    @Autowired
-    UserRepository userRepository;
-    
-    @Override
-    public Account createAccount(int userID, String email, String password) {
-        logger.info("Create account with email: " + email + " for user with id: " + userID);
-        account = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
-        try (Connection con = dataBase.getConnection()) {
-            ps = con.prepareStatement(DataBaseConstants.CREATE_ACCOUNT, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, email);
-            ps.setString(2, password);
-            ps.setInt(3, userID);
-            ps.execute();
-            resultSet = ps.getGeneratedKeys();
-            if (resultSet.next()) {
-                account.setAccountID(resultSet.getInt(1));
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        } finally {
-            dataBase.closeResultSet(resultSet);
-            dataBase.closePreparedStatement(ps);
-        }
-        return account;
-    }
-    
-    @Override
-    public Account readAccount(int accountID) {
-        logger.info("Read account with id " + accountID);
-        account = null;
-        PreparedStatement ps = null;
-        ResultSet resultSet = null;
-        try (Connection con = dataBase.getConnection()) {
-            ps = con.prepareStatement(DataBaseConstants.READ_ACCOUNT);
-            ps.setInt(1, accountID);
-            resultSet = ps.executeQuery();
-            if (resultSet.next()) {
-                account = processRow(resultSet);
-            }
-        } catch (Exception ex) {
-            logger.error(ex.getMessage());
-        } finally {
-            dataBase.closeResultSet(resultSet);
-            dataBase.closePreparedStatement(ps);
-            return account;
-        }
-    }
-    
-    protected Account processRow(ResultSet rs) throws SQLException {
-        account=new Account();
+    private Account processRow(ResultSet rs) throws SQLException {
+        Account account = new Account();
         account.setAccountID(rs.getInt(1));
         account.setAccountEmail(rs.getString(2));
         account.setAccountPassword(rs.getString(3));
@@ -81,14 +30,52 @@ public class AccountRepository implements IAccountRepository {
         return account;
     }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see com.paymybuddy.PayMyBuddy.repository.interfaces.IAccountRepository#createAccount(Connection, Account)
+     */
+    @Override
+    public boolean createAccount(Connection connection, final Account account) {
+        boolean result = false;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        try {
+            ps = connection.prepareStatement(DataBaseConstants.CREATE_ACCOUNT, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, account.getAccountEmail());
+            ps.setString(2, account.getAccountPassword());
+            ps.setInt(3, account.getUserID());
+            
+            logger.debug(ps.toString());
+            
+            ps.execute();
+            
+            resultSet = ps.getGeneratedKeys();
+            if (resultSet.next()) {
+                account.setAccountID(resultSet.getInt(1));
+                result = true;
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        return result;
+    }
+    
+    /**
+     * (non-javadoc)
+     *
+     * @see IAccountRepository#readAccountList()
+     */
     public List<Account> readAccountList() {
-        logger.info("Read account list from table");
         List<Account> accountList = new ArrayList<Account>();
-        account = null;
+        Account account = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.READ_ACCOUNT_LIST);
+            
+            logger.debug(ps.toString());
+            
             rs = ps.executeQuery();
             while (rs.next()) {
                 account = processRow(rs);
@@ -104,33 +91,83 @@ public class AccountRepository implements IAccountRepository {
         
     }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see IAccountRepository#readAccount(int)
+     */
     @Override
-    public boolean updateAccount(int accountID, HashMap<String, Object> params) {
-        logger.info("Update account with id " + accountID);
-        boolean executed = false;
-        account = readAccount(accountID);
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
-            switch (entry.getKey()) {
-                case "accountEmail":
-                    account.setAccountEmail(entry.getValue().toString());
-                    break;
-                case "accountPassword":
-                    account.setAccountPassword(entry.getValue().toString());
-                    break;
-                case "userID":
-                    account.setUserID((int) entry.getValue());
-                    break;
-                default:
-                    logger.warn("Trying to modify unexisting account parameter");
-                    break;
+    public Account readAccount(final int accountID) {
+        Account account = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        try (Connection con = dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.READ_ACCOUNT);
+            ps.setInt(1, accountID);
+            
+            logger.debug(ps.toString());
+            
+            resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                account = processRow(resultSet);
             }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+        } finally {
+            dataBase.closeResultSet(resultSet);
+            dataBase.closePreparedStatement(ps);
+            return account;
         }
+    }
+    
+    /**
+     * (non-javadoc)
+     *
+     * @see IAccountRepository#readUsersAccount(int)
+     */
+    @Override
+    public Account readUsersAccount(final int userID) {
+        Account account = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        try (Connection con = dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.READ_USERS_ACCOUNT);
+            ps.setInt(1, userID);
+            
+            logger.debug(ps.toString());
+            
+            resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                account = processRow(resultSet);
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+        } finally {
+            dataBase.closeResultSet(resultSet);
+            dataBase.closePreparedStatement(ps);
+            return account;
+        }
+    }
+    
+    /**
+     * (non-javadoc)
+     *
+     * @see IAccountRepository#updateAccount(Account)
+     */
+    @Override
+    public boolean updateAccount(final Account account) {
+        boolean executed = false;
+        
         PreparedStatement ps = null;
         try (Connection con = dataBase.getConnection()) {
             ps = con.prepareStatement(DataBaseConstants.UPDATE_ACCOUNT);
+            ps.setInt(4, account.getAccountID());
             ps.setString(1, account.getAccountEmail());
             ps.setString(2, account.getAccountPassword());
-            ps.setInt(5, account.getUserID());
+            ps.setInt(3, account.getUserID());
+            
+            logger.debug(ps.toString());
+            
             ps.execute();
             executed = true;
         } catch (Exception e) {
@@ -141,76 +178,73 @@ public class AccountRepository implements IAccountRepository {
         return executed;
     }
     
-//    @Override
-//    public Account readAccountEmailBased(String email) {
-//        logger.info("Read account with email " + email);
-//        account = null;
-//        PreparedStatement ps = null;
-//        ResultSet resultSet = null;
-//        try (Connection con = dataBase.getConnection()) {
-//            ps = con.prepareStatement(DataBaseConstants.READ_ACCOUNT_EMAIL_BASED);
-//            ps.setString(1, email);
-//            resultSet = ps.executeQuery();
-//            if (resultSet.next()) {
-//                account = processRow(resultSet);
-//            }
-//        } catch (Exception ex) {
-//            logger.error(ex.getMessage());
-//        } finally {
-//            dataBase.closeResultSet(resultSet);
-//            dataBase.closePreparedStatement(ps);
-//            logger.info("Account is "+account);
-//            return account;
-//        }
-//    }
-    
+    /**
+     * (non-javadoc)
+     *
+     * @see IAccountRepository#authenticate(Account)
+     */
     @Override
-    public  int authentificate(String email, String password){
-        logger.info("Authentification check for email "+email);
-        int accountID=0;
-        PreparedStatement ps=null;
-        ResultSet rs=null;
-        try(Connection con=dataBase.getConnection()){
-            ps=con.prepareStatement(DataBaseConstants.AUTHENTIFICATE);
-            ps.setString(1,email);
-            ps.setString(2,password);
-            rs= ps.executeQuery();
-            if(rs.next()){
-                accountID=rs.getInt(1);
+    public Account authenticate(final Account account) {
+        
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Account accountToAuthentificate = null;
+        try (Connection con = dataBase.getConnection()) {
+            ps = con.prepareStatement(DataBaseConstants.AUTHENTICATE);
+            ps.setString(1, account.getAccountEmail());
+            ps.setString(2, account.getAccountPassword());
+            
+            logger.debug(ps.toString());
+            
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                accountToAuthentificate = new Account();
+                accountToAuthentificate.setAccountID(rs.getInt(1));
+                accountToAuthentificate.setAccountEmail(rs.getString(2));
+                accountToAuthentificate.setAccountPassword(rs.getString(3));
+                accountToAuthentificate.setUserID(rs.getInt(4));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
-        }finally{
+        } finally {
             dataBase.closeResultSet(rs);
             dataBase.closePreparedStatement(ps);
         }
-        if(accountID>0){
-            logger.info("Authentification succeeded");
-        }else {
-            logger.error("Wrong email or password");
-        }
-        return accountID;
+        return accountToAuthentificate;
     }
-//    public String getPasswordEncoded(String password) {
-//        logger.info("Encode password");
-//        String passwordEncoded = null;
-//        PreparedStatement ps = null;
-//        ResultSet rs = null;
-//        try (Connection con = dataBase.getConnection()) {
-//            ps = con.prepareStatement(DataBaseConstants.GET_PASSWORD_ENCODED);
-//            ps.setString(1, password);
-//            rs = ps.executeQuery();
-//            if(rs.next()) {
-//                passwordEncoded =rs.getString(1);
-//            }
-//        } catch (Exception e) {
-//            logger.error(e.getMessage());
-//        } finally {
-//            dataBase.closeResultSet(rs);
-//            dataBase.closePreparedStatement(ps);
-//        }
-//        logger.info("Password encoded is " + passwordEncoded);
-//        return passwordEncoded;
-//    }
+    
+    /**
+     * (non-javadoc)
+     *
+     * @see com.paymybuddy.PayMyBuddy.repository.interfaces.IAccountRepository#alreadyExist(String)
+     */
+    @Override
+    public boolean alreadyExist(final String email) {
+        boolean result = false;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try (Connection con = dataBase.getConnection()) {
+            
+            ps = con.prepareStatement(DataBaseConstants.ACCOUNT_EXIST);
+            ps.setString(1, email);
+            
+            logger.debug(ps.toString());
+            
+            rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                result = true;
+            }
+            
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            dataBase.closeResultSet(rs);
+            dataBase.closePreparedStatement(ps);
+        }
+        
+        return result;
+    }
 }
 

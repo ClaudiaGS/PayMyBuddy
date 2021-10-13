@@ -1,21 +1,23 @@
 package com.paymybuddy.PayMyBuddy.controller;
 
 import com.paymybuddy.PayMyBuddy.model.Contact;
-import com.paymybuddy.PayMyBuddy.service.ContactService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
 public class ContactController {
     @Autowired
-    ContactService contactService;
+    IContactService contactService;
     
     @PostMapping("/createContact")
-    public Contact createContact(@RequestParam int userIDAccount, @RequestParam int userIDContact){
-        return contactService.createContact(userIDAccount,userIDContact);
+    public boolean createContact(@RequestParam int userIDAccount, @RequestParam int userIDContact){
+        Contact contact=new Contact();
+        contact.setUserIDAccount(userIDAccount);
+        contact.setUserIDContact(userIDContact);
+        return contactService.createContact(contact);
     }
     @GetMapping("/readContactInfo")
     public Contact readContact(@RequestParam int contactID){
@@ -31,12 +33,7 @@ public class ContactController {
     
     }
     
-    @PutMapping("/updateContact")
-    public boolean updateContact(@RequestParam int contactID, @RequestBody HashMap<String, Object> params){
-        return contactService.updateContact(contactID,params);
-    }
-    
-    @DeleteMapping("deleteContact")
+    @DeleteMapping("/deleteContact")
     public boolean deleteContact(@RequestParam int contactID){
         return contactService.deleteContact(contactID);
 }

@@ -1,27 +1,37 @@
 package com.paymybuddy.PayMyBuddy.controller;
 
 import com.paymybuddy.PayMyBuddy.model.Account;
-import com.paymybuddy.PayMyBuddy.service.AccountService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 
 @RestController
 public class AccountController {
     @Autowired
-    AccountService accountService;
+    IAccountService accountService;
     
     @PostMapping("/createAccount")
-    public Account createAccount(@RequestParam int userID, @RequestParam String email, @RequestParam String password) {
-        return accountService.createAccount(userID, email, password);
+    public boolean createAccount(@RequestParam int userID, @RequestParam String email, @RequestParam String password) {
+        Connection connection = null;
+        Account account = new Account();
+        account.setAccountEmail(email);
+        account.setAccountPassword(password);
+        account.setUserID(userID);
+        return accountService.createAccount(connection, account);
     }
     
     @GetMapping("/readAccountInfo")
     public Account readAccount(@RequestParam int accountID) {
         return accountService.readAccount(accountID);
+    }
+    
+    @GetMapping("/readUsersAccountInfo")
+    public Account readUsersAccount(@RequestParam int userID) {
+        return accountService.readAccount(userID);
     }
     
     @GetMapping("/readAccountListInfo")
@@ -34,29 +44,12 @@ public class AccountController {
         return accountService.updateAccount(accountID, params);
     }
     
-    @GetMapping("/authentificate")
-    public int authentificate(@RequestParam String email, @RequestParam String password) {
-        return accountService.authentificate(email, password);
+    @GetMapping("/authenticate")
+    public Account authenticate(@RequestParam String email, @RequestParam String password) {
+        Account account = new Account();
+        account.setAccountEmail(email);
+        account.setAccountPassword(password);
+        return accountService.authenticate(account);
     }
     
-//    @GetMapping("/home")
-//    public String home(){
-//        return"home";
-//}
-    
-    @RequestMapping("/login")
-    public ModelAndView home () {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("home");
-        return modelAndView;
-    }
-//    @GetMapping("/home")
-//    public String LoginPage(Model model) {
-//        Iterable<Account> listAccounts = accountService.readAccountList();
-//
-//        model.addAttribute("accounts", listAccounts);
-//
-//        return "LoginPage";
-//    }
-        
-    }
+}

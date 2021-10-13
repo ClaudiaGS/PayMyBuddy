@@ -1,50 +1,89 @@
 package com.paymybuddy.PayMyBuddy.service;
 
 import com.paymybuddy.PayMyBuddy.model.Contact;
-import com.paymybuddy.PayMyBuddy.repository.ContactRepository;
+import com.paymybuddy.PayMyBuddy.repository.interfaces.IContactRepository;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IContactService;
+import com.paymybuddy.PayMyBuddy.service.interfaces.IUserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Service
 public class ContactService implements IContactService {
     @Autowired
-    ContactRepository contactRepository;
+    IContactRepository contactRepository;
     @Autowired
-    UserService userService;
+    IUserService userService;
+    private static final Logger logger = LogManager.getLogger("ContactService");
     
+    /**
+     * (non-javadoc)
+     *
+     * @see com.paymybuddy.PayMyBuddy.service.interfaces.IContactService#createContact(Contact)
+     */
     @Override
-    public Contact createContact(int userIDAccount, int userIDContact) {
-        Contact contact = null;
-        if(userService.createUser(userService.readUser(userIDAccount))) {
-            contact = contactRepository.createContact(userIDAccount,userIDContact);
+    public boolean createContact(final Contact contact) {
+        boolean result=false;
+        if(userService.createUser(userService.readUser(contact.getUserIDAccount()))) {
+            contactRepository.createContact(contact);
+            logger.info("Contact "+contact+" created");
+            result=true;
+        }else
+        {
+            logger.error("Contact "+contact+" cannot be created");
         }
-        return contact;
+        
+        return result;
     }
+    
+    /**
+     * (non-javadoc)
+     *
+     * @see IContactService#readContactList()
+     */
     @Override
     public List<Contact> readContactList() {
-        return contactRepository.readContactList();
+        List<Contact>contactList=contactRepository.readContactList();
+        logger.info("Contact list is "+contactList);
+        return contactList;
     }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see IContactService#readUsersContactList(int)
+     */
     @Override
-    public List<Contact> readUsersContactList(int userIDAccount) {
-        return contactRepository.readUsersContactList(userIDAccount);
+    public List<Contact> readUsersContactList(final int userIDAccount) {
+        List<Contact>contactList=contactRepository.readUsersContactList(userIDAccount);
+        logger.info("Contact list for user "+userIDAccount+" is "+contactList);
+        return contactList;
     }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see IContactService#readContact(int)
+     */
     @Override
-    public Contact readContact(int contactID) {
-        return contactRepository.readContact(contactID);
+    public Contact readContact(final int contactID) {
+        Contact contact=contactRepository.readContact(contactID);
+        logger.info("Contact with id "+contactID+" is "+contact);
+        return contact;
     }
     
-    @Override
-    public boolean updateContact(int contactID, HashMap<String, Object> params) {
-        return contactRepository.updateContact(contactID,params);
-    }
     
+    /**
+     * (non-javadoc)
+     *
+     * @see IContactService#deleteContact(int)
+     */
     @Override
-    public boolean deleteContact(int contactID) {
+    public boolean deleteContact(final int contactID) {
+        logger.info("Deleted contact with id "+contactID);
         return contactRepository.deleteContact(contactID);
     }
 }
