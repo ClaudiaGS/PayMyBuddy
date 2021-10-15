@@ -10,10 +10,10 @@
 - add money from personal bank account
 
 **Data Base Structure**
-![ModèleDonnées.jpg](src/main/ressources/static/ModèleDonnées.jpg)
+![ModèleDonnées.jpg](PayMyBuddy/src/main/resources/static/ModèleDonnées.jpg)
 
 **Class model diagram**
-![DiagrammeClasse.jpg](F:/OPENCLASSROOMS/PROJET 6/P6_Gugiuman_Claudia/P6_01_DiagrammeClasse.jpg)
+![DiagrammeClasse.jpg](PayMyBuddy/src/main/resources/static/DiagrammeClasse.jpg)
 
 **Installation:**
 
@@ -36,4 +36,4 @@ datasourcetest.url=jdbc:mysql://localhost:3306/paymybuddyDBTest
 > > - in Java Terminal, run 
 > mvn jasypt:encrypt -Djasypt.encryptor.password=(jasypt.encryptor.password you have chosen)
 > > - in command line, when logged in with your SQL username/password, add source file Data.sql with command:
-> > > SOURCE /PATH TO/Data.sql
+> > > SOURCE     (/YOUR PATH TO)/Data.sql

@@ -57,6 +57,12 @@ public class ViewController {
     
     private static final Logger logger = LogManager.getLogger("ViewController");
     
+    //START PAGE
+    @GetMapping("/")
+    public ModelAndView startPage() {
+        return new ModelAndView("redirect:/login");
+    }
+    
     //LOGIN
     @GetMapping("/login")
     public String connexion(Model model, Account account) {
@@ -181,7 +187,7 @@ public class ViewController {
                 model.addAttribute("user", userComplete);
                 model.addAttribute("account", account);
                 
-                viewToReturn = "Home";
+                viewToReturn = "Login";
             } else {
                 logger.error("Missing info to register");
                 viewToReturn = "Registration";
