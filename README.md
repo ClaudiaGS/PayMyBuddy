@@ -1,5 +1,7 @@
-#PAY MY BUDDY 
+#PAY MY BUDDY
+
 ##Money Transfer Application
+
 **Usage:**
 - login
 - registration
